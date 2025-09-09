@@ -1,0 +1,74 @@
+.editable-table-container {
+  font-family: sans-serif;
+  margin: 20px;
+}
+
+.editable-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.editable-table-container th,
+.editable-table-container td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  position: relative; /* Nécessaire pour potentiellement positionner des éléments dans les cellules */
+}
+
+.editable-table-container th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.editable-table-container .cell {
+  cursor: text; /* Indique que la cellule est éditable */
+}
+
+.editable-table-container .cell.editing {
+  background-color: #fff; /* Fond blanc pendant l'édition */
+  padding: 0; /* Supprime le padding pour que l'input prenne toute la place */
+}
+
+.editable-table-container .cell.editing input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 10px; /* Réajuste le padding pour l'input */
+  box-sizing: border-box; /* Pour que le padding ne dépasse pas la taille de la cellule */
+  font-size: inherit; /* Utilise la même taille de police que le texte normal */
+  font-family: inherit;
+  outline: none; /* Supprime le contour par défaut de l'input */
+}
+
+.editable-table-container .action-cell {
+  white-space: nowrap; /* Empêche le retour à la ligne pour les boutons */
+}
+
+.editable-table-container .action-cell button {
+  margin-right: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-radius: 3px;
+}
+
+.editable-table-container .action-cell button:hover {
+  background-color: #e9e9e9;
+}
+
+.add-row-button {
+  padding: 10px 15px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.add-row-button:hover {
+  background-color: #45a049;
+}
