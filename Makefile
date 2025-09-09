@@ -8,7 +8,7 @@ create:
 
 # Install / Update the packages in sandbox running NPM INSTALL
 install:
-	docker run --rm -v $(PWD)/$(SOURCES):/app -w /app node:18-alpine npm install
+	docker run --rm -v $(PWD)/$(SOURCES):/app -w /app node:18-alpine npm install $(PACKAGE)
 
 #
 # Development environment
