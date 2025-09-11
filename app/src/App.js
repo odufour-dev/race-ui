@@ -1,5 +1,5 @@
 import './App.css';
-import BasicTable from './components/BasicTable/BasicTable';
+import AppTabs from './components/AppTabs/AppTabs';
 
 
 import React, { useState } from 'react';
@@ -20,14 +20,7 @@ function App() {
   return (
     <div className="App">
       <h1>Tan Stack Table</h1>
-      <div style={{ marginBottom: '1rem', fontWeight: 'bold', color: '#2563eb' }}>
-        {lastUser ? (
-          <span>Dernier utilisateur : {lastUser.firstName} {lastUser.lastName}</span>
-        ) : (
-          <span>Aucun utilisateur</span>
-        )}
-      </div>
-      <BasicTable data={data} setData={setData} />
+      <AppTabs data={data} setData={setData} lastUser={lastUser} />
     </div>
   );
 }
