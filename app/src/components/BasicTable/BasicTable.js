@@ -8,15 +8,12 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 
-function BasicTable() {
-  const [data, setData] = useState([
-    { id: 1, firstName: 'John', lastName: 'Doe', age: 30, status: 'Actif' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', age: 25, status: 'Inactif' },
-    { id: 3, firstName: 'Peter', lastName: 'Jones', age: 40, status: 'Actif' },
-    { id: 4, firstName: 'Mary', lastName: 'Williams', age: 35, status: 'En attente' },
-    { id: 5, firstName: 'Louis', lastName: 'Dubois', age: 28, status: 'Actif' },
-    { id: 6, firstName: 'Sophie', lastName: 'Durand', age: 32, status: 'Inactif' },
-  ]);
+
+function BasicTable({ data, setData }) {
+  // Handler to delete a user row by id
+  const handleDeleteUser = (id) => {
+    setData(prev => prev.filter(user => user.id !== id));
+  };
 
   // Handler to add a new user row
   const handleAddUser = () => {
@@ -179,13 +176,25 @@ function BasicTable() {
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      className="hover:bg-gray-200 rounded-full p-1 flex items-center justify-center transition-colors"
+                      title="Supprimer la ligne"
+                      style={{ width: '2rem', height: '2rem' }}
+                      onClick={() => handleDeleteUser(row.original.id)}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
             {/* Footer optionnel, utile pour des totaux */}
             <tfoot>
               <tr>
-                <td colSpan={columns.length} className="px-4 py-3 text-center text-blue-700 text-base bg-blue-50">
+                <td colSpan={columns.length + 1} className="px-4 py-3 text-center text-blue-700 text-base bg-blue-50">
                   Nombre d'utilisateurs : {table.getFilteredRowModel().rows.length}
                 </td>
               </tr>
