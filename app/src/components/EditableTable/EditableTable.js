@@ -2,6 +2,10 @@
  * Usage : <EditableTable initialData={tableData} />
  */
 
+/*
+ * Usage : <EditableTable initialData={tableData} />
+ */
+
 import React, { useState } from 'react';
 import './EditableTable.css'; // Pour le style
 
