@@ -1,3 +1,14 @@
+/* Inline filter row for filter and add button */
+.filter-row-inline {
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.add-user-btn {
+  margin-left: 1rem;
+  white-space: nowrap;
+}
 /* Flip dropdown above input if needed */
 .dropdown-flip .dropdown-list {
   bottom: 100%;

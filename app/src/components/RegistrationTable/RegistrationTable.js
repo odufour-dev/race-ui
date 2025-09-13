@@ -141,7 +141,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
             Registration
           </h3>
           {/* Section pour le filtrage global */}
-          <div className="filter-row">
+          <div className="filter-row filter-row-inline">
             <div className="filter-input-container">
               <input
                 type="text"
@@ -165,7 +165,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                 </svg>
               </span>
             </div>
-            <button className="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-md" onClick={() => {
+            <button className="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-md add-user-btn" onClick={() => {
               // Find the max Bib value
               const maxBib = data.length > 0 ? Math.max(...data.map(row => Number(row.bib) || 0)) : 0;
               const newRow = {
@@ -183,7 +183,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
               setEditValue('');
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-              Ajouter utilisateur
+              Add
             </button>
           </div>
           <div className="table-scroll">
@@ -233,7 +233,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
               <tfoot>
                 <tr>
                   <td colSpan={columns.length + 1} className="px-4 py-3 text-center text-blue-700 text-base bg-blue-50">
-                    Nombre d'utilisateurs : {filteredData.length}
+                    Number of rows : {filteredData.length}
                   </td>
                 </tr>
                 <tr style={{ height: '200px' }}></tr>
