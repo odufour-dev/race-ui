@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import './RegistrationTable.css';
 
 function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
   const [editingCell, setEditingCell] = useState(null);
@@ -28,11 +29,10 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
           if (columnKey === 'category' || columnKey === 'serie') {
             const options = columnKey === 'category' ? categoryOptions : serieOptions;
             return (
-              <div style={{ position: 'relative' }}>
+              <div className="dropdown-container">
                 <input
                   type="text"
-                  className="border border-blue-300 bg-white text-gray-900 py-1 text-base rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-                  style={{ minWidth: 0, height: '2.25rem', fontSize: '1rem', width: '100%', boxSizing: 'border-box' }}
+                  className="dropdown-input"
                   value={editValue}
                   autoFocus
                   onChange={e => setEditValue(e.target.value)}
@@ -60,11 +60,11 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                   }}
                   placeholder={columnKey === 'category' ? 'Choisir une catégorie...' : 'Choisir une série...'}
                 />
-                <ul style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #cbd5e1', width: '100%', maxHeight: 150, overflowY: 'auto', margin: 0, padding: 0, listStyle: 'none' }}>
+                <ul className="dropdown-list">
                   {options.map(opt => (
                     <li
                       key={opt}
-                      style={{ padding: '0.5rem', cursor: 'pointer' }}
+                      className="dropdown-list-item"
                       onMouseDown={() => {
                         setEditValue(opt);
                         setData(prev => prev.map((row, idx) =>
@@ -77,7 +77,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                     </li>
                   ))}
                   {options.length === 0 && (
-                    <li style={{ padding: '0.5rem', color: '#888' }}>(Aucune option)</li>
+                    <li className="dropdown-list-empty">(Aucune option)</li>
                   )}
                 </ul>
               </div>
@@ -87,8 +87,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
             return (
               <input
                 type="text"
-                className="border border-blue-300 bg-white text-gray-900 py-1 text-base rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
-                style={{ minWidth: 0, height: '2.25rem', fontSize: '1rem', width: '100%', boxSizing: 'border-box' }}
+                className="editable-input"
                 value={editValue}
                 autoFocus
                 onChange={e => setEditValue(e.target.value)}
@@ -123,24 +122,33 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
     })), [editingCell, editValue, setData]
   );
 
+  // Filter data according to globalFilter (case-insensitive, matches any cell)
+  const filteredData = globalFilter
+    ? data.filter(row =>
+        Object.values(row).some(val =>
+          String(val || '').toLowerCase().includes(globalFilter.toLowerCase())
+        )
+      )
+    : data;
+
   return (
     <>
-      <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-blue-50 via-white to-gray-100 min-h-screen">
-        <div className="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl p-8">
+      <div className="table-bg">
+        <div className="table-container">
           <h3 className="text-3xl font-bold text-blue-700 mb-8 text-center">
-            Tableau des Utilisateurs (TanStack Table + DaisyUI)
+            Registration
           </h3>
           {/* Section pour le filtrage global */}
-          <div className="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="relative max-w-xs w-full">
+          <div className="filter-row">
+            <div className="filter-input-container">
               <input
                 type="text"
-                className="block w-full pl-10 pr-4 py-2 rounded-lg border border-blue-300 bg-white text-blue-900 placeholder-blue-400 shadow focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+                className="filter-input"
                 placeholder="Filtrer tout..."
                 value={globalFilter ?? ''}
                 onChange={e => setGlobalFilter(e.target.value)}
               />
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400">
+              <span className="filter-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 16 16"
@@ -176,7 +184,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
               Ajouter utilisateur
             </button>
           </div>
-          <div className="overflow-x-auto">
+          <div className="table-scroll">
             <table className="table w-full border border-gray-200 rounded-lg bg-white">
               <thead className="bg-blue-100">
                 {columns.map((col, idx) => (
@@ -187,13 +195,13 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                 <th className="px-4 py-3 text-left font-semibold text-blue-900">Actions</th>
               </thead>
               <tbody>
-                {data.map((row, rowIndex) => (
+                {filteredData.map((row, rowIndex) => (
                   <tr key={rowIndex} className="odd:bg-blue-50 even:bg-white hover:bg-blue-100 transition-colors">
                     {columns.map((col) => (
                       <td key={col.accessorKey} className="px-4 py-3 text-base text-gray-900"
                         onClick={() => {
                           setEditingCell({ rowIndex, columnKey: col.accessorKey });
-                          setEditValue(data[rowIndex][col.accessorKey] ?? '');
+                          setEditValue(row[col.accessorKey] ?? '');
                         }}
                         style={{ cursor: 'pointer' }}
                       >
@@ -221,7 +229,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
               <tfoot>
                 <tr>
                   <td colSpan={columns.length + 1} className="px-4 py-3 text-center text-blue-700 text-base bg-blue-50">
-                    Nombre d'utilisateurs : {data.length}
+                    Nombre d'utilisateurs : {filteredData.length}
                   </td>
                 </tr>
               </tfoot>

@@ -1,3 +1,135 @@
+/* Editable input styles for table cells */
+.editable-input {
+  border: 1px solid #60a5fa;
+  background: #fff;
+  color: #1e293b;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: 2.25rem;
+}
+.editable-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #60a5fa33;
+}
+/* Container and background styles */
+.table-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eff6ff 0%, #fff 60%, #f3f4f6 100%);
+  padding: 2rem 0 8rem 0;
+}
+.table-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 8px 32px rgba(30, 64, 175, 0.12);
+  border-radius: 1rem;
+  padding: 2rem 2rem 6rem 2rem;
+}
+.table-scroll {
+  overflow-x: auto;
+  padding-bottom: 10rem;
+}
+
+/* Filter input styles */
+.filter-row {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.filter-input-container {
+  position: relative;
+  max-width: 20rem;
+  width: 100%;
+}
+.filter-input {
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #60a5fa;
+  background: #fff;
+  color: #1e3a8a;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.04);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.filter-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #60a5fa33;
+}
+.filter-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #60a5fa;
+}
+
+/* Dropdown styles */
+.dropdown-container {
+  position: relative;
+}
+.dropdown-input {
+  border: 1px solid #60a5fa;
+  background: #fff;
+  color: #1e293b;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-size: 1rem;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  height: 2.25rem;
+}
+.dropdown-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px #60a5fa33;
+}
+/* Stronger dropdown style for visibility */
+.dropdown-container .dropdown-list {
+  position: absolute;
+  z-index: 100;
+  background: #fff;
+  border: 2px solid #2563eb;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.18);
+  border-radius: 0.75rem;
+}
+/* Stronger dropdown item style */
+.dropdown-container .dropdown-list-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #1e293b;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s, color 0.2s;
+}
+.dropdown-container .dropdown-list-item:last-child {
+  border-bottom: none;
+}
+.dropdown-container .dropdown-list-item:hover {
+  background: #2563eb;
+  color: #fff;
+}
+.dropdown-list-empty {
+  padding: 0.5rem;
+  color: #888;
+}
 /* RegistrationTable.css: Styles for the RegistrationTable component */
 
 .table {
