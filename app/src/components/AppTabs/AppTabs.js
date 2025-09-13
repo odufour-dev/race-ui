@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AppTabs.css';
-import BasicTable from '../BasicTable/BasicTable';
-import EditableInputTable from '../EditableInputTable/EditableInputTable';
+import RegistrationTable from '../RegistrationTable/RegistrationTable';
+import LapByLap from '../LapByLap/LapByLap';
 
 function AppTabs({ data, setData, lastUser }) {
   const [activeTab, setActiveTab] = useState('table');
@@ -32,10 +32,10 @@ function AppTabs({ data, setData, lastUser }) {
                 <span>Aucun utilisateur</span>
               )}
             </div>
-            <BasicTable data={data} setData={setData} />
+            <RegistrationTable data={data} setData={setData} />
           </>
         )}
-        {activeTab === 'input' && <EditableInputTable />}
+  {activeTab === 'input' && <LapByLap />}
       </div>
     </div>
   );

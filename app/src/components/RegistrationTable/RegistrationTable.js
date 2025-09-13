@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import './BasicTable.css';
+import './RegistrationTable.css';
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,7 +9,7 @@ import {
 } from '@tanstack/react-table';
 
 
-function BasicTable({ data, setData }) {
+function RegistrationTable({ data, setData }) {
   // Handler to delete a user row by id
   const handleDeleteUser = (id) => {
     setData(prev => prev.filter(user => user.id !== id));
@@ -213,4 +213,4 @@ function BasicTable({ data, setData }) {
   );
 }
 
-export default BasicTable;
+export default RegistrationTable;

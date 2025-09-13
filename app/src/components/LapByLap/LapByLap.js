@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import './EditableInputTable.css';
+import './LapByLap.css';
 
-function EditableInputTable() {
+function LapByLap() {
   // Start with 1 row and 1 column
   const [rows, setRows] = useState([{ id: 1, values: [''] }]);
   const [columns, setColumns] = useState(1);
@@ -121,4 +121,4 @@ function EditableInputTable() {
   );
 }
 
-export default EditableInputTable;
+export default LapByLap;
