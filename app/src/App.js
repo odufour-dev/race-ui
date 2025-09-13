@@ -1,5 +1,8 @@
 import './App.css';
 import AppTabs from './components/AppTabs/AppTabs';
+import RegistrationTable from './components/RegistrationTable/RegistrationTable';
+import LapByLap from './components/LapByLap/LapByLap';
+import LastUserInfo from './components/LastUserInfo/LastUserInfo';
 
 
 import React, { useState } from 'react';
@@ -20,7 +23,23 @@ function App() {
   return (
     <div className="App">
       <h1>Tan Stack Table</h1>
-      <AppTabs data={data} setData={setData} lastUser={lastUser} />
+      <LastUserInfo lastUser={lastUser} />
+      <AppTabs
+        data={data}
+        setData={setData}
+        tabs={[
+          {
+            name: 'table',
+            label: 'Table Utilisateurs',
+            component: (props) => <RegistrationTable {...props} />,
+          },
+          {
+            name: 'input',
+            label: 'Saisie Numérique',
+            component: () => <LapByLap />,
+          },
+        ]}
+      />
     </div>
   );
 }
