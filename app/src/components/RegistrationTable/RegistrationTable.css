@@ -1,3 +1,15 @@
+/* Flip dropdown above input if needed */
+.dropdown-flip .dropdown-list {
+  bottom: 100%;
+  top: auto !important;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+.dropdown-container .dropdown-list {
+  top: 100%;
+  bottom: auto;
+  left: 0;
+}
 /* Editable input styles for table cells */
 .editable-input {
   border: 1px solid #60a5fa;
@@ -28,7 +40,7 @@
   background: #fff;
   box-shadow: 0 8px 32px rgba(30, 64, 175, 0.12);
   border-radius: 1rem;
-  padding: 2rem 2rem 6rem 2rem;
+  padding: 2rem 2rem 12rem 2rem;
 }
 .table-scroll {
   overflow-x: auto;

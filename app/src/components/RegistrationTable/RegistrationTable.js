@@ -28,8 +28,10 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
         if (isEditing) {
           if (columnKey === 'category' || columnKey === 'serie') {
             const options = columnKey === 'category' ? categoryOptions : serieOptions;
+            // Flip dropdown for last 3 rows
+            const flipDropdown = rowIndex >= filteredData.length - 3;
             return (
-              <div className="dropdown-container">
+              <div className={`dropdown-container${flipDropdown ? ' dropdown-flip' : ''}`}>
                 <input
                   type="text"
                   className="dropdown-input"
@@ -187,12 +189,14 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
           <div className="table-scroll">
             <table className="table w-full border border-gray-200 rounded-lg bg-white">
               <thead className="bg-blue-100">
-                {columns.map((col, idx) => (
-                  <th key={col.accessorKey} className="px-4 py-3 text-left font-semibold text-blue-900">
-                    {col.header}
-                  </th>
-                ))}
-                <th className="px-4 py-3 text-left font-semibold text-blue-900">Actions</th>
+                <tr>
+                  {columns.map((col, idx) => (
+                    <th key={col.accessorKey} className="px-4 py-3 text-left font-semibold text-blue-900">
+                      {col.header}
+                    </th>
+                  ))}
+                  <th className="px-4 py-3 text-left font-semibold text-blue-900">Actions</th>
+                </tr>
               </thead>
               <tbody>
                 {filteredData.map((row, rowIndex) => (
@@ -232,11 +236,15 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                     Nombre d'utilisateurs : {filteredData.length}
                   </td>
                 </tr>
+                <tr style={{ height: '200px' }}></tr>
               </tfoot>
+              
             </table>
+            
           </div>
           {/* Indicateur si aucune donnée n'est trouvée */}
           {/* ...no data message... */}
+                    
         </div>
       </div>
       <datalist id="category-options">
