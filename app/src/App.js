@@ -9,12 +9,36 @@ import React, { useState } from 'react';
 
 function App() {
   const [data, setData] = useState([
-    { id: 1, firstName: 'John', lastName: 'Doe', age: 30, status: 'Actif' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', age: 25, status: 'Inactif' },
-    { id: 3, firstName: 'Peter', lastName: 'Jones', age: 40, status: 'Actif' },
-    { id: 4, firstName: 'Mary', lastName: 'Williams', age: 35, status: 'En attente' },
-    { id: 5, firstName: 'Louis', lastName: 'Dubois', age: 28, status: 'Actif' },
-    { id: 6, firstName: 'Sophie', lastName: 'Durand', age: 32, status: 'Inactif' },
+    {
+      bib: 101,
+      lastName: 'MARTIN',
+      firstName: 'Lucas',
+      club: 'Velo Club Paris',
+      category: 'Junior',
+      serie: 'A',
+      licenseId: 'FRA123456',
+      uciId: 'UCI998877',
+    },
+    {
+      bib: 102,
+      lastName: 'DUPONT',
+      firstName: 'Emma',
+      club: 'Cyclo Lyon',
+      category: 'Senior',
+      serie: 'B',
+      licenseId: 'FRA654321',
+      uciId: 'UCI112233',
+    },
+    {
+      bib: 103,
+      lastName: 'BERNARD',
+      firstName: 'Hugo',
+      club: 'Team Marseille',
+      category: 'Junior',
+      serie: 'A',
+      licenseId: 'FRA789012',
+      uciId: 'UCI445566',
+    },
   ]);
 
   // Get the last user (if any)
@@ -31,7 +55,13 @@ function App() {
           {
             name: 'table',
             label: 'Table Utilisateurs',
-            component: (props) => <RegistrationTable {...props} />,
+            component: (props) => (
+              <RegistrationTable
+                {...props}
+                categoryOptions={['Junior', 'Senior', 'Espoir', 'Elite']}
+                serieOptions={['A', 'B', 'C', 'D']}
+              />
+            ),
           },
           {
             name: 'input',
