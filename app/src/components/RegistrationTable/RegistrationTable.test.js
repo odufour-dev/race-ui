@@ -1,7 +1,8 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
-import App from './App';
+import RegistrationTable from './RegistrationTable';
 
 const mockDataModel = {
   data: [],
@@ -33,26 +34,18 @@ testI18n.use(initReactI18next).init({
           licenseId: 'License ID',
           uciId: 'UCI ID'
         }
-      },
-      LastUserInfo: {
-        lastUser: 'Last user',
-      },
-      LapByLap: {
-        lap: 'Lap',
-      },
-      AppTabs: {
-        tabs: 'Tabs',
       }
     }
   }
 });
 
-test('renders learn react link', () => {
-  render(
-    <I18nextProvider i18n={testI18n}>
-      <App dataModel={mockDataModel} />
-    </I18nextProvider>
-  );
-  const linkElement = screen.getByText(/Tan Stack Table/i);
-  expect(linkElement).toBeInTheDocument();
+describe('RegistrationTable', () => {
+  it('renders table title', () => {
+    render(
+      <I18nextProvider i18n={testI18n}>
+        <RegistrationTable dataModel={mockDataModel} />
+      </I18nextProvider>
+    );
+    expect(screen.getByText('Registration')).toBeInTheDocument();
+  });
 });
