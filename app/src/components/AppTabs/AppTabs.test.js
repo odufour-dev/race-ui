@@ -3,8 +3,9 @@ import { render, screen } from '@testing-library/react';
 import AppTabs from './AppTabs';
 
 describe('AppTabs', () => {
-  it('renders tabs', () => {
+  it('renders app-tabs-content', () => {
     render(<AppTabs tabs={[]} />);
-    expect(screen.getByText(/tabs/i)).toBeInTheDocument();
+    const contentDiv = document.querySelector('.app-tabs-content');
+    expect(contentDiv).toBeInTheDocument();
   });
 });
