@@ -22,6 +22,9 @@ start-dev:
 stop-dev:
 	docker stop ui-dev
 
+test:
+	docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -e CI=true -w /app $(IMAGE)-dev npm test -- --watchAll=false
+
 #
 # Production environment
 #
@@ -33,6 +36,3 @@ start-prod: build-prod
 
 stop-prod:
 	docker stop ui-prod
-
-test:
-	docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -w /app $(IMAGE)-dev npm test
