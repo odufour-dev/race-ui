@@ -10,6 +10,8 @@ import React, { useState } from 'react';
  */
 function AppDataModel({ children, initialData = [] }) {
   const [data, setData] = useState(initialData);
+  const [categoryOptions] = useState(['Junior', 'Senior', 'Espoir', 'Elite']);
+  const [serieOptions] = useState(['A', 'B', 'C', 'D']);
 
   // CRUD actions
   const addRow = (row) => setData(prev => [...prev, row]);
@@ -19,7 +21,7 @@ function AppDataModel({ children, initialData = [] }) {
 
   const actions = { setData, addRow, updateRow, deleteRow, setAllData };
 
-  return children(data, actions);
+  return children(data, actions, { categoryOptions, serieOptions });
 }
 
 export default AppDataModel;

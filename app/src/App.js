@@ -7,7 +7,7 @@ import LastUserInfo from './components/LastUserInfo/LastUserInfo';
 
 import React from 'react';
 
-function App({ data, setData, addRow, updateRow, deleteRow, setAllData }) {
+function App({ data, setData, addRow, updateRow, deleteRow, setAllData, categoryOptions, serieOptions }) {
 
   // Get the last user (if any)
   const lastUser = data.length > 0 ? data[data.length - 1] : null;
@@ -36,8 +36,8 @@ function App({ data, setData, addRow, updateRow, deleteRow, setAllData }) {
                 updateRow={updateRow}
                 deleteRow={deleteRow}
                 setAllData={setAllData}
-                categoryOptions={['Junior', 'Senior', 'Espoir', 'Elite']}
-                serieOptions={['A', 'B', 'C', 'D']}
+                categoryOptions={categoryOptions}
+                serieOptions={serieOptions}
               />
             ),
           },

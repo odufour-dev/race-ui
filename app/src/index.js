@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AppDataModel>
-      {(data, actions) => <App data={data} {...actions} />}
+      {(data, actions, options) => <App data={data} {...actions} {...options} />}
     </AppDataModel>
   </React.StrictMode>
 );
