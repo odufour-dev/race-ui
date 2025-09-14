@@ -7,22 +7,15 @@ import LastUserInfo from './components/LastUserInfo/LastUserInfo';
 
 import React from 'react';
 
-function App({ data, setData, addRow, updateRow, deleteRow, setAllData, categoryOptions, serieOptions }) {
-
-  // Get the last user (if any)
+function App({ dataModel }) {
+  const { data, setData, addRow, updateRow, deleteRow, setAllData, categoryOptions, serieOptions } = dataModel;
   const lastUser = data.length > 0 ? data[data.length - 1] : null;
-
   return (
     <div className="App">
       <h1>Tan Stack Table</h1>
       <LastUserInfo lastUser={lastUser} />
       <AppTabs
-        data={data}
-        setData={setData}
-        addRow={addRow}
-        updateRow={updateRow}
-        deleteRow={deleteRow}
-        setAllData={setAllData}
+        dataModel={dataModel}
         tabs={[
           {
             name: 'table',
@@ -30,21 +23,14 @@ function App({ data, setData, addRow, updateRow, deleteRow, setAllData, category
             component: (props) => (
               <RegistrationTable
                 {...props}
-                data={data}
-                setData={setData}
-                addRow={addRow}
-                updateRow={updateRow}
-                deleteRow={deleteRow}
-                setAllData={setAllData}
-                categoryOptions={categoryOptions}
-                serieOptions={serieOptions}
+                dataModel={dataModel}
               />
             ),
           },
           {
             name: 'input',
             label: 'Lap-by-Lap',
-            component: (props) => <LapByLap {...props} data={data} setData={setData} />,
+            component: (props) => <LapByLap {...props} dataModel={dataModel} />,
           },
         ]}
       />

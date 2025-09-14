@@ -19,9 +19,18 @@ function AppDataModel({ children, initialData = [] }) {
   const deleteRow = (index) => setData(prev => prev.filter((_, i) => i !== index));
   const setAllData = (newData) => setData(newData);
 
-  const actions = { setData, addRow, updateRow, deleteRow, setAllData };
+  const dataModel = {
+    data,
+    setData,
+    addRow,
+    updateRow,
+    deleteRow,
+    setAllData,
+    categoryOptions,
+    serieOptions,
+  };
 
-  return children(data, actions, { categoryOptions, serieOptions });
+  return children(dataModel);
 }
 
 export default AppDataModel;

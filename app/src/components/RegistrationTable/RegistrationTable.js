@@ -2,7 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './RegistrationTable.css';
 
-function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
+function RegistrationTable({ dataModel }) {
+  const { data, setData, categoryOptions, serieOptions } = dataModel;
   const { t: translator } = useTranslation('RegistrationTable');
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
@@ -31,7 +32,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
           if (columnKey === 'category' || columnKey === 'serie') {
             const options = columnKey === 'category' ? categoryOptions : serieOptions;
             // Flip dropdown for last 3 rows
-            const flipDropdown = rowIndex >= filteredData.length - 3;
+            const flipDropdown = rowIndex >= (data ? data.length : 0) - 3;
             return (
               <div className={`dropdown-container${flipDropdown ? ' dropdown-flip' : ''}`}>
                 <input
