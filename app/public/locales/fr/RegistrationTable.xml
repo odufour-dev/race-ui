@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<translation>
+  <registration>
+    <title>Tableau des inscriptions</title>
+    <filter>Filtrer tout...</filter>
+    <addUser>Ajouter utilisateur</addUser>
+    <usersCount>Nombre d'utilisateurs : {{count}}</usersCount>
+  </registration>
+  <columns>
+    <bib>Dossard</bib>
+    <name>Nom</name>
+    <firstName>Prénom</firstName>
+    <club>Club</club>
+    <category>Catégorie</category>
+    <serie>Série</serie>
+    <licenseId>Numéro de licence</licenseId>
+    <uciId>ID UCI</uciId>
+    <actions>Actions</actions>
+  </columns>
+</translation>

@@ -54,7 +54,7 @@ function App() {
         tabs={[
           {
             name: 'table',
-            label: 'Table Utilisateurs',
+            label: 'Registration',
             component: (props) => (
               <RegistrationTable
                 {...props}
@@ -65,7 +65,7 @@ function App() {
           },
           {
             name: 'input',
-            label: 'Saisie Numérique',
+            label: 'Lap-by-Lap',
             component: () => <LapByLap />,
           },
         ]}

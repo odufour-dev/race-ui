@@ -1,20 +1,22 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './RegistrationTable.css';
 
 function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
+  const { t: translator } = useTranslation('RegistrationTable');
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
 
   const columnDefs = [
-    { accessorKey: 'bib', header: 'Bib', enableSorting: true },
-    { accessorKey: 'lastName', header: 'Name', enableSorting: true },
-    { accessorKey: 'firstName', header: 'First name', enableSorting: true },
-    { accessorKey: 'club', header: 'Club', enableSorting: true },
-    { accessorKey: 'category', header: 'Category', enableSorting: true },
-    { accessorKey: 'serie', header: 'Serie', enableSorting: true },
-    { accessorKey: 'licenseId', header: 'License ID', enableSorting: true },
-    { accessorKey: 'uciId', header: 'UCI ID', enableSorting: true }
+    { accessorKey: 'bib', header: translator('columns.bib'), enableSorting: true },
+    { accessorKey: 'lastName', header: translator('columns.name'), enableSorting: true },
+    { accessorKey: 'firstName', header: translator('columns.firstName'), enableSorting: true },
+    { accessorKey: 'club', header: translator('columns.club'), enableSorting: true },
+    { accessorKey: 'category', header: translator('columns.category'), enableSorting: true },
+    { accessorKey: 'serie', header: translator('columns.serie'), enableSorting: true },
+    { accessorKey: 'licenseId', header: translator('columns.licenseId'), enableSorting: true },
+    { accessorKey: 'uciId', header: translator('columns.uciId'), enableSorting: true }
   ];
 
   const columns = useMemo(() =>
@@ -60,7 +62,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                       e.preventDefault();
                     }
                   }}
-                  placeholder={columnKey === 'category' ? 'Choisir une catégorie...' : 'Choisir une série...'}
+                  placeholder={columnKey === 'category' ? translator('columns.category') : translator('columns.serie')}
                 />
                 <ul className="dropdown-list">
                   {options.map(opt => (
@@ -79,7 +81,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                     </li>
                   ))}
                   {options.length === 0 && (
-                    <li className="dropdown-list-empty">(Aucune option)</li>
+                    <li className="dropdown-list-empty">{translator('registration.noOption', { defaultValue: '(No option)' })}</li>
                   )}
                 </ul>
               </div>
@@ -138,7 +140,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
       <div className="table-bg">
         <div className="table-container">
           <h3 className="text-3xl font-bold text-blue-700 mb-8 text-center">
-            Registration
+            {translator('registration.title')}
           </h3>
           {/* Section pour le filtrage global */}
           <div className="filter-row filter-row-inline">
@@ -146,7 +148,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
               <input
                 type="text"
                 className="filter-input"
-                placeholder="Filtrer tout..."
+                placeholder={translator('registration.filter')}
                 value={globalFilter ?? ''}
                 onChange={e => setGlobalFilter(e.target.value)}
               />
@@ -183,7 +185,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
               setEditValue('');
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-              Add
+              {translator('registration.addUser')}
             </button>
           </div>
           <div className="table-scroll">
@@ -195,7 +197,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
                       {col.header}
                     </th>
                   ))}
-                  <th className="px-4 py-3 text-left font-semibold text-blue-900">Actions</th>
+                  <th className="px-4 py-3 text-left font-semibold text-blue-900">{translator('columns.actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,7 +235,7 @@ function RegistrationTable({ data, setData, categoryOptions, serieOptions }) {
               <tfoot>
                 <tr>
                   <td colSpan={columns.length + 1} className="px-4 py-3 text-center text-blue-700 text-base bg-blue-50">
-                    Number of rows : {filteredData.length}
+                    {translator('registration.usersCount', { count: filteredData.length })}
                   </td>
                 </tr>
                 <tr style={{ height: '200px' }}></tr>
