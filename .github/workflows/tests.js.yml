@@ -32,14 +32,8 @@ jobs:
         cache: 'npm'
         cache-dependency-path: ./app/package-lock.json
         
-    - name: Current location
-      run: pwd
-
-    - name: Files in location
-      run: ls -la
-
     - name: Install dependencies
       run: npm install
 
     - name: Run the tests
-      run: npm test
+      run: npm test -- --ci --reporters=default --reporters=jest-junit --coverage --coverageReporters=text-lcov --coverageDirectory=./reports/coverage
