@@ -13,6 +13,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./app
 
     strategy:
       matrix:
@@ -29,16 +32,12 @@ jobs:
         
     - name: Current location
       run: pwd
-      working-directory: ./app
 
     - name: Files in location
       run: ls -la
-      working-directory: ./app
 
     - name: Install dependencies
       run: npm install
-      working-directory: ./app
 
     - name: Run the tests
       run: npm test
-      working-directory: ./app
