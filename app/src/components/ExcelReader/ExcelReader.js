@@ -60,41 +60,20 @@ const ExcelReader = () => {
       Object.keys(fileContent[i]).forEach(key => allKeys.add(key));
     }
     const originalKeys = Array.from(allKeys);
-
-    const visibleKeys = originalKeys.filter(key => columnMappings[key] !== 'Skip');
-
-    return visibleKeys.map((key) => ({
+    
+    return originalKeys.map((key) => ({
       accessorKey: key,
       header: key,
       cell: (info) => info.getValue(),
     }));
-  }, [fileContent, columnMappings]);
-
-  const mappedData = useMemo(() => {
-    if (Object.keys(columnMappings).length === 0 || fileContent.length === 0) {
-      return [];
-    }
-    const visibleMappings = Object.entries(columnMappings).filter(([_, mappedValue]) => mappedValue !== 'Skip');
-    const mappedColumns = visibleMappings.map(([_, mappedValue]) => mappedValue);
-
-    return fileContent.slice(0, 10).map(row => {
-      const newRow = {};
-      visibleMappings.forEach(([originalKey, mappedValue]) => {
-        if (row[originalKey] !== undefined) {
-          newRow[mappedValue] = row[originalKey];
-        }
-      });
-      return newRow;
-    });
-  }, [fileContent, columnMappings]);
+  }, [fileContent]);
 
   const table = useReactTable({
-    data: mappedData,
+    data: fileContent.slice(0, 10),
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // Check if the first column is mapped to something other than 'Skip'
   const firstOriginalKey = Object.keys(columnMappings)[0];
   const firstColumnIsMapped = firstOriginalKey && columnMappings[firstOriginalKey] !== 'Skip';
   const tableTextColorClass = firstColumnIsMapped ? 'text-black' : 'text-gray-500';
@@ -118,7 +97,8 @@ const ExcelReader = () => {
         <div className="overflow-x-auto p-4 border border-gray-300">
           <table className="table-auto w-full border-collapse">
             <thead>
-              <tr key="mapping-row">
+              {/* Row 1: Dropdown Menus */}
+              <tr>
                 {Object.keys(columnMappings).map((originalKey) => (
                   <th 
                     key={originalKey} 
@@ -136,31 +116,32 @@ const ExcelReader = () => {
                   </th>
                 ))}
               </tr>
-              <tr key="title-row">
-                {Object.keys(columnMappings).map((originalKey) => (
-                  <th 
-                    key={originalKey} 
-                    className="bg-gray-100 p-2 text-left text-sm font-semibold border border-gray-300"
-                  >
-                    {originalKey}
-                  </th>
-                ))}
+              {/* Row 2: Original Column Names (or Mapped Names if set) */}
+              <tr>
+                {Object.keys(columnMappings).map((originalKey) => {
+                  const mappedValue = columnMappings[originalKey];
+                  return (
+                    <th 
+                      key={originalKey} 
+                      className="bg-gray-100 p-2 text-left text-sm font-semibold border border-gray-300"
+                    >
+                      {mappedValue !== 'Skip' ? mappedValue : originalKey}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
-              {mappedData.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {Object.keys(columnMappings).map((originalKey) => {
-                    const mappedKey = columnMappings[originalKey];
-                    return (
-                      <td 
-                        key={originalKey} 
-                        className={`bg-white p-2 border border-gray-300 text-sm ${tableTextColorClass}`}
-                      >
-                        {mappedKey !== 'Skip' ? row[mappedKey] : ''}
-                      </td>
-                    );
-                  })}
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <td 
+                      key={cell.id} 
+                      className={`bg-white p-2 border border-gray-300 text-sm ${tableTextColorClass}`}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
