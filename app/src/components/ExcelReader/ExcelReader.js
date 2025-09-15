@@ -74,10 +74,6 @@ const ExcelReader = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const firstOriginalKey = Object.keys(columnMappings)[0];
-  const firstColumnIsMapped = firstOriginalKey && columnMappings[firstOriginalKey] !== 'Skip';
-  const tableTextColorClass = firstColumnIsMapped ? 'text-black' : 'text-gray-500';
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Excel File Viewer</h1>
@@ -134,14 +130,20 @@ const ExcelReader = () => {
             <tbody>
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <td 
-                      key={cell.id} 
-                      className={`bg-white p-2 border border-gray-300 text-sm ${tableTextColorClass}`}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    const originalKey = cell.column.id;
+                    const isMapped = columnMappings[originalKey] && columnMappings[originalKey] !== 'Skip';
+                    const cellColorClass = isMapped ? 'text-black font-bold' : 'text-gray-500';
+                    const cellHighlightClass = isMapped ? 'bg-blue-50' : 'bg-white';
+                    return (
+                      <td 
+                        key={cell.id} 
+                        className={`p-2 border border-gray-300 text-sm ${cellColorClass} ${cellHighlightClass}`}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
