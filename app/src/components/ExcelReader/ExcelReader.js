@@ -1,60 +1,171 @@
-// components/ExcelReader.js
-
-import React, { useState } from 'react';
-import { Button, InputGroup } from '@tanstack/react-table';
+// src/components/ExcelReader.jsx
+import React, { useState, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
+import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
-const ExcelReader = ({ dataModel }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [fileContent, setFileContent] = useState('');
+const ExcelReader = () => {
+  const [fileContent, setFileContent] = useState([]);
+  const [columnMappings, setColumnMappings] = useState({});
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
+  const mappingOptions = [
+    { value: 'Skip', label: 'Skip' },
+    { value: 'Name', label: 'Name' },
+    { value: 'FirstName', label: 'FirstName' },
+    { value: 'UCI ID', label: 'UCI ID' },
+    { value: 'Club', label: 'Club' },
+    { value: 'Category', label: 'Category' },
+  ];
 
   const readExcelFile = (file) => {
-  const reader = new FileReader();
-  reader.onload = () => {
-    const data = reader.result;
-    const workbook = XLSX.read(data, { type: 'binary' });
-    const sheets = workbook.SheetNames;
-
-    // Example usage: get the first sheet's data
-    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheets[0]]);
-    setFileContent(sheetData);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = e.target.result;
+      const workbook = XLSX.read(data, { type: 'binary' });
+      const sheetName = workbook.SheetNames[0];
+      const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      setFileContent(sheetData);
+    };
+    reader.readAsArrayBuffer(file);
   };
-  reader.readAsArrayBuffer(file);
-};
 
-  const handleSubmit = () => {
-    if (selectedFile !== null) {
-      readExcelFile(selectedFile);
+  useEffect(() => {
+    if (fileContent.length > 0) {
+      const initialMappings = {};
+      const allKeys = new Set();
+      const sampleSize = Math.min(fileContent.length, 20);
+      for (let i = 0; i < sampleSize; i++) {
+        Object.keys(fileContent[i]).forEach(key => allKeys.add(key));
+      }
+      Array.from(allKeys).forEach(key => {
+        initialMappings[key] = 'Skip';
+      });
+      setColumnMappings(initialMappings);
     }
+  }, [fileContent]);
+
+  const handleMappingChange = (originalKey, mappedValue) => {
+    setColumnMappings(prev => ({
+      ...prev,
+      [originalKey]: mappedValue,
+    }));
   };
+
+  const columns = useMemo(() => {
+    if (fileContent.length === 0) {
+      return [];
+    }
+    const allKeys = new Set();
+    const sampleSize = Math.min(fileContent.length, 20);
+    for (let i = 0; i < sampleSize; i++) {
+      Object.keys(fileContent[i]).forEach(key => allKeys.add(key));
+    }
+    const originalKeys = Array.from(allKeys);
+
+    const visibleKeys = originalKeys.filter(key => columnMappings[key] !== 'Skip');
+
+    return visibleKeys.map((key) => ({
+      accessorKey: key,
+      header: key,
+      cell: (info) => info.getValue(),
+    }));
+  }, [fileContent, columnMappings]);
+
+  const mappedData = useMemo(() => {
+    if (Object.keys(columnMappings).length === 0 || fileContent.length === 0) {
+      return [];
+    }
+    const visibleMappings = Object.entries(columnMappings).filter(([_, mappedValue]) => mappedValue !== 'Skip');
+    const mappedColumns = visibleMappings.map(([_, mappedValue]) => mappedValue);
+
+    return fileContent.slice(0, 10).map(row => {
+      const newRow = {};
+      visibleMappings.forEach(([originalKey, mappedValue]) => {
+        if (row[originalKey] !== undefined) {
+          newRow[mappedValue] = row[originalKey];
+        }
+      });
+      return newRow;
+    });
+  }, [fileContent, columnMappings]);
+
+  const table = useReactTable({
+    data: mappedData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  // Check if the first column is mapped to something other than 'Skip'
+  const firstOriginalKey = Object.keys(columnMappings)[0];
+  const firstColumnIsMapped = firstOriginalKey && columnMappings[firstOriginalKey] !== 'Skip';
+  const tableTextColorClass = firstColumnIsMapped ? 'text-black' : 'text-gray-500';
 
   return (
-    <div className="mx-4">
-      <h2 className="text-lg mb-2">Select an Excel File</h2>
-      <div>
-        <input
-          type="file"
-          accept=".xlsx, .xls, .xlsm"
-          onChange={handleFileChange}
-          className="block w-full p-2 pl-10 text-sm text-gray-700 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-100 dark:text-gray-700 dark:border-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        />
-      </div>
-      {selectedFile && (
-        <button
-          onClick={handleSubmit}
-          className="w-full p-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-500"
-        >
-          Read Excel File
-        </button>
-      )}
-      {fileContent && (
-        <pre className="mt-4 p-2 text-sm bg-gray-100 rounded-md">
-          <code>{JSON.stringify(fileContent, null, 2)}</code>
-        </pre>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Excel File Viewer</h1>
+      <input
+        type="file"
+        accept=".xlsx, .xls"
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) {
+            readExcelFile(file);
+          }
+        }}
+        className="file-input file-input-bordered w-full max-w-xs mb-4"
+      />
+      
+      {fileContent.length > 0 && (
+        <div className="overflow-x-auto p-4 border border-gray-300">
+          <table className="table-auto w-full border-collapse">
+            <thead>
+              <tr key="mapping-row">
+                {Object.keys(columnMappings).map((originalKey) => (
+                  <th 
+                    key={originalKey} 
+                    className="bg-white p-2 text-left text-sm font-semibold border border-gray-300"
+                  >
+                    <select
+                      value={columnMappings[originalKey]}
+                      onChange={(e) => handleMappingChange(originalKey, e.target.value)}
+                      className="w-full h-8 border border-gray-300 bg-white"
+                    >
+                      {mappingOptions.map(option => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                  </th>
+                ))}
+              </tr>
+              <tr key="title-row">
+                {Object.keys(columnMappings).map((originalKey) => (
+                  <th 
+                    key={originalKey} 
+                    className="bg-gray-100 p-2 text-left text-sm font-semibold border border-gray-300"
+                  >
+                    {originalKey}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {mappedData.map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {Object.keys(columnMappings).map((originalKey) => {
+                    const mappedKey = columnMappings[originalKey];
+                    return (
+                      <td 
+                        key={originalKey} 
+                        className={`bg-white p-2 border border-gray-300 text-sm ${tableTextColorClass}`}
+                      >
+                        {mappedKey !== 'Skip' ? row[mappedKey] : ''}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
