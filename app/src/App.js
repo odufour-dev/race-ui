@@ -3,7 +3,7 @@ import AppTabs from './components/AppTabs/AppTabs';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import LapByLap from './components/LapByLap/LapByLap';
 import LastUserInfo from './components/LastUserInfo/LastUserInfo';
-
+import ExcelReader from './components/ExcelReader/ExcelReader';
 
 import React from 'react';
 
@@ -17,6 +17,11 @@ function App({ dataModel }) {
       <AppTabs
         dataModel={dataModel}
         tabs={[
+          {
+            name: 'import',
+            label: 'Import',
+            component: (props) => <ExcelReader {...props} dataModel={dataModel} />,
+          },
           {
             name: 'table',
             label: 'Registration',
