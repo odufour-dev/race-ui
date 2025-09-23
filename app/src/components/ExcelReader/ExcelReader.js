@@ -1,9 +1,11 @@
 // src/components/ExcelReader.jsx
 import React, { useState, useMemo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
 const ExcelReader = () => {
+
   const [file, setFile] = useState(null);
   const [workbook, setWorkbook] = useState(null);
   const [headerRow, setHeaderRow] = useState(4);
@@ -12,13 +14,15 @@ const ExcelReader = () => {
   const [fileContent, setFileContent] = useState([]);
   const [columnMappings, setColumnMappings] = useState({});
 
+  const { t: translator } = useTranslation('ExcelReader');
+
   const mappingOptions = [
-    { value: 'Skip', label: 'Skip' },
-    { value: 'Name', label: 'Name' },
-    { value: 'FirstName', label: 'FirstName' },
-    { value: 'UCI ID', label: 'UCI ID' },
-    { value: 'Club', label: 'Club' },
-    { value: 'Category', label: 'Category' },
+    { value: translator('columns.skip'), label: translator('columns.skip') },
+    { value: translator('columns.name'), label: translator('columns.name') },
+    { value: translator('columns.firstName'), label: translator('columns.firstName') },
+    { value: translator('columns.uciId'), label: translator('columns.uciId') },
+    { value: translator('columns.club'), label: translator('columns.club') },
+    { value: translator('columns.category'), label: translator('columns.category') },
   ];
 
   // STEP 1: Read the file and create the workbook object ONCE.
@@ -206,7 +210,7 @@ const ExcelReader = () => {
                     return (
                       <td
                         key={cell.id}
-                        className={`p-2 border border-gray-300 text-sm ${
+                        className={`min-w-[120px] p-2 border border-gray-300 text-sm ${
                           isMapped ? highlightStyle : 'bg-white text-gray-600'
                         }`}
                       >
