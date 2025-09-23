@@ -8,7 +8,7 @@ const ExcelReader = () => {
   const [workbook, setWorkbook] = useState(null);
   const [headerRow, setHeaderRow] = useState(4);
   const [nColumns, setColumns] = useState(1);
-  const [columnNames, setColumnNames] = useState({});
+  const [columnNames, setColumnNames] = useState([]);
   const [fileContent, setFileContent] = useState([]);
   const [columnMappings, setColumnMappings] = useState({});
 
@@ -70,18 +70,13 @@ const ExcelReader = () => {
       }, 0);
       setColumns(nColumns);
 
+      const keys = Object.keys(fileContent[irow] || {});
       const initialMappings = {};
-      for (var i = 0; i < nColumns; i++){
-        initialMappings[i] = 'Skip';
-      }      
+      keys.forEach((key) => {
+        initialMappings[key] = 'Skip';
+      });
       setColumnMappings(initialMappings);
-
-      console.log(fileContent[irow]);
-      const names = Object.keys(fileContent[irow]).map((key) => fileContent[irow][key] || `Column ${key}`);
-      for (var i=names.length; i < nColumns; i++){
-        names[i] = "EMPTY";
-      }
-      setColumnNames(names);
+      setColumnNames(keys.map((k) => fileContent[irow][k] || `Column ${k}`));
 
     } else {
       setColumns(nColumns);
@@ -115,7 +110,18 @@ const ExcelReader = () => {
     }));
   }, [fileContent]);
 
-  const tableData = useMemo(() => fileContent.slice(0, 10), [fileContent]);
+  const normalizedData = useMemo(() => {
+  const keys = columns.map(col => col.accessorKey);
+  return fileContent.map(row => {
+      const normalizedRow = {};
+      keys.forEach(key => {
+        normalizedRow[key] = row[key] ?? '';
+      });
+      return normalizedRow;
+    });
+  }, [fileContent, columns]);
+
+  const tableData = useMemo(() => normalizedData, [fileContent]);
   const table = useReactTable({
     data: tableData,
     columns,
@@ -126,6 +132,8 @@ const ExcelReader = () => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile || null);
   }
+
+  const highlightStyle = 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-900 font-semibold';
 
   return (
     <div className="container mx-auto p-4">
@@ -158,11 +166,11 @@ const ExcelReader = () => {
           <table className="table-auto w-full border-collapse">
             <thead>
               <tr>
-                {Object.keys(columnMappings).map((originalKey, index) => (
-                  <th key={originalKey} className="bg-white p-2 text-left text-sm font-semibold border border-gray-300">                    
+                {columns.map((col) => (
+                  <th key={col.accessorKey} className="bg-white p-2 text-left text-sm font-semibold border border-gray-300">
                     <select
-                      value={columnMappings[index]}
-                      onChange={(e) => handleMappingChange(index, e.target.value)}
+                      value={columnMappings[col.accessorKey] || 'Skip'}
+                      onChange={(e) => handleMappingChange(col.accessorKey, e.target.value)}
                       className="select select-bordered select-sm w-full"
                     >
                       {mappingOptions.map(option => (
@@ -173,21 +181,35 @@ const ExcelReader = () => {
                 ))}
               </tr>
               <tr>
-                {columnNames.map((name,index) => (
-                  <th key={name + index} className="bg-gray-100 p-2 text-left text-sm font-semibold border border-gray-300 truncate" title={name}>
-                    {name}
+              {columns.map((col, index) => {
+                const isMapped = columnMappings[col.accessorKey] && columnMappings[col.accessorKey] !== 'Skip';
+                return (
+                  <th
+                    key={col.accessorKey}
+                    className={`p-2 border border-gray-300 text-left text-sm font-semibold truncate ${
+                      isMapped ? highlightStyle : 'bg-gray-100 text-gray-700'
+                    }`}
+                    title={columnNames[index]}
+                  >
+                    {columnNames[index]}
                   </th>
-                ))}
-              </tr>
+                );
+              })}
+            </tr>
             </thead>
             <tbody>
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => {
-                    const originalKey = cell.column.id;
-                    const isMapped = columnMappings[originalKey] && columnMappings[originalKey] !== 'Skip';
+                    const key = cell.column.id;
+                    const isMapped = columnMappings[key] && columnMappings[key] !== 'Skip';
                     return (
-                      <td key={cell.id} className={`p-2 border border-gray-300 text-sm ${isMapped ? 'text-black font-medium bg-blue-50' : 'text-gray-600 bg-white'}`}>
+                      <td
+                        key={cell.id}
+                        className={`p-2 border border-gray-300 text-sm ${
+                          isMapped ? highlightStyle : 'bg-white text-gray-600'
+                        }`}
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     );
