@@ -1,0 +1,122 @@
+// src/models/RaceModels.js
+
+// 👤 Person class
+export class Person {
+
+  constructor(id, firstName, lastName, category, company, identificationNumber) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.category = category;
+    this.company = company;
+    this.identificationNumber = identificationNumber;
+  }
+
+  get fullName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+
+}
+
+// 🏁 RaceEvent class
+export class RaceEvent {
+  constructor(id, name, location, date, numberOfLaps, lapDistanceKm, numberOfLegs) {
+    this.id = id;
+    this.name = name;
+    this.location = location;
+    this.date = date;
+    this.numberOfLaps = numberOfLaps;
+    this.lapDistanceKm = lapDistanceKm;
+    this.numberOfLegs = numberOfLegs;
+  }
+
+  get totalDistanceKm() {
+    return this.numberOfLaps * this.lapDistanceKm;
+  }
+}
+
+// ⏱️ TimingRecord class
+export class TimingRecord {
+  constructor(personId, raceId, legTimes = [], lapTimes = []) {
+    this.personId = personId;
+    this.raceId = raceId;
+    this.legTimes = legTimes;
+    this.lapTimes = lapTimes;
+  }
+
+  get totalTime() {
+    return [...this.legTimes, ...this.lapTimes].reduce((sum, t) => sum + t, 0);
+  }
+}
+
+// 🧠 RaceManager class
+export class RaceManager {
+
+  constructor() {
+    this.people = [];
+    this.races = [];
+    this.timings = [];
+  }
+
+  addPerson(person) {
+    this.people.push(person);
+  }
+
+  addRace(race) {
+    this.races.push(race);
+  }
+
+  addTimingRecord(record) {
+    this.timings.push(record);
+  }
+
+  getPersonById(id) {
+    return this.people.find(p => p.id === id);
+  }
+
+  getRaceById(id) {
+    return this.races.find(r => r.id === id);
+  }
+
+  getRankings(raceId) {
+    return this.timings
+      .filter(record => record.raceId === raceId)
+      .map(record => {
+        const person = this.getPersonById(record.personId);
+        return {
+          name: person.fullName,
+          category: person.category,
+          totalTime: record.totalTime
+        };
+      })
+      .sort((a, b) => a.totalTime - b.totalTime);
+  }
+}
+
+export class RaceDataModel {}
+
+/*
+// Example: src/components/RaceDashboard.jsx
+import React, { useEffect } from 'react';
+import { RaceManager, Person, RaceEvent, TimingRecord } from '../models/RaceModels';
+
+const manager = new RaceManager();
+
+manager.addPerson(new Person("P001", "Alice", "Dupont", "Pro", "SpeedCorp", "FR123456789"));
+manager.addRace(new RaceEvent("R001", "Hyères Grand Prix", "Hyères", "2025-10-15", 5, 3.2, 2));
+manager.addTimingRecord(new TimingRecord("P001", "R001", [360, 355], [72, 70, 73, 71, 69]));
+
+export default function RaceDashboard() {
+  useEffect(() => {
+    const rankings = manager.getRankings("R001");
+    console.log("Rankings:", rankings);
+  }, []);
+
+  return (
+    <div className="p-4">
+      <h2 className="text-xl font-bold">Race Dashboard</h2>
+      {Render rankings or race data here }
+    </div>
+  );
+}
+*/

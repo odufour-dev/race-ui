@@ -8,12 +8,10 @@ import ExcelReader from './components/ExcelReader/ExcelReader';
 import React from 'react';
 
 function App({ dataModel }) {
-  const { data, setData, addRow, updateRow, deleteRow, setAllData, categoryOptions, serieOptions } = dataModel;
-  const lastUser = data.length > 0 ? data[data.length - 1] : null;
+    
   return (
     <div className="App">
       <h1>Cycling race management</h1>
-      {/*<LastUserInfo lastUser={lastUser} />*/}
       <AppTabs
         dataModel={dataModel}
         tabs={[
