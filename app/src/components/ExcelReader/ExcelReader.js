@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
-const ExcelReader = () => {
+const ExcelReader = ( dataModel ) => {
 
   const [file, setFile] = useState(null);
   const [workbook, setWorkbook] = useState(null);
@@ -75,11 +75,9 @@ const ExcelReader = () => {
       setColumns(nColumns);
 
       const keys = Object.keys(fileContent[irow] || {});
-      const initialMappings = {};
-      keys.forEach((key) => {
-        initialMappings[key] = 'Skip';
-      });
-      setColumnMappings(initialMappings);
+      setColumnMappings(keys.map((k) => 
+        mappingOptions.map(o => o.value).includes(fileContent[irow][k]) ? fileContent[irow][k] : translator('columns.skip')
+      ));
       setColumnNames(keys.map((k) => fileContent[irow][k] || `Column ${k}`));
 
     } else {
@@ -100,11 +98,15 @@ const ExcelReader = () => {
     }));
   };
 
+  const handleImportData = () => {
+    console.log(dataModel, columnMappings, fileContent);
+  };
+
   const columns = useMemo(() => {
     if (fileContent.length === 0) return [];
     
     const allKeys = new Set(
-      fileContent.slice(0, 20).flatMap(row => (typeof row === 'object' && row !== null ? Object.keys(row) : []))
+      fileContent.slice(0, 10).flatMap(row => (typeof row === 'object' && row !== null ? Object.keys(row) : []))
     );
     
     return Array.from(allKeys).map((key) => ({
@@ -141,28 +143,43 @@ const ExcelReader = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Excel File Viewer</h1>
-      
-      <div className="mb-4">
-          <input
-            type="file"
-            accept=".xlsx, .xls"
-            onChange={handleFileChange}
-            className="file-input file-input-bordered w-full max-w-xs"
-          />
-      </div>
+      <div className="p-6 bg-base-200 rounded-lg shadow-md max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-primary">Excel File Viewer</h1>
 
-      <div className="form-control">
-        <label className="label py-0">
-          <span className="label-text text-xs">Header Row</span>
-        </label>
-        <input
-          type="number"
-          value={headerRow}
-          onChange={handleHeaderRowChange}
-          min="1"
-          className="input input-bordered input-sm w-full"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* File Upload */}
+          <div>
+            <label className="label">
+              <span className="label-text">Upload Excel File</span>
+            </label>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={handleFileChange}
+              className="file-input file-input-bordered w-full"
+            />
+          </div>
+
+          {/* Header Row Input */}
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Header Row</span>
+            </label>
+            <input
+              type="number"
+              value={headerRow}
+              onChange={handleHeaderRowChange}
+              min="1"
+              className="input input-bordered w-full"
+            />
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-6 flex justify-end space-x-4">
+          {/*<button className="btn btn-outline btn-primary">Load File</button>*/}
+          <button className="btn btn-primary" onClick={(e)=>handleImportData()}>Import Data</button>
+        </div>
       </div>
 
       {workbook && fileContent.length > 0 && (
@@ -173,7 +190,7 @@ const ExcelReader = () => {
                 {columns.map((col) => (
                   <th key={col.accessorKey} className="bg-white p-2 text-left text-sm font-semibold border border-gray-300">
                     <select
-                      value={columnMappings[col.accessorKey] || 'Skip'}
+                      value={columnMappings[col.accessorKey] || translator('columns.skip')}
                       onChange={(e) => handleMappingChange(col.accessorKey, e.target.value)}
                       className="select select-bordered select-sm w-full"
                     >
@@ -186,7 +203,7 @@ const ExcelReader = () => {
               </tr>
               <tr>
               {columns.map((col, index) => {
-                const isMapped = columnMappings[col.accessorKey] && columnMappings[col.accessorKey] !== 'Skip';
+                const isMapped = columnMappings[col.accessorKey] && columnMappings[col.accessorKey] !== translator('columns.skip');
                 return (
                   <th
                     key={col.accessorKey}
@@ -206,7 +223,7 @@ const ExcelReader = () => {
                 <tr key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => {
                     const key = cell.column.id;
-                    const isMapped = columnMappings[key] && columnMappings[key] !== 'Skip';
+                    const isMapped = columnMappings[key] && columnMappings[key] !== translator('columns.skip');
                     return (
                       <td
                         key={cell.id}

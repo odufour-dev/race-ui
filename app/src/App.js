@@ -12,8 +12,8 @@ function App({ dataModel }) {
   const lastUser = data.length > 0 ? data[data.length - 1] : null;
   return (
     <div className="App">
-      <h1>Tan Stack Table</h1>
-      <LastUserInfo lastUser={lastUser} />
+      <h1>Cycling race management</h1>
+      {/*<LastUserInfo lastUser={lastUser} />*/}
       <AppTabs
         dataModel={dataModel}
         tabs={[
