@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
-const ExcelReader = ( dataModel ) => {
+const ExcelReader = ( {dataModel} ) => {
 
   const [file, setFile] = useState(null);
   const [workbook, setWorkbook] = useState(null);
@@ -17,12 +17,8 @@ const ExcelReader = ( dataModel ) => {
   const { t: translator } = useTranslation('ExcelReader');
 
   const mappingOptions = [
-    { value: translator('columns.skip'), label: translator('columns.skip') },
-    { value: translator('columns.name'), label: translator('columns.name') },
-    { value: translator('columns.firstName'), label: translator('columns.firstName') },
-    { value: translator('columns.uciId'), label: translator('columns.uciId') },
-    { value: translator('columns.club'), label: translator('columns.club') },
-    { value: translator('columns.category'), label: translator('columns.category') },
+    { value: 'skip', label: translator('mapping.skip') },
+    ...dataModel.getFields().map(field =>({ value: field, label: translator(`mapping.${field}`) }))
   ];
 
   // STEP 1: Read the file and create the workbook object ONCE.
@@ -74,11 +70,10 @@ const ExcelReader = ( dataModel ) => {
       }, 0);
       setColumns(nColumns);
 
-      const keys = Object.keys(fileContent[irow] || {});
-      setColumnMappings(keys.map((k) => 
-        mappingOptions.map(o => o.value).includes(fileContent[irow][k]) ? fileContent[irow][k] : translator('columns.skip')
-      ));
-      setColumnNames(keys.map((k) => fileContent[irow][k] || `Column ${k}`));
+      const colnames = Object.keys(fileContent[irow] || {}).map((i) => fileContent[irow][i]);
+      const mapidx = mappingOptions.map((o) => colnames.findIndex((c) => c == o.label));
+      setColumnMappings(mapidx.map((i) => i > -1 ? mappingOptions[i].value : "skip"));
+      setColumnNames(colnames);
 
     } else {
       setColumns(nColumns);
@@ -92,6 +87,7 @@ const ExcelReader = ( dataModel ) => {
   };
 
   const handleMappingChange = (index, mappedValue) => {
+    console.log(index,mappedValue);
     setColumnMappings(prev => ({
       ...prev,
       [index]: mappedValue,
@@ -108,7 +104,7 @@ const ExcelReader = ( dataModel ) => {
     const allKeys = new Set(
       fileContent.slice(0, 10).flatMap(row => (typeof row === 'object' && row !== null ? Object.keys(row) : []))
     );
-    
+
     return Array.from(allKeys).map((key) => ({
       accessorKey: key,
       header: key,
@@ -116,21 +112,9 @@ const ExcelReader = ( dataModel ) => {
     }));
   }, [fileContent]);
 
-  const normalizedData = useMemo(() => {
-  const keys = columns.map(col => col.accessorKey);
-  return fileContent.map(row => {
-      const normalizedRow = {};
-      keys.forEach(key => {
-        normalizedRow[key] = row[key] ?? '';
-      });
-      return normalizedRow;
-    });
-  }, [fileContent, columns]);
-
-  const tableData = useMemo(() => normalizedData, [fileContent]);
   const table = useReactTable({
-    data: tableData,
-    columns,
+    data: fileContent,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -187,11 +171,11 @@ const ExcelReader = ( dataModel ) => {
           <table className="table-auto w-full border-collapse">
             <thead>
               <tr>
-                {columns.map((col) => (
+                {columns.map((col,idx) => (
                   <th key={col.accessorKey} className="bg-white p-2 text-left text-sm font-semibold border border-gray-300">
                     <select
-                      value={columnMappings[col.accessorKey] || translator('columns.skip')}
-                      onChange={(e) => handleMappingChange(col.accessorKey, e.target.value)}
+                      value={columnMappings[idx] || 'skip'}
+                      onChange={(e) => handleMappingChange(idx, e.target.value)}
                       className="select select-bordered select-sm w-full"
                     >
                       {mappingOptions.map(option => (
@@ -203,7 +187,7 @@ const ExcelReader = ( dataModel ) => {
               </tr>
               <tr>
               {columns.map((col, index) => {
-                const isMapped = columnMappings[col.accessorKey] && columnMappings[col.accessorKey] !== translator('columns.skip');
+                const isMapped = columnMappings[index] != 'skip';
                 return (
                   <th
                     key={col.accessorKey}
@@ -221,9 +205,8 @@ const ExcelReader = ( dataModel ) => {
             <tbody>
               {table.getRowModel().rows.map((row) => (
                 <tr key={row.id} className="hover:bg-gray-50">
-                  {row.getVisibleCells().map((cell) => {
-                    const key = cell.column.id;
-                    const isMapped = columnMappings[key] && columnMappings[key] !== translator('columns.skip');
+                  {row.getVisibleCells().map((cell,i) => {
+                    const isMapped = columnMappings[i] != 'skip';
                     return (
                       <td
                         key={cell.id}

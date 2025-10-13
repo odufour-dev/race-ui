@@ -3,10 +3,12 @@
 // 👤 Racer class
 export class Racer {
 
-  constructor(id, firstName, lastName, category, subcategory, club, uciID, ffcID) {
+  constructor(id, firstName, lastName, sex, age, category, subcategory, club, uciID, ffcID) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.sex = sex;
+    this.age = age;
     this.category = category;
     this.subcategory = subcategory;
     this.club = club;
@@ -22,6 +24,7 @@ export class Racer {
 
 // 🏁 RaceEvent class
 export class RaceEvent {
+
   constructor(id, name, location, date, numberOfLaps, lapDistanceKm, numberOfLegs) {
     this.id = id;
     this.name = name;
@@ -72,7 +75,7 @@ class RacerManager {
   }
 
   getFields() {
-    return ['id', 'firstName', 'lastName', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
+    return ['id', 'firstName', 'lastName', 'sex', 'age', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
   }
 
 }
