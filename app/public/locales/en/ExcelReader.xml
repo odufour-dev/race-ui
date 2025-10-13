@@ -11,4 +11,18 @@
     <uciId>UCI ID</uciId>
     <actions>Actions</actions>
   </columns>
+  <mapping>
+    <skip>Skip</skip>
+    <id>ID</id>
+    <lastName>Name</lastName>
+    <firstName>First name</firstName>
+    <sex>Sex</sex>
+    <age>Age</age>
+    <club>Club</club>
+    <category>Category</category>
+    <subcategory>Serie</subcategory>
+    <ffcID>License ID</ffcID>
+    <uciID>UCI ID</uciID>
+    <actions>Actions</actions>
+  </mapping>
 </translation>
