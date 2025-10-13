@@ -1,15 +1,17 @@
 // src/models/RaceModels.js
 
-// 👤 Person class
-export class Person {
+// 👤 Racer class
+export class Racer {
 
-  constructor(id, firstName, lastName, category, company, identificationNumber) {
+  constructor(id, firstName, lastName, category, subcategory, club, uciID, ffcID) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.category = category;
-    this.company = company;
-    this.identificationNumber = identificationNumber;
+    this.subcategory = subcategory;
+    this.club = club;
+    this.uciID = uciID;
+    this.ffcID = ffcID;
   }
 
   get fullName() {
@@ -49,17 +51,43 @@ export class TimingRecord {
   }
 }
 
+class RacerManager {
+
+  constructor() {
+    this.racers = [];
+  }
+
+  add(data) {
+    const racer = new Racer(
+      data.id,
+      data.firstName,
+      data.lastName,
+      data.category,
+      data.subcategory,
+      data.club,
+      data.uciID,
+      data.ffcID
+    );
+    this.racers.push(racer);
+  }
+
+  getFields() {
+    return ['id', 'firstName', 'lastName', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
+  }
+
+}
+
 // 🧠 RaceManager class
 export class RaceManager {
 
   constructor() {
-    this.people = [];
+    this.racers = [];
     this.races = [];
     this.timings = [];
   }
 
-  addPerson(person) {
-    this.people.push(person);
+  addPerson(racer) {
+    this.racers.push(racer);
   }
 
   addRace(race) {
@@ -93,7 +121,15 @@ export class RaceManager {
   }
 }
 
-export class RaceDataModel {}
+export class RaceDataModel {
+
+  constructor() {
+    this.racers = new RacerManager();
+  }
+
+  getRacerManager() {return this.racers;}
+
+}
 
 /*
 // Example: src/components/RaceDashboard.jsx
