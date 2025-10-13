@@ -51,7 +51,7 @@ const ExcelReader = ( {dataModel} ) => {
     try {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
-      const sheetData = XLSX.utils.sheet_to_json(worksheet);
+      const sheetData = XLSX.utils.sheet_to_json(worksheet, {defval:""});
       setFileContent(sheetData);
     } catch (error) {
       console.error("Error parsing sheet:", error);
@@ -87,7 +87,6 @@ const ExcelReader = ( {dataModel} ) => {
   };
 
   const handleMappingChange = (index, mappedValue) => {
-    console.log(index,mappedValue);
     setColumnMappings(prev => ({
       ...prev,
       [index]: mappedValue,
@@ -95,7 +94,19 @@ const ExcelReader = ( {dataModel} ) => {
   };
 
   const handleImportData = () => {
-    console.log(dataModel, columnMappings, fileContent);
+
+    dataModel.clear();
+    fileContent.slice(headerRow).map((row) => {
+      const keys = Object.keys(row);
+      var data = {};
+      keys.map((v,i) => {
+        if (columnMappings[i] && columnMappings[i] != 'skip'){        
+          data[columnMappings[i]] = row[v];
+        }
+      });
+      dataModel.add(data);
+    });
+
   };
 
   const columns = useMemo(() => {

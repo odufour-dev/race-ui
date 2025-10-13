@@ -3,17 +3,17 @@
 // 👤 Racer class
 export class Racer {
 
-  constructor(id, firstName, lastName, sex, age, category, subcategory, club, uciID, ffcID) {
-    this.id = id;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.sex = sex;
-    this.age = age;
-    this.category = category;
-    this.subcategory = subcategory;
-    this.club = club;
-    this.uciID = uciID;
-    this.ffcID = ffcID;
+  constructor() {
+    this.id           = "";
+    this.firstName    = "";
+    this.lastName     = "";
+    this.sex          = "";
+    this.age          = "";
+    this.category     = "";
+    this.subcategory  = "";
+    this.club         = "";
+    this.uciID        = "";
+    this.ffcID        = "";
   }
 
   get fullName() {
@@ -61,17 +61,17 @@ class RacerManager {
   }
 
   add(data) {
-    const racer = new Racer(
-      data.id,
-      data.firstName,
-      data.lastName,
-      data.category,
-      data.subcategory,
-      data.club,
-      data.uciID,
-      data.ffcID
-    );
+    const racer = new Racer();    
+    Object.keys(data).map((k) => {
+      if (k in racer){
+        racer[k] = data[k];
+      }
+    });    
     this.racers.push(racer);
+  }
+
+  clear(){
+    this.racers = [];
   }
 
   getFields() {
