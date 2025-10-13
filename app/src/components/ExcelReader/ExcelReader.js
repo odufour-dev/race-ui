@@ -70,8 +70,8 @@ const ExcelReader = ( {dataModel} ) => {
       }, 0);
       setColumns(nColumns);
 
-      const colnames = Object.keys(fileContent[irow] || {}).map((i) => fileContent[irow][i]);
-      const mapidx = mappingOptions.map((o) => colnames.findIndex((c) => c == o.label));
+      const colnames = Object.keys(fileContent[irow] || {}).map((i) => fileContent[irow][i]);      
+      const mapidx = colnames.map((c) => mappingOptions.findIndex((o) => c == o.label));
       setColumnMappings(mapidx.map((i) => i > -1 ? mappingOptions[i].value : "skip"));
       setColumnNames(colnames);
 
