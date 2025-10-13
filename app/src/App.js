@@ -9,16 +9,20 @@ import React from 'react';
 
 function App({ dataModel }) {
     
+  const racermanager = dataModel.getRacerManager();
+  console.log("RacerManager class:", racermanager.constructor.name);
+
   return (
     <div className="App">
       <h1>Cycling race management</h1>
+      
       <AppTabs
         dataModel={dataModel}
         tabs={[
           {
             name: 'import',
             label: 'Import',
-            component: (props) => <ExcelReader {...props} dataModel={dataModel} />,
+            component: (props) => <ExcelReader {...props} dataModel={racermanager} />,
           },
           {
             name: 'table',
