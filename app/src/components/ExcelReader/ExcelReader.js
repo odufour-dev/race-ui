@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as XLSX from 'xlsx';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
-const ExcelReader = ( {dataModel} ) => {
+const ExcelReader = ( {dataModel, updateData} ) => {
 
   const [file, setFile] = useState(null);
   const [workbook, setWorkbook] = useState(null);
@@ -106,6 +106,7 @@ const ExcelReader = ( {dataModel} ) => {
       });
       dataModel.add(data);
     });
+    updateData();
 
   };
 

@@ -1,28 +1,29 @@
 import './App.css';
+
+import React, { useContext } from 'react';
+
+import { RaceModelContext } from './models/RaceModel/RaceModel';
 import AppTabs from './components/AppTabs/AppTabs';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import LapByLap from './components/LapByLap/LapByLap';
 import LastUserInfo from './components/LastUserInfo/LastUserInfo';
 import ExcelReader from './components/ExcelReader/ExcelReader';
 
-import React from 'react';
+function App({ dataModel, updateModel }) {
 
-function App({ dataModel }) {
+  const { raceModel, forceUpdate } = useContext(RaceModelContext);
     
-  const racermanager = dataModel.getRacerManager();
-  console.log("RacerManager class:", racermanager.constructor.name);
-
   return (
     <div className="App">
       <h1>Cycling race management</h1>
-      
+      <LastUserInfo dataModel={raceModel} />      
       <AppTabs
-        dataModel={dataModel}
+        dataModel={raceModel}
         tabs={[
           {
             name: 'import',
             label: 'Import',
-            component: (props) => <ExcelReader {...props} dataModel={racermanager} />,
+            component: (props) => <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={() => forceUpdate()} />,
           },
           {
             name: 'table',
@@ -30,14 +31,14 @@ function App({ dataModel }) {
             component: (props) => (
               <RegistrationTable
                 {...props}
-                dataModel={dataModel}
+                dataModel={raceModel}
               />
             ),
           },
           {
             name: 'input',
             label: 'Lap-by-Lap',
-            component: (props) => <LapByLap {...props} dataModel={dataModel} />,
+            component: (props) => <LapByLap {...props} dataModel={raceModel} />,
           },
         ]}
       />

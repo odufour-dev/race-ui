@@ -1,4 +1,5 @@
 // src/models/RaceModels.js
+import React, { createContext, useState } from 'react';
 
 // 👤 Racer class
 export class Racer {
@@ -77,6 +78,9 @@ class RacerManager {
   getFields() {
     return ['id', 'firstName', 'lastName', 'sex', 'age', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
   }
+  get length() {
+    return this.racers.length;
+  }
 
 }
 
@@ -124,38 +128,30 @@ export class RaceManager {
   }
 }
 
-export class RaceDataModel {
+export class RaceModel {
 
   constructor() {
-    this.racers = new RacerManager();
+    this.racers_ = new RacerManager();
   }
 
-  getRacerManager() {return this.racers;}
+  getRacerManager() {
+    return this.racers_;
+  }
 
-}
+};
 
-/*
-// Example: src/components/RaceDashboard.jsx
-import React, { useEffect } from 'react';
-import { RaceManager, Person, RaceEvent, TimingRecord } from '../models/RaceModels';
+export const RaceModelContext = createContext();
+export const RaceModelProvider = ({ children }) => {
+  const [raceModel, setRaceModel] = useState(new RaceModel());
 
-const manager = new RaceManager();
-
-manager.addPerson(new Person("P001", "Alice", "Dupont", "Pro", "SpeedCorp", "FR123456789"));
-manager.addRace(new RaceEvent("R001", "Hyères Grand Prix", "Hyères", "2025-10-15", 5, 3.2, 2));
-manager.addTimingRecord(new TimingRecord("P001", "R001", [360, 355], [72, 70, 73, 71, 69]));
-
-export default function RaceDashboard() {
-  useEffect(() => {
-    const rankings = manager.getRankings("R001");
-    console.log("Rankings:", rankings);
-  }, []);
+  // Pour forcer le re-render après mutation
+  const forceUpdate = () => {
+    setRaceModel(Object.assign(new RaceModel(), raceModel));
+  };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold">Race Dashboard</h2>
-      {Render rankings or race data here }
-    </div>
+    <RaceModelContext.Provider value={{ raceModel, forceUpdate }}>
+      {children}
+    </RaceModelContext.Provider>
   );
-}
-*/
+};

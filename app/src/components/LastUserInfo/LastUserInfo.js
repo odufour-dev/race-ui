@@ -1,14 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './LastUserInfo.css';
 
-function LastUserInfo({ lastUser }) {
+function LastUserInfo({ dataModel }) {
+  const { t: translator } = useTranslation('ExcelReader');
+  const racermanager = dataModel.getRacerManager();
   return (
   <div className="last-user-info">
-      {lastUser ? (
-        <span>Dernier utilisateur : {lastUser.firstName} {lastUser.lastName}</span>
-      ) : (
-        <span>Aucun utilisateur</span>
-      )}
+      <span>{translator('nb_racer')} : {racermanager.length}</span>
     </div>
   );
 }
