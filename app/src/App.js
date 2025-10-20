@@ -1,36 +1,44 @@
 import './App.css';
+
+import React, { useContext } from 'react';
+
+import { RaceModelContext } from './models/RaceModel/RaceModel';
 import AppTabs from './components/AppTabs/AppTabs';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import LapByLap from './components/LapByLap/LapByLap';
-import LastUserInfo from './components/LastUserInfo/LastUserInfo';
+import InformationBanner
+ from './components/InformationBanner/InformationBanner';
+import ExcelReader from './components/ExcelReader/ExcelReader';
 
+function App({ dataModel, updateModel }) {
 
-import React from 'react';
-
-function App({ dataModel }) {
-  const { data, setData, addRow, updateRow, deleteRow, setAllData, categoryOptions, serieOptions } = dataModel;
-  const lastUser = data.length > 0 ? data[data.length - 1] : null;
+  const { raceModel, forceUpdate } = useContext(RaceModelContext);
+    
   return (
-    <div className="App">
-      <h1>Tan Stack Table</h1>
-      <LastUserInfo lastUser={lastUser} />
+    <div className="App">      
+      <InformationBanner dataModel={raceModel} />      
       <AppTabs
-        dataModel={dataModel}
+        dataModel={raceModel}
         tabs={[
+          {
+            name: 'import',
+            label: 'Import',
+            component: (props) => <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={() => forceUpdate()} />,
+          },
           {
             name: 'table',
             label: 'Registration',
             component: (props) => (
               <RegistrationTable
                 {...props}
-                dataModel={dataModel}
+                dataModel={raceModel}
               />
             ),
           },
           {
             name: 'input',
             label: 'Lap-by-Lap',
-            component: (props) => <LapByLap {...props} dataModel={dataModel} />,
+            component: (props) => <LapByLap {...props} dataModel={raceModel} />,
           },
         ]}
       />

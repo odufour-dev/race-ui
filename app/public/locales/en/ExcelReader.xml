@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<translation>
+  <columns>
+    <skip>Skip</skip>
+    <name>Name</name>
+    <firstName>First name</firstName>
+    <club>Club</club>
+    <category>Category</category>
+    <serie>Serie</serie>
+    <licenseId>License ID</licenseId>
+    <uciId>UCI ID</uciId>
+    <actions>Actions</actions>
+  </columns>
+  <mapping>
+    <skip>Skip</skip>
+    <id>ID</id>
+    <lastName>Name</lastName>
+    <firstName>First name</firstName>
+    <sex>Sex</sex>
+    <age>Age</age>
+    <club>Club</club>
+    <category>Category</category>
+    <subcategory>Serie</subcategory>
+    <ffcID>License ID</ffcID>
+    <uciID>UCI ID</uciID>
+    <actions>Actions</actions>
+  </mapping>
+</translation>

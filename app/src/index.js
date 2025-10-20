@@ -2,17 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import i18n from './i18n/i18n';
+
+import { RaceModelProvider } from './models/RaceModel/RaceModel';
 import App from './App';
-import AppDataModel from './components/AppDataModel/AppDataModel';
+
 import reportWebVitals from './reportWebVitals';
 
-i18n.changeLanguage('fr'); 
+i18n.changeLanguage('fr');
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AppDataModel>
-      {dataModel => <App dataModel={dataModel} />}
-    </AppDataModel>
+      <RaceModelProvider>
+        <App />
+      </RaceModelProvider>    
   </React.StrictMode>
 );
 
