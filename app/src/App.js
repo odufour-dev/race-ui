@@ -6,7 +6,8 @@ import { RaceModelContext } from './models/RaceModel/RaceModel';
 import AppTabs from './components/AppTabs/AppTabs';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import LapByLap from './components/LapByLap/LapByLap';
-import LastUserInfo from './components/LastUserInfo/LastUserInfo';
+import InformationBanner
+ from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
 
 function App({ dataModel, updateModel }) {
@@ -14,9 +15,8 @@ function App({ dataModel, updateModel }) {
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
     
   return (
-    <div className="App">
-      <h1>Cycling race management</h1>
-      <LastUserInfo dataModel={raceModel} />      
+    <div className="App">      
+      <InformationBanner dataModel={raceModel} />      
       <AppTabs
         dataModel={raceModel}
         tabs={[

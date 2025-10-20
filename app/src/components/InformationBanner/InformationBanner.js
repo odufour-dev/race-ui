@@ -7,9 +7,10 @@ function InformationBanner({ dataModel }) {
   const racermanager = dataModel.getRacerManager();
   return (
   <div className="information-banner">
+      <h1>{translator('title')}</h1>
       <span>{translator('nb_racer')} : {racermanager.length}</span>
     </div>
   );
-}ExcelReader
+}
 
 export default InformationBanner;
