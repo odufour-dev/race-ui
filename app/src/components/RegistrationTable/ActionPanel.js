@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import PDFExport from '../PDFExport/PDFExport';
 
-function ActionPanel({ onGenerateBibs, onApplyAge, onShuffle, onExportPDF }) {
+function ActionPanel({ data,columnDefs,onGenerateBibs, onApplyAge, onShuffle }) {
   const [ageValue, setAgeValue] = useState('');
 
   return (
@@ -17,7 +18,7 @@ function ActionPanel({ onGenerateBibs, onApplyAge, onShuffle, onExportPDF }) {
         <button className="btn btn-sm" onClick={() => { onApplyAge(Number(ageValue)); setAgeValue(''); }}>Apply Age</button>
       </div>
       <button className="btn btn-sm" onClick={onShuffle}>Shuffle Order</button>
-      <button className="btn btn-sm" onClick={onExportPDF}>Export PDF</button>
+      <PDFExport data={data} columnDefs={columnDefs} title="Registration" />
     </div>
   );
 }

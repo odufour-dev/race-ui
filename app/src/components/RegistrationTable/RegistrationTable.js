@@ -4,13 +4,12 @@ import './RegistrationTable.css';
 import DropdownEditor from './DropdownEditor';
 import TextEditor from './TextEditor';
 import ActionPanel from './ActionPanel';
-import PDFExport from '../PDFExport/PDFExport';
 
 function RegistrationTable({ dataModel, classificationModel, updateModel }) {
 
   const { t: translator } = useTranslation('RegistrationTable');
   const [data, setData] = useState(dataModel.getAllRacers().map(racer => ({
-    bib:        racer.bib,
+    id:         racer.id,
     lastName:   racer.lastName,
     firstName:  racer.firstName,
     sex:        racer.sex,
@@ -26,7 +25,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
   const [sortBy, setSortBy] = useState({ columnKey: null, direction: null });
 
   const columnDefs = [
-    { accessorKey: 'bib',       header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'id',        header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
     { accessorKey: 'lastName',  header: translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'medium' },
     { accessorKey: 'firstName', header: translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
     { accessorKey: 'sex',       header: translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Sex, size: 'small' },
@@ -159,8 +158,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
               </div>
             </div>
             <div className="panel-center">
-              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} />
-              <PDFExport data={data} columnDefs={columnDefs} title={translator('registration.title')} />
+              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={data} columnDefs={columnDefs} />              
             </div>
             <div className="panel-right">
               <button className="btn btn-primary add-user-btn" onClick={() => {
