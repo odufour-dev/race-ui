@@ -2,22 +2,34 @@ import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './RegistrationTable.css';
 
-function RegistrationTable({ dataModel }) {
-  const { data, setData, categoryOptions, serieOptions } = dataModel;
+function RegistrationTable({ dataModel, classificationModel, updateModel }) {
+
   const { t: translator } = useTranslation('RegistrationTable');
+  const [data, setData] = useState(dataModel.getAllRacers().map(racer => ({
+    bib:        racer.bib,
+    lastName:   racer.lastName,
+    firstName:  racer.firstName,
+    sex:        racer.sex,
+    club:       racer.club,
+    category:   racer.category,
+    age:        racer.age,
+    licenseId:  racer.ffcID,
+    uciId:      racer.uciID
+  })));
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
 
   const columnDefs = [
-    { accessorKey: 'bib', header: translator('columns.bib'), enableSorting: true },
-    { accessorKey: 'lastName', header: translator('columns.name'), enableSorting: true },
-    { accessorKey: 'firstName', header: translator('columns.firstName'), enableSorting: true },
-    { accessorKey: 'club', header: translator('columns.club'), enableSorting: true },
-    { accessorKey: 'category', header: translator('columns.category'), enableSorting: true },
-    { accessorKey: 'serie', header: translator('columns.serie'), enableSorting: true },
-    { accessorKey: 'licenseId', header: translator('columns.licenseId'), enableSorting: true },
-    { accessorKey: 'uciId', header: translator('columns.uciId'), enableSorting: true }
+    { accessorKey: 'bib',       header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'lastName',  header: translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'firstName', header: translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'sex',       header: translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'club',      header: translator('columns.club'),     enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.CATEGORY },
+    { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'licenseId', header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'uciId',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null }
   ];
 
   const columns = useMemo(() =>
@@ -29,8 +41,7 @@ function RegistrationTable({ dataModel }) {
         const isEditing = editingCell && editingCell.rowIndex === rowIndex && editingCell.columnKey === columnKey;
         const colKeys = columnDefs.map(c => c.accessorKey);
         if (isEditing) {
-          if (columnKey === 'category' || columnKey === 'serie') {
-            const options = columnKey === 'category' ? categoryOptions : serieOptions;
+          if (col.allowedValues) {            
             // Flip dropdown for last 3 rows
             const flipDropdown = rowIndex >= (data ? data.length : 0) - 3;
             return (
@@ -63,15 +74,14 @@ function RegistrationTable({ dataModel }) {
                       e.preventDefault();
                     }
                   }}
-                  placeholder={columnKey === 'category' ? translator('columns.category') : translator('columns.serie')}
                 />
                 <ul className="dropdown-list">
-                  {options.map(opt => (
+                  {col.allowedValues.map(opt => (
                     <li
-                      key={opt}
+                      key={opt.value}
                       className="dropdown-list-item"
                       onMouseDown={() => {
-                        setEditValue(opt);
+                        setEditValue(opt.value);
                         setData(prev => prev.map((row, idx) =>
                           idx === rowIndex ? { ...row, [columnKey]: opt } : row
                         ));
@@ -81,9 +91,6 @@ function RegistrationTable({ dataModel }) {
                       {opt}
                     </li>
                   ))}
-                  {options.length === 0 && (
-                    <li className="dropdown-list-empty">{translator('registration.noOption', { defaultValue: '(No option)' })}</li>
-                  )}
                 </ul>
               </div>
             );
@@ -250,16 +257,6 @@ function RegistrationTable({ dataModel }) {
                     
         </div>
       </div>
-      <datalist id="category-options">
-        {categoryOptions.map(opt => (
-          <option key={opt} value={opt} />
-        ))}
-      </datalist>
-      <datalist id="serie-options">
-        {serieOptions.map(opt => (
-          <option key={opt} value={opt} />
-        ))}
-      </datalist>
     </>
   );
 }

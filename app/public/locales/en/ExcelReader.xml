@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <translation>
+  <title>Excel Reader</title>
+  <upload_file>Upload Excel File</upload_file>
+  <header_row>Header Row</header_row>
+  <import_data>Import Data</import_data>
   <columns>
     <skip>Skip</skip>
     <name>Name</name>

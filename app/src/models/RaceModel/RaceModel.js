@@ -1,5 +1,46 @@
 // src/models/RaceModels.js
 import React, { createContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+class Classification {
+
+  constructor(value) {
+    this.value = value;
+  }
+
+  static LEVEL = [
+    new Classification('elite'),
+    new Classification('open'),
+    new Classification('access'),
+  ];
+
+  static CATEGORY = [
+    new Classification('pro'),
+    new Classification('elite'),
+    new Classification('open1'),
+    new Classification('open2'),
+    new Classification('open3'),
+    new Classification('access1'),
+    new Classification('access2'),
+    new Classification('access3'),
+    new Classification('access4'),
+  ];
+
+  static AGE = [
+    new Classification('u19'),
+    new Classification('u17'),
+    new Classification('u15'),
+    new Classification('u13'),
+    new Classification('u11'),
+    new Classification('u9'),
+    new Classification('u7'),
+  ];
+
+  static findByValue(list, value) {
+    return list.find(choice => choice.value === value);
+  }
+
+}
 
 // 👤 Racer class
 export class Racer {
@@ -11,7 +52,6 @@ export class Racer {
     this.sex          = "";
     this.age          = "";
     this.category     = "";
-    this.subcategory  = "";
     this.club         = "";
     this.uciID        = "";
     this.ffcID        = "";
@@ -75,6 +115,10 @@ class RacerManager {
     this.racers = [];
   }
 
+  getAllRacers() {
+    return this.racers;
+  }
+
   getFields() {
     return ['id', 'firstName', 'lastName', 'sex', 'age', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
   }
@@ -132,10 +176,15 @@ export class RaceModel {
 
   constructor() {
     this.racers_ = new RacerManager();
+    this.classifications_ = new Classification();
   }
 
   getRacerManager() {
     return this.racers_;
+  }
+
+  getClassifications(){
+    return this.classifications_;
   }
 
 };

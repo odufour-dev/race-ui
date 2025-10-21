@@ -23,7 +23,12 @@ function App({ dataModel, updateModel }) {
           {
             name: 'import',
             label: 'Import',
-            component: (props) => <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={() => forceUpdate()} />,
+            component: (props) => (
+              <ExcelReader {...props}
+                dataModel={raceModel.getRacerManager()} 
+                updateData={() => forceUpdate()} 
+              />
+            ),
           },
           {
             name: 'table',
@@ -31,15 +36,17 @@ function App({ dataModel, updateModel }) {
             component: (props) => (
               <RegistrationTable
                 {...props}
-                dataModel={raceModel}
+                dataModel={raceModel.getRacerManager()} 
+                classificationModel={raceModel.getClassifications()}
+                updateData={() => forceUpdate()} 
               />
             ),
           },
-          {
+          /*{
             name: 'input',
             label: 'Lap-by-Lap',
             component: (props) => <LapByLap {...props} dataModel={raceModel} />,
-          },
+          },*/
         ]}
       />
     </div>

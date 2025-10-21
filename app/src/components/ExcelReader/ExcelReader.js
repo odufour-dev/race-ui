@@ -140,13 +140,13 @@ const ExcelReader = ( {dataModel, updateData} ) => {
   return (
     <div className="container mx-auto p-4">
       <div className="p-6 bg-base-200 rounded-lg shadow-md max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-primary">Excel File Viewer</h1>
+        <h1 className="text-3xl font-bold mb-6 text-primary">{ translator('title') }</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* File Upload */}
           <div>
             <label className="label">
-              <span className="label-text">Upload Excel File</span>
+              <span className="label-text">{ translator('upload_file') }</span>
             </label>
             <input
               type="file"
@@ -159,7 +159,7 @@ const ExcelReader = ( {dataModel, updateData} ) => {
           {/* Header Row Input */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text">Header Row</span>
+              <span className="label-text">{ translator('header_row') }</span>
             </label>
             <input
               type="number"
@@ -174,7 +174,7 @@ const ExcelReader = ( {dataModel, updateData} ) => {
         {/* Action Buttons */}
         <div className="mt-6 flex justify-end space-x-4">
           {/*<button className="btn btn-outline btn-primary">Load File</button>*/}
-          <button className="btn btn-primary" onClick={(e)=>handleImportData()}>Import Data</button>
+          <button className="btn btn-primary" onClick={(e)=>handleImportData()}>{ translator('import_data') }</button>
         </div>
       </div>
 
