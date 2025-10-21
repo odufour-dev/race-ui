@@ -201,10 +201,13 @@
 /* RegistrationTable.css: Styles for the RegistrationTable component */
 
 .table {
-  width: 100%;
+  /* let the table width be driven by <col> widths; allow overflow on small screens */
+  width: auto;
+  min-width: 100%;
   border-collapse: collapse;
   border-radius: 0.5rem;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* Keep column widths stable when content changes */
@@ -214,29 +217,39 @@
 .table-zebra tbody tr:nth-child(odd) {
   background-color: #f9fafb;
 }
-.table th,
-.table td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  white-space: nowrap; /* prevent wrapping which can change height */
-  overflow: hidden;
-  text-overflow: ellipsis; /* truncate overflowing text */
-}
 
+/* Column size helpers (used by <colgroup>) */
+.col-small { width: 6rem; }
+.col-medium { width: 12rem; }
+.col-large { width: 24rem; }
+.col-actions { width: 4rem; }
+
+/* Responsive adjustments: reduce sizes on smaller viewports */
+@media (max-width: 1024px) {
+  .col-small { width: 5rem; }
+  .col-medium { width: 10rem; }
+  .col-large { width: 18rem; }
+}
+@media (max-width: 640px) {
+  .col-small { width: 4rem; }
+  .col-medium { width: 8rem; }
+  .col-large { width: 14rem; }
+  .col-actions { width: 3rem; }
+}
 .table td {
   /* keep native table-cell display so cells stay in their columns */
   display: table-cell;
   vertical-align: middle;
   padding: 0.75rem 1rem;
 }
-.table th {
-  background-color: #f3f4f6;
-  font-weight: 500;
-  color: #374151;
-}
+.table th,
 .table td {
-  color: #1f2937;
-  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  /* allow normal wrapping so columns keep their cells */
+  white-space: normal;
+  vertical-align: middle;
+  box-sizing: border-box;
 }
 .table tfoot td {
   text-align: center;

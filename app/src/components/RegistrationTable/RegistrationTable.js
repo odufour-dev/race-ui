@@ -25,15 +25,15 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
   const [sortBy, setSortBy] = useState({ columnKey: null, direction: null });
 
   const columnDefs = [
-    { accessorKey: 'bib',       header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null },
-    { accessorKey: 'lastName',  header: translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null },
-    { accessorKey: 'firstName', header: translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null },
-    { accessorKey: 'sex',       header: translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Sex },
-    { accessorKey: 'club',      header: translator('columns.club'),     enableSorting: true,  enableEditing: true, allowedValues: null },
-    { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Category },
-    { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age },
-    { accessorKey: 'licenseId', header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null },
-    { accessorKey: 'uciId',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null }
+    { accessorKey: 'bib',       header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'lastName',  header: translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'medium' },
+    { accessorKey: 'firstName', header: translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'sex',       header: translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Sex, size: 'small' },
+    { accessorKey: 'club',      header: translator('columns.club'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'large' },
+    { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Category, size: 'small' },
+    { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age, size: 'small' },
+    { accessorKey: 'licenseId', header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'uciId',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
   ];
 
   const columns = useMemo(() =>
@@ -184,6 +184,12 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
           </div>
           <div className="table-scroll">
             <table className="table w-full border border-gray-200 rounded-lg bg-white">
+              <colgroup>
+                {columnDefs.map(col => (
+                  <col key={col.accessorKey} className={`col-${col.size ?? 'medium'}`} />
+                ))}
+                <col className="col-actions" />
+              </colgroup>
               <thead className="bg-blue-100">
                 <tr>
                   {columns.map((col, idx) => {
