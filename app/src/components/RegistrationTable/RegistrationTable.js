@@ -26,10 +26,10 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
     { accessorKey: 'bib',       header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null },
     { accessorKey: 'lastName',  header: translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null },
     { accessorKey: 'firstName', header: translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null },
-    { accessorKey: 'sex',       header: translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'sex',       header: translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Sex },
     { accessorKey: 'club',      header: translator('columns.club'),     enableSorting: true,  enableEditing: true, allowedValues: null },
-    { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.CATEGORY },
-    { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: null },
+    { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Category },
+    { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age },
     { accessorKey: 'licenseId', header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null },
     { accessorKey: 'uciId',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null }
   ];

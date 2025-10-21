@@ -10,10 +10,10 @@ import InformationBanner
  from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
 
-function App({ dataModel, updateModel }) {
+function App() {
 
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
-    
+      
   return (
     <div className="App">      
       <InformationBanner dataModel={raceModel} />      

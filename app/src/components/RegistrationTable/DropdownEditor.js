@@ -1,28 +1,36 @@
 import React from 'react';
 
 function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, setEditingCell, setData, propsRowOriginal, colKeys, data }) {
-  // Flip dropdown for last 3 rows
-  const flipDropdown = rowIndex >= (data ? data.length : 0) - 3;
+  // Use native select for category editing. Support options that are strings or objects { value, label }.
+  const options = (col.allowedValues || []).map(opt => {
+    if (opt && typeof opt === 'object') return { value: opt.value ?? opt, label: opt.label ?? String(opt.value ?? opt) };
+    return { value: opt, label: String(opt) };
+  });
+
+  const handleSave = (value) => {
+    setData(prev => prev.map((row, idx) =>
+      idx === rowIndex ? { ...row, [columnKey]: value } : row
+    ));
+    setEditingCell(null);
+  };
+
   return (
-    <div className={`dropdown-container${flipDropdown ? ' dropdown-flip' : ''}`}>
-      <input
-        type="text"
+    <div className="dropdown-container">
+      <select
         className="dropdown-input"
         value={editValue}
         autoFocus
-        onChange={e => setEditValue(e.target.value)}
-        onBlur={() => setTimeout(() => setEditingCell(null), 150)}
+        onChange={e => {
+          const v = e.target.value;
+          setEditValue(v);
+          handleSave(v);
+        }}
         onKeyDown={e => {
           if (e.key === 'Enter') {
-            setData(prev => prev.map((row, idx) =>
-              idx === rowIndex ? { ...row, [columnKey]: editValue } : row
-            ));
-            setEditingCell(null);
+            handleSave(editValue);
             e.preventDefault();
           } else if (e.key === 'Tab') {
-            setData(prev => prev.map((row, idx) =>
-              idx === rowIndex ? { ...row, [columnKey]: editValue } : row
-            ));
+            handleSave(editValue);
             const currentIdx = colKeys.indexOf(columnKey);
             if (currentIdx < colKeys.length - 1) {
               setEditingCell({ rowIndex, columnKey: colKeys[currentIdx + 1] });
@@ -33,24 +41,12 @@ function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, set
             e.preventDefault();
           }
         }}
-      />
-      <ul className="dropdown-list">
-        {col.allowedValues.map(opt => (
-          <li
-            key={opt.value}
-            className="dropdown-list-item"
-            onMouseDown={() => {
-              setEditValue(opt.value);
-              setData(prev => prev.map((row, idx) =>
-                idx === rowIndex ? { ...row, [columnKey]: opt } : row
-              ));
-              setEditingCell(null);
-            }}
-          >
-            {opt}
-          </li>
+        onBlur={() => setEditingCell(null)}
+      >
+        {options.map(opt => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
-      </ul>
+      </select>
     </div>
   );
 }

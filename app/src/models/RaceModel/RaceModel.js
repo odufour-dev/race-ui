@@ -4,40 +4,50 @@ import { useTranslation } from 'react-i18next';
 
 class Classification {
 
-  constructor(value) {
-    this.value = value;
+  get Level(){
+    return [
+      'elite',
+      'open',
+      'access',
+    ];
   }
 
-  static LEVEL = [
-    new Classification('elite'),
-    new Classification('open'),
-    new Classification('access'),
-  ];
+  get Category(){
+    return [
+      '',
+      'pro',
+      'elite',
+      'open1',
+      'open2',
+      'open3',
+      'access1',
+      'access2',
+      'access3',
+      'access4',
+    ];
+  }
 
-  static CATEGORY = [
-    new Classification('pro'),
-    new Classification('elite'),
-    new Classification('open1'),
-    new Classification('open2'),
-    new Classification('open3'),
-    new Classification('access1'),
-    new Classification('access2'),
-    new Classification('access3'),
-    new Classification('access4'),
-  ];
+  get Age(){
+    return [
+      'senior',
+      'master',
+      'veteran',
+      'u23',
+      'u19',
+      'u17',
+      'u15',
+      'u13',
+      'u11',
+      'u9',
+      'u7',
+    ];
+  }
 
-  static AGE = [
-    new Classification('u19'),
-    new Classification('u17'),
-    new Classification('u15'),
-    new Classification('u13'),
-    new Classification('u11'),
-    new Classification('u9'),
-    new Classification('u7'),
-  ];
-
-  static findByValue(list, value) {
-    return list.find(choice => choice.value === value);
+  get Sex(){
+    return [
+      'H',
+      'F',
+    ];
   }
 
 }
