@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function ActionPanel({ onGenerateBibs, onApplyAge, onShuffle }) {
+function ActionPanel({ onGenerateBibs, onApplyAge, onShuffle, onExportPDF }) {
   const [ageValue, setAgeValue] = useState('');
 
   return (
@@ -17,6 +17,7 @@ function ActionPanel({ onGenerateBibs, onApplyAge, onShuffle }) {
         <button className="btn btn-sm" onClick={() => { onApplyAge(Number(ageValue)); setAgeValue(''); }}>Apply Age</button>
       </div>
       <button className="btn btn-sm" onClick={onShuffle}>Shuffle Order</button>
+      <button className="btn btn-sm" onClick={onExportPDF}>Export PDF</button>
     </div>
   );
 }

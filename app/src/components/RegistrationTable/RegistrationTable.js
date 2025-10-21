@@ -122,6 +122,46 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
     });
   };
 
+  const exportPdf = () => {
+    // Build a new HTML document containing the table data without the actions column and with a 'Sign' column
+    const headers = columnDefs.map(c => c.header).concat(['Sign']);
+    const rows = data.map(row => columnDefs.map(c => row[c.accessorKey] ?? '').concat(['']));
+
+    const html = `<!doctype html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Registration Export</title>
+          <style>
+            table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background: #f3f4f6; }
+          </style>
+        </head>
+        <body>
+          <h1>${translator('registration.title')}</h1>
+          <table>
+            <thead>
+              <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `<tr>${r.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        </body>
+      </html>`;
+
+    const win = window.open('', '_blank');
+    if (!win) return;
+    win.document.write(html);
+    win.document.close();
+    // Give browser a moment to render then open print dialog
+    setTimeout(() => {
+      win.focus();
+      win.print();
+    }, 300);
+  };
+
   return (
     <>
       <div className="table-bg">
@@ -157,7 +197,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
               </div>
             </div>
             <div className="panel-center">
-              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} />
+              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} onExportPDF={exportPdf} />
             </div>
             <div className="panel-right">
               <button className="btn btn-primary add-user-btn" onClick={() => {
