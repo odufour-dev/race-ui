@@ -21,6 +21,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
+  const [sortBy, setSortBy] = useState({ columnKey: null, direction: null });
 
   const columnDefs = [
     { accessorKey: 'bib',       header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null },
@@ -87,6 +88,18 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
       )
     : data;
 
+  // Apply sorting if requested
+  const sortedData = React.useMemo(() => {
+    if (!sortBy.columnKey) return filteredData;
+    const sorted = [...filteredData].sort((a, b) => {
+      const va = a[sortBy.columnKey] ?? '';
+      const vb = b[sortBy.columnKey] ?? '';
+      if (typeof va === 'number' && typeof vb === 'number') return va - vb;
+      return String(va).localeCompare(String(vb), undefined, { numeric: true, sensitivity: 'base' });
+    });
+    return sortBy.direction === 'asc' ? sorted : sorted.reverse();
+  }, [filteredData, sortBy]);
+
   return (
     <>
       <div className="table-bg">
@@ -144,45 +157,68 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
             <table className="table w-full border border-gray-200 rounded-lg bg-white">
               <thead className="bg-blue-100">
                 <tr>
-                  {columns.map((col, idx) => (
-                    <th key={col.accessorKey} className="px-4 py-3 text-left font-semibold text-blue-900">
-                      {col.header}
-                    </th>
-                  ))}
+                  {columns.map((col, idx) => {
+                    const isSortable = col.enableSorting;
+                    const isActive = sortBy.columnKey === col.accessorKey;
+                    const arrow = isActive ? (sortBy.direction === 'asc' ? ' ▲' : ' ▼') : '';
+                    return (
+                      <th
+                        key={col.accessorKey}
+                        className={`px-4 py-3 text-left font-semibold text-blue-900 ${isSortable ? 'sortable' : ''}`}
+                        onClick={() => {
+                          if (!isSortable) return;
+                          // toggle sort: null -> asc -> desc -> null
+                          if (sortBy.columnKey !== col.accessorKey) {
+                            setSortBy({ columnKey: col.accessorKey, direction: 'asc' });
+                          } else if (sortBy.direction === 'asc') {
+                            setSortBy({ columnKey: col.accessorKey, direction: 'desc' });
+                          } else {
+                            setSortBy({ columnKey: null, direction: null });
+                          }
+                        }}
+                      >
+                        {col.header}{arrow}
+                      </th>
+                    );
+                  })}
                   <th className="px-4 py-3 text-left font-semibold text-blue-900">{translator('columns.actions')}</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="odd:bg-blue-50 even:bg-white hover:bg-blue-100 transition-colors">
-                    {columns.map((col) => (
-                      <td key={col.accessorKey} className="px-4 py-3 text-base text-gray-900"
-                        onClick={() => {
-                          setEditingCell({ rowIndex, columnKey: col.accessorKey });
-                          setEditValue(row[col.accessorKey] ?? '');
-                        }}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        {col.cell({ row: { index: rowIndex, original: row }, getValue: () => row[col.accessorKey] })}
+                {sortedData.map((row, displayIndex) => {
+                  // find original index in the unsorted data array so edits/deletes target the correct row
+                  const originalIndex = data.indexOf(row);
+                  return (
+                    <tr key={originalIndex} className="odd:bg-blue-50 even:bg-white hover:bg-blue-100 transition-colors">
+                      {columns.map((col) => (
+                        <td key={col.accessorKey} className="px-4 py-3 text-base text-gray-900"
+                          onClick={() => {
+                            setEditingCell({ rowIndex: originalIndex, columnKey: col.accessorKey });
+                            setEditValue(row[col.accessorKey] ?? '');
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {col.cell({ row: { index: originalIndex, original: row }, getValue: () => row[col.accessorKey] })}
+                        </td>
+                      ))}
+                      <td className="px-4 py-3 text-center">
+                        <button
+                          className="hover:bg-gray-200 rounded-full p-1 flex items-center justify-center transition-colors"
+                          title="Supprimer la ligne"
+                          style={{ width: '2rem', height: '2rem' }}
+                          onClick={() => {
+                            setData(prev => prev.filter((_, idx) => idx !== originalIndex));
+                            setEditingCell(null);
+                          }}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
                       </td>
-                    ))}
-                    <td className="px-4 py-3 text-center">
-                      <button
-                        className="hover:bg-gray-200 rounded-full p-1 flex items-center justify-center transition-colors"
-                        title="Supprimer la ligne"
-                        style={{ width: '2rem', height: '2rem' }}
-                        onClick={() => {
-                          setData(prev => prev.filter((_, idx) => idx !== rowIndex));
-                          setEditingCell(null);
-                        }}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                    </tr>
+                  );
+                })}
               </tbody>
               <tfoot>
                 <tr>
