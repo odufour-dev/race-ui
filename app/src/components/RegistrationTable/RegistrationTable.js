@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import './RegistrationTable.css';
 import DropdownEditor from './DropdownEditor';
 import TextEditor from './TextEditor';
+import ActionPanel from './ActionPanel';
 
 function RegistrationTable({ dataModel, classificationModel, updateModel }) {
 
@@ -100,6 +101,27 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
     return sortBy.direction === 'asc' ? sorted : sorted.reverse();
   }, [filteredData, sortBy]);
 
+  // Action handlers for panel
+  const generateBibs = () => {
+    setData(prev => prev.map((row, i) => ({ ...row, bib: i + 1 })));
+  };
+
+  const applyAgeToAll = (age) => {
+    if (!Number.isFinite(age)) return;
+    setData(prev => prev.map(row => ({ ...row, age })));
+  };
+
+  const shuffleOrder = () => {
+    setData(prev => {
+      const arr = [...prev];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    });
+  };
+
   return (
     <>
       <div className="table-bg">
@@ -107,32 +129,38 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
           <h3 className="text-3xl font-bold text-blue-700 mb-8 text-center">
             {translator('registration.title')}
           </h3>
-          {/* Section pour le filtrage global */}
-          <div className="filter-row filter-row-inline">
-            <div className="filter-input-container">
-              <input
-                type="text"
-                className="filter-input"
-                placeholder={translator('registration.filter')}
-                value={globalFilter ?? ''}
-                onChange={e => setGlobalFilter(e.target.value)}
-              />
-              <span className="filter-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9.965 11.023A5.479 5.479 0 1 1 11.023 9.965a.75.75 0 0 1-.977.977ZM5.5 10.5a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </span>
+          {/* Section pour le filtrage global and actions */}
+          <div className="actions-panel">
+            <div className="panel-left">
+              <div className="filter-input-container">
+                <input
+                  type="text"
+                  className="filter-input"
+                  placeholder={translator('registration.filter')}
+                  value={globalFilter ?? ''}
+                  onChange={e => setGlobalFilter(e.target.value)}
+                />
+                <span className="filter-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9.965 11.023A5.479 5.479 0 1 1 11.023 9.965a.75.75 0 0 1-.977.977ZM5.5 10.5a5 5 0 1 0 0-10 5 5 0 0 0 0 10Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
+              </div>
             </div>
-            <button className="btn btn-primary bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-md add-user-btn" onClick={() => {
+            <div className="panel-center">
+              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} />
+            </div>
+            <div className="panel-right">
+              <button className="btn btn-primary add-user-btn" onClick={() => {
               // Find the max Bib value
               const maxBib = data.length > 0 ? Math.max(...data.map(row => Number(row.bib) || 0)) : 0;
               const newRow = {
@@ -148,10 +176,11 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
               setData(prev => [...prev, newRow]);
               setEditingCell({ rowIndex: data.length, columnKey: 'lastName' });
               setEditValue('');
-            }}>
+              }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-              {translator('registration.addUser')}
-            </button>
+                {translator('registration.addUser')}
+              </button>
+            </div>
           </div>
           <div className="table-scroll">
             <table className="table w-full border border-gray-200 rounded-lg bg-white">

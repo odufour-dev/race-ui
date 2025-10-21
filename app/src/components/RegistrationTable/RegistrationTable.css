@@ -73,6 +73,49 @@
   max-width: 20rem;
   width: 100%;
 }
+.actions-panel {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.panel-left {
+  flex: 1 1 40%;
+}
+.panel-center {
+  flex: 1 1 40%;
+  display: flex;
+  justify-content: center;
+}
+.panel-right {
+  flex: 1 1 20%;
+  display: flex;
+  justify-content: flex-end;
+}
+.action-panel .btn {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.action-panel .btn:hover {
+  background: #f3f4f6;
+}
+.btn.btn-primary.add-user-btn {
+  background: linear-gradient(90deg,#2563eb,#1e40af);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(37,99,235,0.18);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.btn.btn-primary.add-user-btn svg {
+  stroke: #fff;
+}
 .filter-input {
   width: 100%;
   padding: 0.5rem 2.5rem 0.5rem 2.5rem;
