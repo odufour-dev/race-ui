@@ -1,6 +1,5 @@
-// src/models/RaceModels.js
+// src/models/RaceModel.js
 import React, { createContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 class Classification {
 

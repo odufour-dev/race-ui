@@ -5,9 +5,7 @@ import React, { useContext } from 'react';
 import { RaceModelContext } from './models/RaceModel/RaceModel';
 import AppTabs from './components/AppTabs/AppTabs';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
-import LapByLap from './components/LapByLap/LapByLap';
-import InformationBanner
- from './components/InformationBanner/InformationBanner';
+import InformationBanner from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
 
 function App() {
