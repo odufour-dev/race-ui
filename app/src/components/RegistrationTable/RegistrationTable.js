@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './RegistrationTable.css';
+import DropdownEditor from './DropdownEditor';
+import TextEditor from './TextEditor';
 
 function RegistrationTable({ dataModel, classificationModel, updateModel }) {
 
@@ -41,90 +43,32 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
         const isEditing = editingCell && editingCell.rowIndex === rowIndex && editingCell.columnKey === columnKey;
         const colKeys = columnDefs.map(c => c.accessorKey);
         if (isEditing) {
-          if (col.allowedValues) {            
-            // Flip dropdown for last 3 rows
-            const flipDropdown = rowIndex >= (data ? data.length : 0) - 3;
+          if (col.allowedValues) {
             return (
-              <div className={`dropdown-container${flipDropdown ? ' dropdown-flip' : ''}`}>
-                <input
-                  type="text"
-                  className="dropdown-input"
-                  value={editValue}
-                  autoFocus
-                  onChange={e => setEditValue(e.target.value)}
-                  onBlur={() => setTimeout(() => setEditingCell(null), 150)}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter') {
-                      setData(prev => prev.map((row, idx) =>
-                        idx === rowIndex ? { ...row, [columnKey]: editValue } : row
-                      ));
-                      setEditingCell(null);
-                      e.preventDefault();
-                    } else if (e.key === 'Tab') {
-                      setData(prev => prev.map((row, idx) =>
-                        idx === rowIndex ? { ...row, [columnKey]: editValue } : row
-                      ));
-                      const currentIdx = colKeys.indexOf(columnKey);
-                      if (currentIdx < colKeys.length - 1) {
-                        setEditingCell({ rowIndex, columnKey: colKeys[currentIdx + 1] });
-                        setEditValue(props.row.original[colKeys[currentIdx + 1]] ?? '');
-                      } else {
-                        setEditingCell(null);
-                      }
-                      e.preventDefault();
-                    }
-                  }}
-                />
-                <ul className="dropdown-list">
-                  {col.allowedValues.map(opt => (
-                    <li
-                      key={opt.value}
-                      className="dropdown-list-item"
-                      onMouseDown={() => {
-                        setEditValue(opt.value);
-                        setData(prev => prev.map((row, idx) =>
-                          idx === rowIndex ? { ...row, [columnKey]: opt } : row
-                        ));
-                        setEditingCell(null);
-                      }}
-                    >
-                      {opt}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <DropdownEditor
+                rowIndex={rowIndex}
+                columnKey={columnKey}
+                col={col}
+                editValue={editValue}
+                setEditValue={setEditValue}
+                setEditingCell={setEditingCell}
+                setData={setData}
+                propsRowOriginal={props.row.original}
+                colKeys={colKeys}
+                data={data}
+              />
             );
           } else {
-            // Editable input for all other cells
             return (
-              <input
-                type="text"
-                className="editable-input"
-                value={editValue}
-                autoFocus
-                onChange={e => setEditValue(e.target.value)}
-                onBlur={() => setEditingCell(null)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    setData(prev => prev.map((row, idx) =>
-                      idx === rowIndex ? { ...row, [columnKey]: editValue } : row
-                    ));
-                    setEditingCell(null);
-                    e.preventDefault();
-                  } else if (e.key === 'Tab') {
-                    setData(prev => prev.map((row, idx) =>
-                      idx === rowIndex ? { ...row, [columnKey]: editValue } : row
-                    ));
-                    const currentIdx = colKeys.indexOf(columnKey);
-                    if (currentIdx < colKeys.length - 1) {
-                      setEditingCell({ rowIndex, columnKey: colKeys[currentIdx + 1] });
-                      setEditValue(props.row.original[colKeys[currentIdx + 1]] ?? '');
-                    } else {
-                      setEditingCell(null);
-                    }
-                    e.preventDefault();
-                  }
-                }}
+              <TextEditor
+                rowIndex={rowIndex}
+                columnKey={columnKey}
+                editValue={editValue}
+                setEditValue={setEditValue}
+                setEditingCell={setEditingCell}
+                setData={setData}
+                propsRowOriginal={props.row.original}
+                colKeys={colKeys}
               />
             );
           }

@@ -5,14 +5,13 @@ import i18n from 'i18next';
 import RegistrationTable from './RegistrationTable';
 
 const mockDataModel = {
-  data: [],
-  setData: jest.fn(),
-  addRow: jest.fn(),
-  updateRow: jest.fn(),
-  deleteRow: jest.fn(),
-  setAllData: jest.fn(),
-  categoryOptions: [],
-  serieOptions: [],
+  getAllRacers: () => [
+    { bib: '1', lastName: 'Doe', firstName: 'John', sex: 'M', club: 'AC', category: 'A', age: 30, ffcID: 'L1', uciID: 'U1' }
+  ],
+};
+
+const mockClassificationModel = {
+  CATEGORY: ['A', 'B', 'C']
 };
 
 // Create a test i18n instance with in-memory resources
@@ -43,7 +42,7 @@ describe('RegistrationTable', () => {
   it('renders table title', () => {
     render(
       <I18nextProvider i18n={testI18n}>
-        <RegistrationTable dataModel={mockDataModel} />
+  <RegistrationTable dataModel={mockDataModel} classificationModel={mockClassificationModel} />
       </I18nextProvider>
     );
     expect(screen.getByText('Registration')).toBeInTheDocument();
