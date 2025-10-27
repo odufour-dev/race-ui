@@ -12,7 +12,14 @@ function TextEditor({ rowIndex, columnKey, editValue, setEditValue, setEditingCe
       onKeyDown={e => {
         if (e.key === 'Enter') {
           setData(prev => prev.map((row, idx) =>
-            idx === rowIndex ? { ...row, [columnKey]: editValue } : row
+          {
+            if (idx === rowIndex){
+                console.log(row);
+                return { ...row, [columnKey]: editValue };
+            } else {
+                return row;
+            }
+        }
           ));
           setEditingCell(null);
           e.preventDefault();

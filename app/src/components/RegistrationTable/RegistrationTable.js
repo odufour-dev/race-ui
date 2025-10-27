@@ -5,20 +5,10 @@ import DropdownEditor from './DropdownEditor';
 import TextEditor from './TextEditor';
 import ActionPanel from './ActionPanel';
 
-function RegistrationTable({ dataModel, classificationModel, updateModel }) {
+function RegistrationTable({ dataModel, classificationModel, updateData }) {
 
   const { t: translator } = useTranslation('RegistrationTable');
-  const [data, setData] = useState(dataModel.getAllRacers().map(racer => ({
-    id:         racer.id,
-    lastName:   racer.lastName,
-    firstName:  racer.firstName,
-    sex:        racer.sex,
-    club:       racer.club,
-    category:   racer.category,
-    age:        racer.age,
-    licenseId:  racer.ffcID,
-    uciId:      racer.uciID
-  })));
+  const [data, setData] = useState(dataModel.getAllRacers());
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
@@ -54,7 +44,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
                 editValue={editValue}
                 setEditValue={setEditValue}
                 setEditingCell={setEditingCell}
-                setData={setData}
+                setData={(p) => {setData(p); updateData();}}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
                 data={data}
@@ -68,7 +58,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
                 editValue={editValue}
                 setEditValue={setEditValue}
                 setEditingCell={setEditingCell}
-                setData={setData}
+                setData={(p) => {setData(p); updateData();}}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
               />
@@ -103,7 +93,8 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
 
   // Action handlers for panel
   const generateBibs = () => {
-    setData(prev => prev.map((row, i) => ({ ...row, bib: i + 1 })));
+    setData(prev => prev.map((row, i) => ({ ...row, id: i + 1 })));
+    updateData();
   };
 
   const applyAgeToAll = (age) => {
@@ -175,6 +166,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
                 uciId: ''
               };
               setData(prev => [...prev, newRow]);
+              updateData()
               setEditingCell({ rowIndex: data.length, columnKey: 'lastName' });
               setEditValue('');
               }}>
@@ -244,6 +236,7 @@ function RegistrationTable({ dataModel, classificationModel, updateModel }) {
                           style={{ width: '2rem', height: '2rem' }}
                           onClick={() => {
                             setData(prev => prev.filter((_, idx) => idx !== originalIndex));
+                            updateData();
                             setEditingCell(null);
                           }}
                         >
