@@ -106,8 +106,8 @@ export class TimingRecord {
 
 class RacerManager {
 
-  constructor() {
-    this.racers = [];
+  constructor(racers = []) {
+    this.racers = racers;
   }
 
   add(data) {
@@ -118,19 +118,27 @@ class RacerManager {
       }
     });    
     this.racers.push(racer);
+    return new RacerManager(this.racers);
   }
 
   clear(){
     this.racers = [];
   }
 
-  getAllRacers() {
+  getAll() {
     return this.racers;
   }
 
   getFields() {
     return ['id', 'firstName', 'lastName', 'sex', 'age', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
   }
+  editRacer(index, field, newValue) {
+    if (index < 0 || index >= this.racers.length) return;
+    if (!(field in this.racers[index])) return;
+    this.racers[index][field] = newValue;
+    return new RacerManager(this.racers);
+  }
+
   get length() {
     return this.racers.length;
   }

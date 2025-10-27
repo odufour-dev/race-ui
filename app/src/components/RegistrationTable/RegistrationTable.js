@@ -8,7 +8,7 @@ import ActionPanel from './ActionPanel';
 function RegistrationTable({ dataModel, classificationModel, updateData }) {
 
   const { t: translator } = useTranslation('RegistrationTable');
-  const [data, setData] = useState(dataModel.getAllRacers());
+  const [data, setData] = useState(dataModel);
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
@@ -25,6 +25,11 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
     { accessorKey: 'licenseId', header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
     { accessorKey: 'uciId',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
   ];
+
+  const customSetter = (rowIndex, columnKey, newValue) => {
+    setData(prev => prev.editRacer(rowIndex, columnKey, newValue));
+    updateData();
+  };
 
   const columns = useMemo(() =>
     columnDefs.map(col => ({
@@ -44,10 +49,10 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
                 editValue={editValue}
                 setEditValue={setEditValue}
                 setEditingCell={setEditingCell}
-                setData={(p) => {setData(p); updateData();}}
+                setData={(value) => customSetter(rowIndex, columnKey, value)}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
-                data={data}
+                data={data.getAll()}
               />
             );
           } else {
@@ -72,12 +77,12 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
 
   // Filter data according to globalFilter (case-insensitive, matches any cell)
   const filteredData = globalFilter
-    ? data.filter(row =>
+    ? data.getAll().filter(row =>
         Object.values(row).some(val =>
           String(val || '').toLowerCase().includes(globalFilter.toLowerCase())
         )
       )
-    : data;
+    : data.getAll();
 
   // Apply sorting if requested
   const sortedData = React.useMemo(() => {
@@ -149,12 +154,12 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
               </div>
             </div>
             <div className="panel-center">
-              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={data} columnDefs={columnDefs} />              
+              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={data.getAll()} columnDefs={columnDefs} />              
             </div>
             <div className="panel-right">
               <button className="btn btn-primary add-user-btn" onClick={() => {
               // Find the max Bib value
-              const maxBib = data.length > 0 ? Math.max(...data.map(row => Number(row.bib) || 0)) : 0;
+              const maxBib = data.getAll().length > 0 ? Math.max(...data.getAll().map(row => Number(row.bib) || 0)) : 0;
               const newRow = {
                 bib: maxBib + 1,
                 lastName: '',
@@ -167,7 +172,7 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
               };
               setData(prev => [...prev, newRow]);
               updateData()
-              setEditingCell({ rowIndex: data.length, columnKey: 'lastName' });
+              setEditingCell({ rowIndex: data.getAll().length, columnKey: 'lastName' });
               setEditValue('');
               }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
@@ -215,7 +220,7 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
               <tbody>
                 {sortedData.map((row, displayIndex) => {
                   // find original index in the unsorted data array so edits/deletes target the correct row
-                  const originalIndex = data.indexOf(row);
+                  const originalIndex = data.getAll().indexOf(row);
                   return (
                     <tr key={originalIndex} className="odd:bg-blue-50 even:bg-white hover:bg-blue-100 transition-colors">
                       {columns.map((col) => (

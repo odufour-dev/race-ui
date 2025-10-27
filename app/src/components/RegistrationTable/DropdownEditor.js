@@ -8,9 +8,7 @@ function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, set
   });
 
   const handleSave = (value) => {
-    setData(prev => prev.map((row, idx) =>
-      idx === rowIndex ? { ...row, [columnKey]: value } : row
-    ));
+    setData(value);
     setEditingCell(null);
   };
 
