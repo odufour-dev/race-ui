@@ -24,7 +24,7 @@ function App() {
             component: (props) => (
               <ExcelReader {...props}
                 dataModel={raceModel.getRacerManager()} 
-                updateData={() => forceUpdate()} 
+                updateData={(racerManager) => raceModel.updateRacerManager(racerManager)} 
               />
             ),
           },
@@ -36,7 +36,7 @@ function App() {
                 {...props}
                 dataModel={raceModel.getRacerManager()} 
                 classificationModel={raceModel.getClassifications()}
-                updateData={() => forceUpdate()} 
+                updateData={(racerManager) => raceModel.updateRacerManager(racerManager)} 
               />
             ),
           },

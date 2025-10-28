@@ -106,8 +106,7 @@ const ExcelReader = ( {dataModel, updateData} ) => {
       });
       dataModel.add(data);
     });
-    updateData();
-
+    updateData(dataModel);
   };
 
   const columns = useMemo(() => {

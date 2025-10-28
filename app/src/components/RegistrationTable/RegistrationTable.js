@@ -5,10 +5,10 @@ import DropdownEditor from './DropdownEditor';
 import TextEditor from './TextEditor';
 import ActionPanel from './ActionPanel';
 
-function RegistrationTable({ dataModel, classificationModel, updateData }) {
+function RegistrationTable({ dataModel, classificationModel, setData }) {
 
   const { t: translator } = useTranslation('RegistrationTable');
-  const [data, setData] = useState(dataModel);
+  //const [data, setData] = useState(dataModel);
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
@@ -22,13 +22,12 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
     { accessorKey: 'club',      header: translator('columns.club'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'large' },
     { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Category, size: 'small' },
     { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age, size: 'small' },
-    { accessorKey: 'licenseId', header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'ffcID',     header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
     { accessorKey: 'uciId',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
   ];
 
   const customSetter = (rowIndex, columnKey, newValue) => {
-    setData(prev => prev.editRacer(rowIndex, columnKey, newValue));
-    updateData();
+
   };
 
   const columns = useMemo(() =>
@@ -52,7 +51,7 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
                 setData={(value) => customSetter(rowIndex, columnKey, value)}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
-                data={data.getAll()}
+                data={dataModel.getAll()}
               />
             );
           } else {
@@ -63,7 +62,7 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
                 editValue={editValue}
                 setEditValue={setEditValue}
                 setEditingCell={setEditingCell}
-                setData={(p) => {setData(p); updateData();}}
+                setData={setData}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
               />
@@ -77,12 +76,12 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
 
   // Filter data according to globalFilter (case-insensitive, matches any cell)
   const filteredData = globalFilter
-    ? data.getAll().filter(row =>
+    ? dataModel.getAll().filter(row =>
         Object.values(row).some(val =>
           String(val || '').toLowerCase().includes(globalFilter.toLowerCase())
         )
       )
-    : data.getAll();
+    : dataModel.getAll();
 
   // Apply sorting if requested
   const sortedData = React.useMemo(() => {
@@ -99,7 +98,7 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
   // Action handlers for panel
   const generateBibs = () => {
     setData(prev => prev.map((row, i) => ({ ...row, id: i + 1 })));
-    updateData();
+    //updateData();
   };
 
   const applyAgeToAll = (age) => {
@@ -154,12 +153,12 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
               </div>
             </div>
             <div className="panel-center">
-              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={data.getAll()} columnDefs={columnDefs} />              
+              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={dataModel.getAll()} columnDefs={columnDefs} />              
             </div>
             <div className="panel-right">
               <button className="btn btn-primary add-user-btn" onClick={() => {
               // Find the max Bib value
-              const maxBib = data.getAll().length > 0 ? Math.max(...data.getAll().map(row => Number(row.bib) || 0)) : 0;
+              const maxBib = dataModel.getAll().length > 0 ? Math.max(...dataModel.getAll().map(row => Number(row.bib) || 0)) : 0;
               const newRow = {
                 bib: maxBib + 1,
                 lastName: '',
@@ -171,8 +170,7 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
                 uciId: ''
               };
               setData(prev => [...prev, newRow]);
-              updateData()
-              setEditingCell({ rowIndex: data.getAll().length, columnKey: 'lastName' });
+              setEditingCell({ rowIndex: dataModel.getAll().length, columnKey: 'lastName' });
               setEditValue('');
               }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
@@ -220,7 +218,7 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
               <tbody>
                 {sortedData.map((row, displayIndex) => {
                   // find original index in the unsorted data array so edits/deletes target the correct row
-                  const originalIndex = data.getAll().indexOf(row);
+                  const originalIndex = dataModel.getAll().indexOf(row);
                   return (
                     <tr key={originalIndex} className="odd:bg-blue-50 even:bg-white hover:bg-blue-100 transition-colors">
                       {columns.map((col) => (
@@ -241,7 +239,6 @@ function RegistrationTable({ dataModel, classificationModel, updateData }) {
                           style={{ width: '2rem', height: '2rem' }}
                           onClick={() => {
                             setData(prev => prev.filter((_, idx) => idx !== originalIndex));
-                            updateData();
                             setEditingCell(null);
                           }}
                         >

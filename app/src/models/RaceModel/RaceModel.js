@@ -115,6 +115,8 @@ class RacerManager {
     Object.keys(data).map((k) => {
       if (k in racer){
         racer[k] = data[k];
+      } else {
+        console.log("Unknown racer field: ", k);
       }
     });    
     this.racers.push(racer);
@@ -132,13 +134,14 @@ class RacerManager {
   getFields() {
     return ['id', 'firstName', 'lastName', 'sex', 'age', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
   }
+
   editRacer(index, field, newValue) {
     if (index < 0 || index >= this.racers.length) return;
     if (!(field in this.racers[index])) return;
     this.racers[index][field] = newValue;
     return new RacerManager(this.racers);
   }
-
+  
   get length() {
     return this.racers.length;
   }
@@ -191,13 +194,18 @@ export class RaceManager {
 
 export class RaceModel {
 
-  constructor() {
-    this.racers_ = new RacerManager();
-    this.classifications_ = new Classification();
+  constructor(racers = new RacerManager(), classifications = new Classification()) {
+    this.racers_ = racers;
+    this.classifications_ = classifications;
   }
 
   getRacerManager() {
     return this.racers_;
+  }
+
+  updateRacerManager(racerManager) {
+    this.racers_ = racerManager;
+    return new RaceModel(this.racers_, this.classifications_);
   }
 
   getClassifications(){
