@@ -8,7 +8,6 @@ import ActionPanel from './ActionPanel';
 function RegistrationTable({ dataModel, classificationModel, setData }) {
 
   const { t: translator } = useTranslation('RegistrationTable');
-  //const [data, setData] = useState(dataModel);
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
@@ -23,7 +22,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
     { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Category, size: 'small' },
     { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age, size: 'small' },
     { accessorKey: 'ffcID',     header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
-    { accessorKey: 'uciId',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
+    { accessorKey: 'uciID',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
   ];
 
   const customSetter = (rowIndex, columnKey, newValue) => {

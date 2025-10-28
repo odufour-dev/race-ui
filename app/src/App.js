@@ -11,6 +11,11 @@ import ExcelReader from './components/ExcelReader/ExcelReader';
 function App() {
 
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
+
+  const updateRacerManager = (racerManager) => {
+    raceModel.updateRacerManager(racerManager); 
+    forceUpdate();
+  }
       
   return (
     <div className="App">      
@@ -24,7 +29,7 @@ function App() {
             component: (props) => (
               <ExcelReader {...props}
                 dataModel={raceModel.getRacerManager()} 
-                updateData={(racerManager) => raceModel.updateRacerManager(racerManager)} 
+                updateData={updateRacerManager} 
               />
             ),
           },
@@ -36,7 +41,7 @@ function App() {
                 {...props}
                 dataModel={raceModel.getRacerManager()} 
                 classificationModel={raceModel.getClassifications()}
-                updateData={(racerManager) => raceModel.updateRacerManager(racerManager)} 
+                updateData={updateRacerManager} 
               />
             ),
           },
