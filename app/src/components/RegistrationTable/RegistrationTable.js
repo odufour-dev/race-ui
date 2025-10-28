@@ -25,9 +25,20 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
     { accessorKey: 'uciID',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
   ];
 
-  const customSetter = (rowIndex, columnKey, newValue) => {
-
+  const editProperty = (rowIndex, columnKey, newValue) => {
+    dataModel.edit(rowIndex,columnKey,newValue);
+    setData(dataModel);
   };
+
+  const addRacer = () => {
+    dataModel.add([]);
+    setData(dataModel);
+  }
+
+  const removeRacer = (index) => {
+    dataModel.remove(index);
+    setData(dataModel);
+  }
 
   const columns = useMemo(() =>
     columnDefs.map(col => ({
@@ -47,7 +58,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                 editValue={editValue}
                 setEditValue={setEditValue}
                 setEditingCell={setEditingCell}
-                setData={(value) => customSetter(rowIndex, columnKey, value)}
+                setData={(value) => editProperty(rowIndex, columnKey, value)}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
                 data={dataModel.getAll()}
@@ -61,7 +72,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                 editValue={editValue}
                 setEditValue={setEditValue}
                 setEditingCell={setEditingCell}
-                setData={setData}
+                setData={(value) => editProperty(rowIndex, columnKey, value)}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
               />
@@ -96,26 +107,18 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
 
   // Action handlers for panel
   const generateBibs = () => {
-    setData(prev => prev.map((row, i) => ({ ...row, id: i + 1 })));
-    //updateData();
+    dataModel.generateIds();
+    setData(dataModel);
   };
 
   const applyAgeToAll = (age) => {
-    if (!Number.isFinite(age)) return;
-    setData(prev => prev.map(row => ({ ...row, age })));
+    console.log("TODO: apply age to all racers:", age);
   };
 
   const shuffleOrder = () => {
-    setData(prev => {
-      const arr = [...prev];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    });
+    dataModel.shuffleRacers();
+    setData(dataModel);
   };
-
 
   return (
     <>
@@ -156,19 +159,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
             </div>
             <div className="panel-right">
               <button className="btn btn-primary add-user-btn" onClick={() => {
-              // Find the max Bib value
-              const maxBib = dataModel.getAll().length > 0 ? Math.max(...dataModel.getAll().map(row => Number(row.bib) || 0)) : 0;
-              const newRow = {
-                bib: maxBib + 1,
-                lastName: '',
-                firstName: '',
-                club: '',
-                category: '',
-                serie: '',
-                licenseId: '',
-                uciId: ''
-              };
-              setData(prev => [...prev, newRow]);
+              setData(addRacer);
               setEditingCell({ rowIndex: dataModel.getAll().length, columnKey: 'lastName' });
               setEditValue('');
               }}>
@@ -237,7 +228,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                           title="Supprimer la ligne"
                           style={{ width: '2rem', height: '2rem' }}
                           onClick={() => {
-                            setData(prev => prev.filter((_, idx) => idx !== originalIndex));
+                            setData((originalIndex) => removeRacer(originalIndex));
                             setEditingCell(null);
                           }}
                         >

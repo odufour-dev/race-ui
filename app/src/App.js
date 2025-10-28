@@ -41,7 +41,7 @@ function App() {
                 {...props}
                 dataModel={raceModel.getRacerManager()} 
                 classificationModel={raceModel.getClassifications()}
-                updateData={updateRacerManager} 
+                setData={updateRacerManager} 
               />
             ),
           },

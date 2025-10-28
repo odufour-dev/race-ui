@@ -135,10 +135,31 @@ class RacerManager {
     return ['id', 'firstName', 'lastName', 'sex', 'age', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
   }
 
-  editRacer(index, field, newValue) {
+  edit(index, field, newValue) {
     if (index < 0 || index >= this.racers.length) return;
     if (!(field in this.racers[index])) return;
     this.racers[index][field] = newValue;
+    return new RacerManager(this.racers);
+  }
+
+  remove(index){
+    this.racers = this.racers.filter((_,idx) => idx !== index);
+    return new RacerManager(this.racers);
+  }
+
+  generateIds() {
+    this.racers = this.racers.map((racer, index) => {
+      racer.id = index + 1;
+      return racer;
+    });
+    return new RacerManager(this.racers);
+  }
+
+  shuffleRacers() {
+    for (let i = this.racers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.racers[i], this.racers[j]] = [this.racers[j], this.racers[i]];
+    }
     return new RacerManager(this.racers);
   }
   
