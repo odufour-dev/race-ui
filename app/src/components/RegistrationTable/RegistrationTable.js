@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './RegistrationTable.css';
 import DropdownEditor from './DropdownEditor';
@@ -12,6 +12,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
   const [sortBy, setSortBy] = useState({ columnKey: null, direction: null });
+  const [filteredData, setFilteredData] = useState([]);
 
   const columnDefs = [
     { accessorKey: 'id',        header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
@@ -26,18 +27,15 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
   ];
 
   const editProperty = (rowIndex, columnKey, newValue) => {
-    dataModel.edit(rowIndex,columnKey,newValue);
-    setData(dataModel);
+    setData(dataModel.edit(rowIndex,columnKey,newValue));
   };
 
   const addRacer = () => {
-    dataModel.add([]);
-    setData(dataModel);
+    setData(dataModel.add([]));
   }
 
   const removeRacer = (index) => {
-    dataModel.remove(index);
-    setData(dataModel);
+    setData(dataModel.remove(index));
   }
 
   const columns = useMemo(() =>
@@ -61,7 +59,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                 setData={(value) => editProperty(rowIndex, columnKey, value)}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
-                data={dataModel.getAll()}
+                data={filteredData}
               />
             );
           } else {
@@ -84,14 +82,18 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
     })), [editingCell, editValue, setData]
   );
 
-  // Filter data according to globalFilter (case-insensitive, matches any cell)
-  const filteredData = globalFilter
-    ? dataModel.getAll().filter(row =>
+  useEffect(() => {
+    if (globalFilter){
+      setFilteredData(dataModel.getAll().filter(row =>
         Object.values(row).some(val =>
           String(val || '').toLowerCase().includes(globalFilter.toLowerCase())
         )
-      )
-    : dataModel.getAll();
+      ))
+    } else {
+      setFilteredData(dataModel.getAll());
+    }
+    
+  }, [dataModel])
 
   // Apply sorting if requested
   const sortedData = React.useMemo(() => {
@@ -155,12 +157,12 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
               </div>
             </div>
             <div className="panel-center">
-              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={dataModel.getAll()} columnDefs={columnDefs} />              
+              <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={filteredData} columnDefs={columnDefs} />              
             </div>
             <div className="panel-right">
               <button className="btn btn-primary add-user-btn" onClick={() => {
-              setData(addRacer);
-              setEditingCell({ rowIndex: dataModel.getAll().length, columnKey: 'lastName' });
+              addRacer();
+              setEditingCell({ rowIndex: filteredData.length, columnKey: 'lastName' });
               setEditValue('');
               }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
@@ -208,7 +210,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
               <tbody>
                 {sortedData.map((row, displayIndex) => {
                   // find original index in the unsorted data array so edits/deletes target the correct row
-                  const originalIndex = dataModel.getAll().indexOf(row);
+                  const originalIndex = filteredData.indexOf(row);
                   return (
                     <tr key={originalIndex} className="odd:bg-blue-50 even:bg-white hover:bg-blue-100 transition-colors">
                       {columns.map((col) => (

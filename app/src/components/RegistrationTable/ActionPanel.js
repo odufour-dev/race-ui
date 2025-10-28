@@ -18,7 +18,7 @@ function ActionPanel({ data,columnDefs,onGenerateBibs, onApplyAge, onShuffle }) 
         <button className="btn btn-sm" onClick={() => { onApplyAge(Number(ageValue)); setAgeValue(''); }}>Apply Age</button>
       </div>
       <button className="btn btn-sm" onClick={onShuffle}>Shuffle Order</button>
-      <PDFExport data={data.getAll()} columnDefs={columnDefs} title="Registration" />
+      <PDFExport data={data} columnDefs={columnDefs} title="Registration" />
     </div>
   );
 }
