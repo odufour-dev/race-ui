@@ -96,19 +96,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
         if (isEditing) {
           if (col.allowedValues) {
             return (
-              <DropdownEditor
-                rowIndex={rowIndex}
-                columnKey={columnKey}
-                col={col}
-                editValue={editValue}
-                setEditValue={setEditValue}
-                setEditingCell={setEditingCell}
-                  setData={(value) => editProperty(rowIndex, columnKey, value)}
-                  next={next(rowIndex, colIndex)}
-                propsRowOriginal={props.row.original}
-                colKeys={colKeys}
-                data={filteredData}
-              />
+              <DropdownEditor allowedValues={col.allowedValues} value={editValue} setData={(value) => editProperty(rowIndex, columnKey, value)} next={next(rowIndex,colIndex)} />
             );
           } else {
             return (

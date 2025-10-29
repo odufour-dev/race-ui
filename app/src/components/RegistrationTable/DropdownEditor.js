@@ -1,40 +1,29 @@
 import React from 'react';
 
-function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, setEditingCell, setData, propsRowOriginal, colKeys, data, next }) {
+function DropdownEditor({ allowedValues, value, setData, next }) {
   
   // Use native select for category editing. Support options that are strings or objects { value, label }.
-  const options = (col.allowedValues || []).map(opt => {
+  const options = (allowedValues || []).map(opt => {
     if (opt && typeof opt === 'object') return { value: opt.value ?? opt, label: opt.label ?? String(opt.value ?? opt) };
     return { value: opt, label: String(opt) };
   });
-
-  const handleSave = (value) => {
-    setData(value);
-    setEditingCell(null);
-  };
 
   return (
     <div className="dropdown-container">
       <select
         className="dropdown-input"
-        value={editValue}
+        value={value}
         autoFocus
-        onChange={e => {
-          const v = e.target.value;
-          setEditValue(v);
-          handleSave(v);
-        }}
+        onChange={e => setData(e.target.value)}
         onKeyDown={e => {
           if (e.key === 'Enter') {
             // save and move down
-            const v = e.target.value;
-            setData(v);
+            setData(e.target.value);
             if (next && typeof next.down === 'function') next.down();
             e.preventDefault();
           } else if (e.key === 'Tab') {
             // save and move right
-            const v = e.target.value;
-            setData(v);
+            setData(e.target.value);
             if (next && typeof next.right === 'function') next.right();
             e.preventDefault();
           } else if (e.key === 'ArrowDown') {
@@ -45,7 +34,7 @@ function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, set
             const nextIdx = Math.min(options.length - 1, Math.max(0, idx + 1));
             const nextVal = options[nextIdx] && options[nextIdx].value;
             if (typeof nextVal !== 'undefined') {
-              setEditValue(nextVal);
+              setData(nextVal);
             }
           } else if (e.key === 'ArrowUp') {
             // select previous option in the dropdown without closing the editor
@@ -55,11 +44,10 @@ function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, set
             const prevIdx = Math.max(0, idx - 1);
             const prevVal = options[prevIdx] && options[prevIdx].value;
             if (typeof prevVal !== 'undefined') {
-              setEditValue(prevVal);
+              setData(prevVal);
             }
           }
         }}
-        onBlur={() => setEditingCell(null)}
       >
         {options.map(opt => (
           <option key={opt.value} value={opt.value}>{opt.label}</option>
