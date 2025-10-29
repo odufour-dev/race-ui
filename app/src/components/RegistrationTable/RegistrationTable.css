@@ -251,6 +251,11 @@
   vertical-align: middle;
   box-sizing: border-box;
 }
+/*
+.table tfoot tr {
+  height: 60px;
+}
+*/
 .table tfoot td {
   text-align: center;
   color: #6b7280;

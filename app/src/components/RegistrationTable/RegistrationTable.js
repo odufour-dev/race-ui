@@ -160,14 +160,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
               <ActionPanel onGenerateBibs={generateBibs} onApplyAge={applyAgeToAll} onShuffle={shuffleOrder} data={filteredData} columnDefs={columnDefs} />              
             </div>
             <div className="panel-right">
-              <button className="btn btn-primary add-user-btn" onClick={() => {
-              addRacer();
-              setEditingCell({ rowIndex: filteredData.length, columnKey: 'lastName' });
-              setEditValue('');
-              }}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                {translator('registration.addUser')}
-              </button>
+              {/* Add user button moved to table footer */}
             </div>
           </div>
           <div className="table-scroll">
@@ -247,6 +240,18 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                 <tr>
                   <td colSpan={columns.length + 1} className="px-4 py-3 text-center text-blue-700 text-base bg-blue-50">
                     {translator('registration.usersCount', { count: filteredData.length })}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan={columns.length + 1} className="px-4 py-3 text-center bg-white">
+                    <button className="btn btn-primary add-user-btn" onClick={() => {
+                      addRacer();
+                      setEditingCell({ rowIndex: filteredData.length-1, columnKey: 'lastName' });
+                      setEditValue('');
+                    }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                      {translator('registration.addUser')}
+                    </button>
                   </td>
                 </tr>
                 <tr style={{ height: '200px' }}></tr>
