@@ -11,22 +11,11 @@ function TextEditor({ rowIndex, columnKey, editValue, setEditValue, setEditingCe
       onBlur={() => setEditingCell(null)}
       onKeyDown={e => {
         if (e.key === 'Enter') {
-          setData(prev => prev.map((row, idx) =>
-          {
-            if (idx === rowIndex){
-                console.log(row);
-                return { ...row, [columnKey]: editValue };
-            } else {
-                return row;
-            }
-        }
-          ));
+          setData(editValue);
           setEditingCell(null);
           e.preventDefault();
         } else if (e.key === 'Tab') {
-          setData(prev => prev.map((row, idx) =>
-            idx === rowIndex ? { ...row, [columnKey]: editValue } : row
-          ));
+          setData(editValue);
           const currentIdx = colKeys.indexOf(columnKey);
           if (currentIdx < colKeys.length - 1) {
             setEditingCell({ rowIndex, columnKey: colKeys[currentIdx + 1] });

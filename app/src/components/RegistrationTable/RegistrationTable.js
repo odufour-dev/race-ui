@@ -230,7 +230,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                           title="Supprimer la ligne"
                           style={{ width: '2rem', height: '2rem' }}
                           onClick={() => {
-                            setData((originalIndex) => removeRacer(originalIndex));
+                            removeRacer(originalIndex);
                             setEditingCell(null);
                           }}
                         >
