@@ -1,6 +1,6 @@
 import React from 'react';
 
-function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, setEditingCell, setData, propsRowOriginal, colKeys, data }) {
+function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, setEditingCell, setData, propsRowOriginal, colKeys, data, next }) {
   
   // Use native select for category editing. Support options that are strings or objects { value, label }.
   const options = (col.allowedValues || []).map(opt => {
@@ -26,17 +26,16 @@ function DropdownEditor({ rowIndex, columnKey, col, editValue, setEditValue, set
         }}
         onKeyDown={e => {
           if (e.key === 'Enter') {
-            handleSave(e.target.value);
+            // save and move down
+            const v = e.target.value;
+            setData(v);
+            if (next && typeof next.down === 'function') next.down();
             e.preventDefault();
           } else if (e.key === 'Tab') {
-            handleSave(e.target.value);
-            const currentIdx = colKeys.indexOf(columnKey);
-            if (currentIdx < colKeys.length - 1) {
-              setEditingCell({ rowIndex, columnKey: colKeys[currentIdx + 1] });
-              setEditValue(propsRowOriginal[colKeys[currentIdx + 1]] ?? '');
-            } else {
-              setEditingCell(null);
-            }
+            // save and move right
+            const v = e.target.value;
+            setData(v);
+            if (next && typeof next.right === 'function') next.right();
             e.preventDefault();
           } else if (e.key === 'ArrowDown') {
             // select next option in the dropdown without closing the editor

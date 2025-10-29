@@ -14,7 +14,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
   const [sortBy, setSortBy] = useState({ columnKey: null, direction: null });
   const [filteredData, setFilteredData] = useState([]);
 
-  const columnDefs = [
+  const columnDefs = useMemo(() => [
     { accessorKey: 'id',        header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
     { accessorKey: 'lastName',  header: translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'medium' },
     { accessorKey: 'firstName', header: translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
@@ -24,14 +24,61 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
     { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age, size: 'small' },
     { accessorKey: 'ffcID',     header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
     { accessorKey: 'uciID',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
-  ];
+  ], [translator, classificationModel]);
+
+  const next = (rowIndex, columnIndex) => {
+    return {
+      up: () => {
+        if (rowIndex > 0) {
+          setEditingCell({ rowIndex: rowIndex - 1, columnKey: columnDefs[columnIndex].accessorKey });
+          setEditValue(filteredData[rowIndex - 1][columnDefs[columnIndex].accessorKey] ?? '');
+        } else {
+          setEditingCell(null);
+        }
+      },
+      down: () => {
+        // If not on last row, move to the next row in the same column
+        if (rowIndex < filteredData.length - 1) {
+          setEditingCell({ rowIndex: rowIndex + 1, columnKey: columnDefs[columnIndex].accessorKey });
+          setEditValue(filteredData[rowIndex + 1][columnDefs[columnIndex].accessorKey] ?? '');
+        } else {
+          // If on the last row, create a new racer and start editing the new last row's lastName
+          const newIndex = addRacer();
+          setEditingCell({ rowIndex: newIndex, columnKey: 'lastName' });
+          setEditValue('');
+        }
+      },
+      left: () => {
+        if (columnIndex > 0) {
+          setEditingCell({ rowIndex, columnKey: columnDefs[columnIndex - 1].accessorKey });
+          setEditValue(filteredData[rowIndex][columnDefs[columnIndex - 1].accessorKey] ?? '');
+        } else {
+          setEditingCell(null);
+        }
+      },
+      right: () => {
+        if (columnIndex < columnDefs.length - 1) {
+          setEditingCell({ rowIndex, columnKey: columnDefs[columnIndex + 1].accessorKey });
+          setEditValue(filteredData[rowIndex][columnDefs[columnIndex + 1].accessorKey] ?? '');
+        } else {
+          setEditingCell(null);
+        }
+      },
+      none: () => {setEditingCell(null);}}
+  };
 
   const editProperty = (rowIndex, columnKey, newValue) => {
+    setEditValue(newValue);
     setData(dataModel.edit(rowIndex,columnKey,newValue));
   };
 
   const addRacer = () => {
-    setData(dataModel.add([]));
+    // Append a new racer via the dataModel and return the new index
+    const result = dataModel.add([]);
+    setData(result);
+    // Try to determine the new index from dataModel.getAll() if available
+    const all = typeof dataModel.getAll === 'function' ? dataModel.getAll() : (Array.isArray(result) ? result : []);
+    return Math.max(0, all.length - 1);
   }
 
   const removeRacer = (index) => {
@@ -39,7 +86,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
   }
 
   const columns = useMemo(() =>
-    columnDefs.map(col => ({
+    columnDefs.map((col, colIndex) => ({
       ...col,
       cell: (props) => {
         const rowIndex = props.row.index;
@@ -56,7 +103,8 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                 editValue={editValue}
                 setEditValue={setEditValue}
                 setEditingCell={setEditingCell}
-                setData={(value) => editProperty(rowIndex, columnKey, value)}
+                  setData={(value) => editProperty(rowIndex, columnKey, value)}
+                  next={next(rowIndex, colIndex)}
                 propsRowOriginal={props.row.original}
                 colKeys={colKeys}
                 data={filteredData}
@@ -64,22 +112,13 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
             );
           } else {
             return (
-              <TextEditor
-                rowIndex={rowIndex}
-                columnKey={columnKey}
-                editValue={editValue}
-                setEditValue={setEditValue}
-                setEditingCell={setEditingCell}
-                setData={(value) => editProperty(rowIndex, columnKey, value)}
-                propsRowOriginal={props.row.original}
-                colKeys={colKeys}
-              />
+              <TextEditor value={editValue} setData={(value) => editProperty(rowIndex, columnKey, value)} next={next(rowIndex, colIndex)} />
             );
           }
         }
         return props.getValue();
       }
-    })), [editingCell, editValue, setData]
+    })), [editingCell, editValue, filteredData, columnDefs]
   );
 
   useEffect(() => {
@@ -93,7 +132,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
       setFilteredData(dataModel.getAll());
     }
     
-  }, [dataModel])
+  }, [dataModel, globalFilter])
 
   // Apply sorting if requested
   const sortedData = React.useMemo(() => {
@@ -245,8 +284,8 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                 <tr>
                   <td colSpan={columns.length + 1} className="px-4 py-3 text-center bg-white">
                     <button className="btn btn-primary add-user-btn" onClick={() => {
-                      addRacer();
-                      setEditingCell({ rowIndex: filteredData.length-1, columnKey: 'lastName' });
+                      const newIndex = addRacer();
+                      setEditingCell({ rowIndex: newIndex, columnKey: 'lastName' });
                       setEditValue('');
                     }}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
