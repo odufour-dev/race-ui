@@ -4,13 +4,12 @@ import React, { useContext, useEffect, useState, startTransition } from 'react';
 
 import { RaceModelContext } from './models/RaceModel/RaceModel';
 import Sidebar from './components/Sidebar/Sidebar';
-import { buildNavFromTabs } from './navigation/navConfig';
+import { registerNavItem, setNavComponent, getNav, getItem } from './navigation/navRegistry';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import InformationBanner from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
 
 function App() {
-
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
   const [ nbStages, setNbStages ] = useState( raceModel.getNumberOfStages() );
 
@@ -23,81 +22,39 @@ function App() {
     forceUpdate();
   }
 
-  var tabs = [
-    {
-      name: 'configuration',
-      label: 'Configuration',
-      group: 'admin',
-      component: (props) => (
-        <div style={{padding: '1rem', color: '#334155'}}>
-          <h2>Configuration</h2>
-          <p>Number of stages: {nbStages}</p>
-          <input
-            type="number"
-            min={1}
-            max={30}
-            value={nbStages}
-            onChange={(e) => {
-              const newNbStages = parseInt(e.target.value, 10);
-              setNbStages(newNbStages);
-              raceModel.setNumberOfStages(newNbStages);
-              forceUpdate();
-            }}
-          />
-        </div>
-      ),
-    },
-    {
-      name: 'import',
-      label: 'Import',
-      group: 'registration',
-      component: (props) => (
-        <ExcelReader {...props}
-          dataModel={raceModel.getRacerManager()} 
-          updateData={updateRacerManager} 
-        />
-      ),
-    },
-    {
-      name: 'registration',
-      label: 'Registration',
-      group: 'registration',
-      component: (props) => (
-        <RegistrationTable
-          {...props}
-          dataModel={raceModel.getRacerManager()} 
-          classificationModel={raceModel.getClassifications()}
-          setData={updateRacerManager} 
-        />
-      ),
-    },
-  ];
+  // Build nav via registry. Register metadata only if not already present so items can be registered in any order.
+  if (!getItem('configuration')) registerNavItem({ id: 'configuration', title: 'Configuration', group: 'Admin', priority: 5 });
+  if (!getItem('import')) registerNavItem({ id: 'import', title: 'Import', group: 'Data', priority: 20 });
+  if (!getItem('registration')) registerNavItem({ id: 'registration', title: 'Registration', group: 'Participants', priority: 10 });
+
+  // attach components where available
+  setNavComponent('import', (props) => (
+    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
+  ));
+
+  setNavComponent('registration', (props) => (
+    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
+  ));
+
   for (let i = 1; i <= nbStages; i++) {
-    tabs.push({
-      name: `stage${i}_ranking`,
-      label: `Stage ${i}`,
-      group: 'ranking',
-      component: (props) => (
-        <div style={{padding: '1rem', color: '#334155'}}>
-          <h2>Stage {i} Ranking</h2>
-          <p>Ranking details for stage {i} would go here.</p>
-        </div>
-      ),
-    });
-    tabs.push({
-      name: `stage${i}_annex`,
-      label: `Stage ${i}`,
-      group: 'annex',
-      component: (props) => (
-        <div style={{padding: '1rem', color: '#334155'}}>
-          <h2>Stage {i} Annex</h2>
-          <p>Annex details for stage {i} would go here.</p>
-        </div>
-      ),      
-    });
-  } 
-      
-  const nav = buildNavFromTabs(tabs);
+    if (!getItem(`stage${i}_ranking`)) registerNavItem({ id: `stage${i}_ranking`, title: `Stage ${i} Ranking`, group: 'Stages', priority: 100 + i*2 });
+    if (!getItem(`stage${i}_annex`)) registerNavItem({ id: `stage${i}_annex`, title: `Stage ${i} Annex`, group: 'Stages', priority: 100 + i*2 + 1 });
+    // attach simple placeholders for stages
+    setNavComponent(`stage${i}_ranking`, () => (
+      <div style={{padding: '1rem', color: '#334155'}}>
+        <h2>Stage {i} Ranking</h2>
+        <p>Ranking details for stage {i} would go here.</p>
+      </div>
+    ));
+    setNavComponent(`stage${i}_annex`, () => (
+      <div style={{padding: '1rem', color: '#334155'}}>
+        <h2>Stage {i} Annex</h2>
+        <p>Annex details for stage {i} would go here.</p>
+      </div>
+    ));
+  }
+
+  const nav = getNav();
   const [selectedId, setSelectedId] = useState(nav[0]?.items?.[0]?.id || '');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
@@ -136,7 +93,7 @@ function App() {
         </button>
       </div>
       <div style={{display:'flex', flex:1, overflow:'hidden'}}>
-  {!isDesktop && sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
+        {!isDesktop && sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
         <Sidebar nav={nav} selectedId={selectedId} onSelect={(id) => {
           // Wrap selection in a transition to avoid replacing the UI with a loading indicator
           // when the next view suspends (e.g. lazy loading or i18n resources).
@@ -144,15 +101,11 @@ function App() {
           if (!isDesktop) setSidebarOpen(false);
         }} isOpen={sidebarOpen || isDesktop} onClose={() => setSidebarOpen(false)} />
         <main style={{flex:1, overflow:'auto', padding: '1rem'}}>
-          {(() => {
-            // Prefer rendering the original tab component from the `tabs` array to preserve exact props
-            const tab = tabs.find(t => t.name === selectedId);
-            if (tab && tab.component) {
-              console.log('Rendering tab', tab.name);
-              return tab.component({ data: raceModel, setData: updateRacerManager, lastUser: null });
-            }
-            return <div style={{padding: '1rem', color: '#334155'}}>Select a view from the left navigation.</div>;
-          })()}
+          {selectedItem && selectedItem.component ? (
+            selectedItem.component({ data: raceModel, setData: updateRacerManager, lastUser: null })
+          ) : (
+            <div style={{padding: '1rem', color: '#334155'}}>Select a view from the left navigation.</div>
+          )}
         </main>
       </div>
     </div>
