@@ -220,6 +220,10 @@ export class RaceModel {
     this.classifications_ = classifications;
   }
 
+  getNumberOfStages() {
+    return 21;
+  }
+
   getRacerManager() {
     return this.racers_;
   }
