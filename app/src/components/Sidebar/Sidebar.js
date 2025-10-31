@@ -20,6 +20,35 @@ function Sidebar({ nav, selectedId, onSelect }) {
     setOpenGroups(copy);
   }
 
+  const itemComponent = (items) => {
+    return (
+        <ul className="sidebar-items">
+          {items.map(item => (
+            <li key={item.id}>
+              <button
+                className={`sidebar-item ${selectedId === item.id ? 'active' : ''}`}
+                onClick={() => onSelect(item.id)}
+              >
+                {item.title}
+              </button>
+            </li>
+          ))}
+        </ul>
+      );
+  }
+
+  const groupComponent = (group) => {
+    return (
+      <div className="sidebar-group" key={group.id}>
+        <button className="sidebar-group-toggle" onClick={() => toggleGroup(group.id)} aria-expanded={openGroups.has(group.id)}>
+          <span>{group.title}</span>
+          <span className="chev">{openGroups.has(group.id) ? '▾' : '▸'}</span>
+        </button>
+        {openGroups.has(group.id) ? itemComponent(group.items) : <div className="sidebar-collapsed-indicator">...</div>}
+      </div>
+    )
+  }
+
   return (
     <aside className="sidebar">
       <div className="sidebar-search">
@@ -32,28 +61,7 @@ function Sidebar({ nav, selectedId, onSelect }) {
         />
       </div>
       <nav className="sidebar-nav" aria-label="Main navigation">
-        {filtered.groups.map(group => (
-          <div className="sidebar-group" key={group.id}>
-            <button className="sidebar-group-toggle" onClick={() => toggleGroup(group.id)} aria-expanded={openGroups.has(group.id)}>
-              <span>{group.title}</span>
-              <span className="chev">{openGroups.has(group.id) ? '▾' : '▸'}</span>
-            </button>
-            {openGroups.has(group.id) && (
-              <ul className="sidebar-items">
-                {group.items.map(item => (
-                  <li key={item.id}>
-                    <button
-                      className={`sidebar-item ${selectedId === item.id ? 'active' : ''}`}
-                      onClick={() => onSelect(item.id)}
-                    >
-                      {item.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+        {filtered.groups.map(group => groupComponent(group))}
       </nav>
     </aside>
   );

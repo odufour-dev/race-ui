@@ -1,14 +1,20 @@
 /* Minimal Sidebar styles */
 .sidebar {
+  --sidebar-bottom-spacing: 80px; /* space to keep visible at bottom (50-100px recommended) */
   width: 240px;
   background: #f8fafc; /* light */
   border-right: 1px solid #e5e7eb;
-  height: calc(100vh - 0px);
-  overflow: auto;
+  height: 90%;
   padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
 }
 .sidebar-search {
   padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: inherit; /* keep background when sticky */
 }
 .sidebar-search input {
   width: 100%;
@@ -36,6 +42,13 @@
   padding: 0 0 0 0.5rem;
   margin: 0;
 }
+
+/* Make nav area scrollable while header/search remain visible */
+.sidebar-nav {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+}
 .sidebar-item {
   width: 100%;
   text-align: left;
@@ -52,14 +65,35 @@
   background: #f1f5f9;
 }
 
+/* Scrollbar styling */
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15,23,42,0.2) transparent;
+}
+.sidebar::-webkit-scrollbar {
+  width: 10px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(15,23,42,0.18);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(15,23,42,0.28);
+}
+
 /* Responsive drawer behavior */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
     left: -260px;
     top: 0;
-    bottom: 0;
-    height: 100vh;
+    bottom: var(--sidebar-bottom-spacing);
+    height: calc(100vh - var(--sidebar-bottom-spacing));
     width: 260px;
     z-index: 60;
     transition: left 200ms ease-in-out;
@@ -86,7 +120,10 @@
 /* overlay element placed by parent when sidebar open on mobile */
 .sidebar-overlay {
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: var(--sidebar-bottom-spacing);
   background: rgba(2,6,23,0.4);
   z-index: 50;
 }

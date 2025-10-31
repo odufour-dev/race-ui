@@ -10,8 +10,10 @@ import InformationBanner from './components/InformationBanner/InformationBanner'
 import ExcelReader from './components/ExcelReader/ExcelReader';
 
 function App() {
+
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
   const [ nbStages, setNbStages ] = useState( raceModel.getNumberOfStages() );
+  const [ nav, setNav ] = useState( new NavigationRegistry() );
 
   useEffect(() => {
     setNbStages( raceModel.getNumberOfStages() );
@@ -22,56 +24,33 @@ function App() {
     forceUpdate();
   }
 
-  // Create the navigation panel components
-  const navEventConfiguration = new NavigationItem({ id: 'configuration', title: 'Configuration', order: 5 });
-  const navRacerRegistration = new NavigationItem({ id: 'registration', title: 'Registration', order: 10, component: (props) => (
-    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
-  )});
-  const navRacerImport = new NavigationItem({ id: 'import', title: 'Import', order: 20, component: (props) => (
-    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
-  )});
-
-  const navEventGroup = new NavigationGroup('event', 'Event', 0, [navEventConfiguration]);
-  const navRacersGroup = new NavigationGroup('racers', 'Racers', 1, [navRacerRegistration, navRacerImport]);
-  const nav = new NavigationRegistry([navEventGroup, navRacersGroup]);
-  
-  /*
-  // Build nav via registry. Register metadata only if not already present so items can be registered in any order.
-  if (!getItem('configuration')) registerNavItem({ id: 'configuration', title: 'Configuration', group: 'Admin', priority: 5 });
-  if (!getItem('import')) registerNavItem({ id: 'import', title: 'Import', group: 'Data', priority: 20 });
-  if (!getItem('registration')) registerNavItem({ id: 'registration', title: 'Registration', group: 'Participants', priority: 10 });
-
-  // attach components where available
-  setNavComponent('import', (props) => (
-    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
-  ));
-
-  setNavComponent('registration', (props) => (
-    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
-  ));
-
-  for (let i = 1; i <= nbStages; i++) {
-    if (!getItem(`stage${i}_ranking`)) registerNavItem({ id: `stage${i}_ranking`, title: `Stage ${i} Ranking`, group: 'Stages', priority: 100 + i*2 });
-    if (!getItem(`stage${i}_annex`)) registerNavItem({ id: `stage${i}_annex`, title: `Stage ${i} Annex`, group: 'Stages', priority: 100 + i*2 + 1 });
-    // attach simple placeholders for stages
-    setNavComponent(`stage${i}_ranking`, () => (
-      <div style={{padding: '1rem', color: '#334155'}}>
-        <h2>Stage {i} Ranking</h2>
-        <p>Ranking details for stage {i} would go here.</p>
-      </div>
-    ));
-    setNavComponent(`stage${i}_annex`, () => (
-      <div style={{padding: '1rem', color: '#334155'}}>
-        <h2>Stage {i} Annex</h2>
-        <p>Annex details for stage {i} would go here.</p>
-      </div>
-    ));
-  }
-  */
-
   const [selectedItem, setSelectedItem] = useState(nav.find('event.configuration'));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
+
+  useEffect(() => {
+
+    // Create the navigation panel components
+    const navEventConfiguration = new NavigationItem({ id: 'configuration', title: 'Configuration', order: 5 });
+    const navRacerRegistration = new NavigationItem({ id: 'registration', title: 'Registration', order: 10, component: (props) => (
+      <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
+    )});
+    const navRacerImport = new NavigationItem({ id: 'import', title: 'Import', order: 20, component: (props) => (
+      <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
+    )});
+
+    const navEventGroup = new NavigationGroup({id: 'event', title: 'Event', order: 0, items: [navEventConfiguration]});
+    const navRacersGroup = new NavigationGroup({id:'racers', title: 'Racers', order: 1, items: [navRacerRegistration, navRacerImport]});  
+    const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
+
+    for (let stage=1; stage<=nbStages; stage++) {
+      const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: `Stage ${stage}`, order: 2 + stage});
+      const navStageRanking = new NavigationItem({id: "ranking", title: "Ranking", order: 1} );
+      navRaceGroup.add(navStageRanking);
+      setNav(baseNav.add(navRaceGroup));
+    }
+
+  }, [nbStages]);
 
   useEffect(() => {
     function onResize() {
