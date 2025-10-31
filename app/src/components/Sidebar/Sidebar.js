@@ -2,18 +2,16 @@ import React, { useState, useMemo } from 'react';
 import './Sidebar.css';
 
 function Sidebar({ nav, selectedId, onSelect }) {
+
   const [query, setQuery] = useState('');
-  const [openGroups, setOpenGroups] = useState(() => new Set(nav.map(g => g.group)));
+  const [openGroups, setOpenGroups] = useState(() => new Set(nav.groups.map(g => g.group)));
 
   const filtered = useMemo(() => {
-    if (!query) return nav;
-    const q = query.toLowerCase();
-    return nav
-      .map(g => ({
-        group: g.group,
-        items: g.items.filter(i => i.title.toLowerCase().includes(q) || i.id.toLowerCase().includes(q))
-      }))
-      .filter(g => g.items.length > 0);
+    if (!query) {
+      return nav;
+    } else {
+      return nav.filter(query);
+    }
   }, [nav, query]);
 
   const toggleGroup = (group) => {
@@ -34,13 +32,13 @@ function Sidebar({ nav, selectedId, onSelect }) {
         />
       </div>
       <nav className="sidebar-nav" aria-label="Main navigation">
-        {filtered.map(group => (
-          <div className="sidebar-group" key={group.group}>
-            <button className="sidebar-group-toggle" onClick={() => toggleGroup(group.group)} aria-expanded={openGroups.has(group.group)}>
-              <span>{group.group}</span>
-              <span className="chev">{openGroups.has(group.group) ? '▾' : '▸'}</span>
+        {filtered.groups.map(group => (
+          <div className="sidebar-group" key={group.id}>
+            <button className="sidebar-group-toggle" onClick={() => toggleGroup(group.id)} aria-expanded={openGroups.has(group.id)}>
+              <span>{group.title}</span>
+              <span className="chev">{openGroups.has(group.id) ? '▾' : '▸'}</span>
             </button>
-            {openGroups.has(group.group) && (
+            {openGroups.has(group.id) && (
               <ul className="sidebar-items">
                 {group.items.map(item => (
                   <li key={item.id}>

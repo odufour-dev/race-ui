@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState, startTransition } from 'react';
 
 import { RaceModelContext } from './models/RaceModel/RaceModel';
 import Sidebar from './components/Sidebar/Sidebar';
-import { registerNavItem, setNavComponent, getNav, getItem } from './navigation/navRegistry';
+import { NavigationItem, NavigationGroup, NavigationRegistry } from './navigationPanel/navigationPanel';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import InformationBanner from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
@@ -22,6 +22,20 @@ function App() {
     forceUpdate();
   }
 
+  // Create the navigation panel components
+  const navEventConfiguration = new NavigationItem({ id: 'configuration', title: 'Configuration', order: 5 });
+  const navRacerRegistration = new NavigationItem({ id: 'registration', title: 'Registration', order: 10, component: (props) => (
+    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
+  )});
+  const navRacerImport = new NavigationItem({ id: 'import', title: 'Import', order: 20, component: (props) => (
+    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
+  )});
+
+  const navEventGroup = new NavigationGroup('event', 'Event', 0, [navEventConfiguration]);
+  const navRacersGroup = new NavigationGroup('racers', 'Racers', 1, [navRacerRegistration, navRacerImport]);
+  const nav = new NavigationRegistry([navEventGroup, navRacersGroup]);
+  
+  /*
   // Build nav via registry. Register metadata only if not already present so items can be registered in any order.
   if (!getItem('configuration')) registerNavItem({ id: 'configuration', title: 'Configuration', group: 'Admin', priority: 5 });
   if (!getItem('import')) registerNavItem({ id: 'import', title: 'Import', group: 'Data', priority: 20 });
@@ -53,9 +67,9 @@ function App() {
       </div>
     ));
   }
+  */
 
-  const nav = getNav();
-  const [selectedId, setSelectedId] = useState(nav[0]?.items?.[0]?.id || '');
+  const [selectedItem, setSelectedItem] = useState(nav.find('event.configuration'));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
 
@@ -69,14 +83,6 @@ function App() {
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
   }, []);
-
-  const selectedItem = (() => {
-    for (const g of nav) {
-      const found = g.items.find(i => i.id === selectedId);
-      if (found) return found;
-    }
-    return null;
-  })();
 
   return (
     <div className="App" style={{display:'flex', flexDirection:'column', height: '100vh'}}>      
@@ -94,16 +100,14 @@ function App() {
       </div>
       <div style={{display:'flex', flex:1, overflow:'hidden'}}>
         {!isDesktop && sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
-        <Sidebar nav={nav} selectedId={selectedId} onSelect={(id) => {
+        <Sidebar nav={nav} selectedId={selectedItem ? selectedItem.id : ""} onSelect={(id) => {
           // Wrap selection in a transition to avoid replacing the UI with a loading indicator
           // when the next view suspends (e.g. lazy loading or i18n resources).
-          startTransition(() => setSelectedId(id));
+          startTransition(() => setSelectedItem(nav.find(id)));
           if (!isDesktop) setSidebarOpen(false);
         }} isOpen={sidebarOpen || isDesktop} onClose={() => setSidebarOpen(false)} />
         <main style={{flex:1, overflow:'auto', padding: '1rem'}}>
-          {selectedItem && selectedItem.component ? (
-            selectedItem.component({ data: raceModel, setData: updateRacerManager, lastUser: null })
-          ) : (
+          {selectedItem && selectedItem.component ? ( selectedItem.component() ) : (
             <div style={{padding: '1rem', color: '#334155'}}>Select a view from the left navigation.</div>
           )}
         </main>
