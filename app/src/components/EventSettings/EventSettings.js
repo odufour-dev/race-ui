@@ -16,6 +16,7 @@ export default function EventSettings({ translator, settings, onApply, onCancel 
   const [numberOfStages, setNumberOfStages] = useState(settings?.nStages ?? 1);
   // annexRankings is an array of objects: { id, title, priority, type, props }
   const [annexRankings, setAnnexRankings] = useState(Array.isArray(settings?.annexRankings) ? settings.annexRankings.map(a => ({ ...a })) : []);
+  const [newAnnexType, setNewAnnexType] = useState(settings.annexRankingTypes[0]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function EventSettings({ translator, settings, onApply, onCancel 
   function addAnnex() {
     const id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
     const next = [...(annexRankings || [])];
-    next.push({ id, title: '', priority: 0, type: 'points', props: { pointsForPlaces: '10,8,6,4,2,1' } });
+    next.push(settings.addAnnexRanking(newAnnexType,id));
     setAnnexRankings(next);
   }
 
@@ -100,6 +101,13 @@ export default function EventSettings({ translator, settings, onApply, onCancel 
             />
           ))}
           <div className="annex-actions">
+            <select value={newAnnexType} onChange={e => setNewAnnexType(e.target.value)}>
+            {
+                settings.annexRankingTypes.map((t) => (
+                    <option value={t}>{translator("event.settings.annex.type." + t)}</option>
+                ))
+            }
+            </select>
             <button type="button" className="btn" onClick={addAnnex}>{translator("event.settings.addannexranking")}</button>
           </div>
         </div>

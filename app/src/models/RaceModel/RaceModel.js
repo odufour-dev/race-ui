@@ -217,8 +217,12 @@ export class EventSettingsAnnexRanking {
 
   constructor(id, title = "", priority = 1){
     this.id_ = id;
-    this.title_ = title || id;
+    this.title_ = title;
     this.priority_ = priority;
+  }
+
+  get type(){
+    return "PROUT";
   }
 
   get id(){
@@ -283,6 +287,21 @@ export class EventSettings {
   }
   get annexRankings(){
     return this.annexrankings_;
+  }
+  get annexRankingTypes(){
+    return ["points", "team", "filter"];
+  }
+
+  addAnnexRanking(type,id){
+    
+    if (type === "points"){
+      return new EventSettingsAnnexRanking(id);
+    } else if (type === "team"){
+      return new EventSettingsAnnexRanking(id);
+    } else if (type === "filter"){
+      return new EventSettingsAnnexRanking(id);
+    }
+
   }
 
   update(settings){

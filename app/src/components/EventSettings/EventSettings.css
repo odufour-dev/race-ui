@@ -105,3 +105,19 @@
 .label-inline {
   margin-left: 8px;
 }
+
+.event-settings .annex-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.event-settings .annex-actions select {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.event-settings .annex-actions .btn {
+  padding: 6px 10px;
+}
