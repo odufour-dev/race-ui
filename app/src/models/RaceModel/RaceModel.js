@@ -213,9 +213,67 @@ export class RaceManager {
   }
 }
 
+export class EventSettingsAnnexRanking {
+
+  constructor(id, title = "", priority = 1){
+    this.id_ = id;
+    this.title_ = title || id;
+    this.priority_ = priority;
+  }
+
+  get id(){
+    return this.id_;
+  }
+
+  get title(){
+    return this.title_;
+  }
+
+  get priority(){
+    return this.priority_;
+  }
+
+  update(settings){
+    if ("title" in settings){
+      this.title_ = settings.title;
+    }
+    if ("priority" in settings){
+      this.priority_ = settings.priority;
+    }
+    return new EventSettingsAnnexRanking(this.id_,this.title_,this.priority_);
+  }
+
+}
+
+export class EventSettingsTeamRanking {
+
+  constructor(enable = true, size = 3){
+    this.enable_ = enable;
+    this.size_ = size;
+  }
+
+  get enable(){
+    return this.enable_;
+  }
+  get size(){
+    return this.size_;
+  }
+
+  update(settings){
+    if ("enable" in settings){
+      this.enable_ = settings.enable;
+    }
+    if ("size" in settings){
+      this.size_ = settings.size;
+    }
+    return new EventSettingsTeamRanking(this.enable_, this.size_);
+  }
+
+}
+
 export class EventSettings {
 
-  constructor(nstages = 1, annexrankings = [], teamranking = {enable: true, size: 3}){
+  constructor(nstages = 1, annexrankings = [], teamranking = new EventSettingsTeamRanking()){
     this.nstages_ = nstages;
     this.annexrankings_ = annexrankings;
     this.teamranking_ = teamranking;
@@ -235,12 +293,15 @@ export class EventSettings {
     if (settings.nStages){
       this.nstages_ = settings.nStages;
     }
-    if (settings.annexRankings){
-      this.annexrankings_ = settings.annexRankings;
-    }
+    this.annexrankings_ = settings.annexRankings.map((r) => {
+      const ranking = new EventSettingsAnnexRanking(r.id);
+      return ranking.update(r);
+    })
+
     if (settings.teamRanking){
-      this.teamranking_ = settings.teamRanking;
+      this.teamranking_.update(settings.teamRanking);
     }
+    return new EventSettings(this.nstages_, this.annexrankings_, this.teamranking_);
   }
 
 }

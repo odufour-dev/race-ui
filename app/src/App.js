@@ -62,8 +62,12 @@ function App() {
       const navGeneralRanking = new NavigationItem({id: "general", title: translator('navigation.general'), order: 2} );
       navRaceGroup.add(navGeneralRanking);
 
+      raceModel.getEventSettings().annexRankings.map((r) => {
+
+      });
+
       if (raceModel.getEventSettings().teamRanking.enable){
-        const navTeam = new NavigationItem({id: "team", title: translator('navigation.team'), order: 3} );
+        const navTeam = new NavigationItem({id: "team", title: translator('navigation.team'), order: 10} );
         navRaceGroup.add(navTeam);
       }
 
