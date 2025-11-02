@@ -1,6 +1,7 @@
 import './App.css';
 
 import React, { useContext, useEffect, useState, startTransition } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { RaceModelContext } from './models/RaceModel/RaceModel';
 import Sidebar from './components/Sidebar/Sidebar';
@@ -10,6 +11,8 @@ import InformationBanner from './components/InformationBanner/InformationBanner'
 import ExcelReader from './components/ExcelReader/ExcelReader';
 
 function App() {
+
+  const { t: translator } = useTranslation('translation');
 
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
   const [ nbStages, setNbStages ] = useState( raceModel.getNumberOfStages() );
@@ -31,21 +34,21 @@ function App() {
   useEffect(() => {
 
     // Create the navigation panel components
-    const navEventConfiguration = new NavigationItem({ id: 'configuration', title: 'Configuration', order: 5 });
-    const navRacerRegistration = new NavigationItem({ id: 'registration', title: 'Registration', order: 10, component: (props) => (
+    const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5 });
+    const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
       <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
     )});
-    const navRacerImport = new NavigationItem({ id: 'import', title: 'Import', order: 20, component: (props) => (
+    const navRacerImport = new NavigationItem({ id: 'import', title: translator('navigation.import'), order: 20, component: (props) => (
       <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
     )});
 
-    const navEventGroup = new NavigationGroup({id: 'event', title: 'Event', order: 0, items: [navEventConfiguration]});
-    const navRacersGroup = new NavigationGroup({id:'racers', title: 'Racers', order: 1, items: [navRacerRegistration, navRacerImport]});  
+    const navEventGroup = new NavigationGroup({id: 'event', title: translator('navigation.event'), order: 0, items: [navEventConfiguration]});
+    const navRacersGroup = new NavigationGroup({id:'racers', title: translator('navigation.racers'), order: 1, items: [navRacerRegistration, navRacerImport]});  
     const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
 
     for (let stage=1; stage<=nbStages; stage++) {
-      const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: `Stage ${stage}`, order: 2 + stage});
-      const navStageRanking = new NavigationItem({id: "ranking", title: "Ranking", order: 1} );
+      const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: translator('navigation.stage') + " " + stage, order: 2 + stage});
+      const navStageRanking = new NavigationItem({id: "ranking", title: translator('navigation.ranking'), order: 1} );
       navRaceGroup.add(navStageRanking);
       setNav(baseNav.add(navRaceGroup));
     }
@@ -79,7 +82,7 @@ function App() {
       </div>
       <div style={{display:'flex', flex:1, overflow:'hidden'}}>
         {!isDesktop && sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
-        <Sidebar nav={nav} selectedId={selectedItem ? selectedItem.id : ""} onSelect={(id) => {
+        <Sidebar nav={nav} translator={translator} selectedId={selectedItem ? selectedItem.id : ""} onSelect={(id) => {
           // Wrap selection in a transition to avoid replacing the UI with a loading indicator
           // when the next view suspends (e.g. lazy loading or i18n resources).
           startTransition(() => setSelectedItem(nav.find(id)));

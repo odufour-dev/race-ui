@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<translation>
+  <navigation>
+    <event>Evénement</event>
+    <racers>Coureurs</racers>
+    <configuration>Configuration</configuration>
+    <registration>Enregistrement</registration>
+    <import>Chargement</import>
+    <stage>Etape</stage>
+    <ranking>Classement</ranking>
+  </navigation>
+  <search>
+    <placeholder>Rechercher</placeholder>
+  </search>
+</translation>

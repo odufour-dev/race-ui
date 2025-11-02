@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <translation>
-  <registration>
-    <title>Registration</title>
-    <filter>Filter all...</filter>
-    <addUser>Add user</addUser>
-    <usersCount>Users count: {{count}}</usersCount>
-  </registration>
-  <columns>
-    <bib>Bib</bib>
-    <name>Name</name>
-    <firstName>First name</firstName>
-    <club>Club</club>
-    <category>Category</category>
-    <serie>Serie</serie>
-    <licenseId>License ID</licenseId>
-    <uciId>UCI ID</uciId>
-    <actions>Actions</actions>
-  </columns>
+  <navigation>
+    <event>Event</event>
+    <racers>Racers</racers>
+    <configuration>Configuration</configuration>
+    <registration>Registration</registration>
+    <import>Import</import>
+    <stage>Stage</stage>
+    <ranking>Ranking</ranking>
+  </navigation>
+  <search>
+    <placeholder>Search</placeholder>
+  </search>
 </translation>

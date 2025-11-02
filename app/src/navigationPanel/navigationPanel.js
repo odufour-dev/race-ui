@@ -83,8 +83,10 @@ export class NavigationRegistry {
       if (matchedItems.length > 0) {
         const newGroup = new NavigationGroup({id: g.id, title: g.title, order: g.order, items: matchedItems});
         groups.push(newGroup);
+      } else if (g.title.toLowerCase().includes(lowerTxt) || g.id.toLowerCase().includes(lowerTxt)) {
+        groups.push(g);
       }
-    }console.log(groups);
+    }
     return new NavigationRegistry(groups);
   }
 
