@@ -235,6 +235,12 @@ export class EventSettings {
     if (settings.nStages){
       this.nstages_ = settings.nStages;
     }
+    if (settings.annexRankings){
+      this.annexrankings_ = settings.annexRankings;
+    }
+    if (settings.teamRanking){
+      this.teamranking_ = settings.teamRanking;
+    }
   }
 
 }

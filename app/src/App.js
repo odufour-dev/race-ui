@@ -16,11 +16,11 @@ function App() {
   const { t: translator } = useTranslation('translation');
 
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
-  const [ nbStages, setNbStages ] = useState( raceModel.getEventSettings().nStages );
+  const [ evtSettings, setEvtSettings ] = useState( raceModel.getEventSettings() );
   const [ nav, setNav ] = useState( new NavigationRegistry() );
 
   useEffect(() => {
-    setNbStages( raceModel.getEventSettings().nStages );
+    setEvtSettings({ ...raceModel.getEventSettings() });
   }, [raceModel]);
 
   const updateRacerManager = (racerManager) => {
@@ -36,7 +36,6 @@ function App() {
   const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5, component: (props) => (
     <EventSettings {...props} settings={raceModel.getEventSettings()} onApply={(settings) => {
       raceModel.updateEventSettings(settings); 
-      setNbStages(raceModel.getEventSettings().nStages);
       forceUpdate();
     }} />
   ) });
@@ -53,14 +52,25 @@ function App() {
   useEffect(() => {
 
     const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
-    for (let stage=1; stage<=nbStages; stage++) {
+    for (let stage=1; stage<=raceModel.getEventSettings().nStages; stage++) {
+      
       const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: translator('navigation.stage') + " " + stage, order: 2 + stage});
+      
       const navStageRanking = new NavigationItem({id: "ranking", title: translator('navigation.ranking'), order: 1} );
       navRaceGroup.add(navStageRanking);
+      
+      const navGeneralRanking = new NavigationItem({id: "general", title: translator('navigation.general'), order: 2} );
+      navRaceGroup.add(navGeneralRanking);
+
+      if (raceModel.getEventSettings().teamRanking.enable){
+        const navTeam = new NavigationItem({id: "team", title: translator('navigation.team'), order: 3} );
+        navRaceGroup.add(navTeam);
+      }
+
       setNav(baseNav.add(navRaceGroup));
     }
 
-  }, [nbStages]);
+  }, [evtSettings]);
 
   useEffect(() => {
     function onResize() {
