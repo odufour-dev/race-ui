@@ -12,4 +12,29 @@
   <search>
     <placeholder>Rechercher</placeholder>
   </search>
+  <event>
+    <settings>
+      <title>Paramètres de l'événement</title>
+      <nstages>Nombre d'étapes</nstages>
+      <annexrankings>Classements annexes</annexrankings>
+      <noannexranking>Aucun classement annexe défini</noannexranking>
+      <addannexranking>Ajouter un classement annexe</addannexranking>
+      <apply>Appliquer</apply>
+      <cancel>Annuler</cancel>
+      <annex>
+        <title>Titre</title>
+        <priority>Priorité</priority>
+        <type>
+          <team>Équipe</team>
+          <points>Points</points>
+          <filter>Filtre</filter>
+        </type>
+        <remove>Supprimer</remove>
+        <teamsize>Taille de l'équipe</teamsize>
+        <points>Points (par place)</points>
+        <filter>Expression de filtre</filter>
+        <filterdescription>Une expression simple pour filtrer les coureurs (ex: category=='elite')</filterdescription>
+      </annex>
+    </settings>
+  </event>
 </translation>

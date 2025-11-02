@@ -34,7 +34,7 @@ function App() {
 
     // Create the navigation panel components
   const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5, component: (props) => (
-    <EventSettings {...props} settings={raceModel.getEventSettings()} onApply={(settings) => {
+    <EventSettings {...props} translator={translator} settings={raceModel.getEventSettings()} onApply={(settings) => {
       raceModel.updateEventSettings(settings); 
       forceUpdate();
     }} />
@@ -65,11 +65,6 @@ function App() {
       raceModel.getEventSettings().annexRankings.map((r) => {
 
       });
-
-      if (raceModel.getEventSettings().teamRanking.enable){
-        const navTeam = new NavigationItem({id: "team", title: translator('navigation.team'), order: 10} );
-        navRaceGroup.add(navTeam);
-      }
 
       setNav(baseNav.add(navRaceGroup));
     }

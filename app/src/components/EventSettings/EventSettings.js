@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './EventSettings.css';
+import AnnexItem from './AnnexItem';
 
 /**
  * EventSettings
@@ -8,34 +9,26 @@ import './EventSettings.css';
  * - onApply?: optional callback(settings) called after applying settings
  * - onCancel?: optional callback() called when user cancels
  */
-export default function EventSettings({ settings, onApply, onCancel }) {
+export default function EventSettings({ translator, settings, onApply, onCancel }) {
   
   // Use safe defaults so inputs never receive `undefined` which causes
   // React's controlled -> uncontrolled warning.
   const [numberOfStages, setNumberOfStages] = useState(settings?.nStages ?? 1);
-  const [annexRankings, setAnnexRankings] = useState(Array.isArray(settings?.annexRankings) ? settings.annexRankings.slice() : []);
-  const [teamRankingEnabled, setTeamRankingEnabled] = useState(!!settings?.teamRanking?.enable);
-  const [teamSize, setTeamSize] = useState(settings?.teamRanking?.size ?? 4);
+  // annexRankings is an array of objects: { id, title, priority, type, props }
+  const [annexRankings, setAnnexRankings] = useState(Array.isArray(settings?.annexRankings) ? settings.annexRankings.map(a => ({ ...a })) : []);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // keep local state in sync if settings changes externally
     if (!settings) return;
     setNumberOfStages(settings?.nStages ?? 1);
-    setAnnexRankings(Array.isArray(settings?.annexRankings) ? settings.annexRankings.slice() : []);
-    setTeamRankingEnabled(!!settings?.teamRanking?.enable);
-    setTeamSize(settings?.teamRanking?.size ?? 4);
+    setAnnexRankings(Array.isArray(settings?.annexRankings) ? settings?.annexRankings.map(a => ({ ...a })) : []);
   }, [settings]);
 
   function validate() {
     const e = {};
     if (!Number.isFinite(Number(numberOfStages)) || Number(numberOfStages) < 1) {
       e.numberOfStages = 'Number of stages must be >= 1';
-    }
-    if (teamRankingEnabled) {
-      if (!Number.isFinite(Number(teamSize)) || Number(teamSize) < 1) {
-        e.teamSize = 'Team size must be >= 1';
-      }
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -46,7 +39,6 @@ export default function EventSettings({ settings, onApply, onCancel }) {
     if (typeof onApply === 'function') onApply({
       nStages: Number(numberOfStages),
       annexRankings: (annexRankings || []).slice(),
-      teamRanking: { enable: !!teamRankingEnabled, size: teamRankingEnabled ? Number(teamSize) : null },
     });
   }
 
@@ -54,39 +46,37 @@ export default function EventSettings({ settings, onApply, onCancel }) {
     if (!settings) {
       setNumberOfStages(1);
       setAnnexRankings([]);
-      setTeamRankingEnabled(false);
-      setTeamSize(4);
     } else {
       setNumberOfStages(settings?.nStages ?? 1);
       setAnnexRankings(Array.isArray(settings?.annexRankings) ? settings.annexRankings.slice() : []);
-      setTeamRankingEnabled(!!settings?.teamRanking?.enable);
-      setTeamSize(settings?.teamRanking?.size ?? 4);
     }
     setErrors({});
     if (typeof onCancel === 'function') onCancel();
   }
 
   function addAnnex() {
-    setAnnexRankings([...(annexRankings || []), '']);
+    const id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
+    const next = [...(annexRankings || [])];
+    next.push({ id, title: '', priority: 0, type: 'points', props: { pointsForPlaces: '10,8,6,4,2,1' } });
+    setAnnexRankings(next);
   }
 
-  function updateAnnex(idx, value) {
-    const copy = annexRankings.slice();
-    copy[idx] = value;
+  function updateAnnexById(id, updated) {
+    const copy = (annexRankings || []).map(a => (a.id === id ? { ...a, ...updated } : a));
     setAnnexRankings(copy);
   }
 
-  function removeAnnex(idx) {
-    const copy = annexRankings.slice().filter((_, i) => i !== idx);
+  function removeAnnexById(id) {
+    const copy = (annexRankings || []).filter(a => a.id !== id);
     setAnnexRankings(copy);
   }
 
   return (
     <div className="event-settings">
-      <h2>Event settings</h2>
+      <h2>{translator("event.settings.title")}</h2>
 
       <div className="field">
-        <label>Number of stages</label>
+        <label>{translator("event.settings.nstages")}</label>
         <input
           type="number"
           min="1"
@@ -97,53 +87,27 @@ export default function EventSettings({ settings, onApply, onCancel }) {
       </div>
 
       <div className="field">
-        <label>Annex rankings</label>
+        <label>{translator("event.settings.annexrankings")}</label>
         <div className="annex-list">
-          {annexRankings.length === 0 && <div className="muted">No annex rankings defined</div>}
+          {annexRankings.length === 0 && <div className="muted">{translator("event.settings.noannexranking")}</div>}
           {(annexRankings || []).map((a, idx) => (
-            <div className="annex-row" key={idx}>
-              <input
-                type="text"
-                placeholder={`Annex ranking #${idx + 1}`}
-                value={a ?? ''}
-                onChange={e => updateAnnex(idx, e.target.value)}
-              />
-              <button type="button" className="btn small danger" onClick={() => removeAnnex(idx)}>Remove</button>
-            </div>
+            <AnnexItem
+              translator={translator}
+              key={a.id ?? idx}
+              annex={a}
+              onChange={(updated) => updateAnnexById(a.id, updated)}
+              onRemove={() => removeAnnexById(a.id)}
+            />
           ))}
           <div className="annex-actions">
-            <button type="button" className="btn" onClick={addAnnex}>Add annex ranking</button>
+            <button type="button" className="btn" onClick={addAnnex}>{translator("event.settings.addannexranking")}</button>
           </div>
         </div>
       </div>
 
-      <div className="field">
-        <label>
-          <input
-            type="checkbox"
-            checked={!!teamRankingEnabled}
-            onChange={e => setTeamRankingEnabled(!!e.target.checked)}
-          />
-          <span className="label-inline">Enable team ranking</span>
-        </label>
-      </div>
-
-      {teamRankingEnabled && (
-        <div className="field">
-          <label>Team size</label>
-          <input
-            type="number"
-            min="1"
-            value={teamSize ?? ''}
-            onChange={e => setTeamSize(e.target.value)}
-          />
-          {errors.teamSize && <div className="error">{errors.teamSize}</div>}
-        </div>
-      )}
-
       <div className="actions">
-        <button type="button" className="btn primary" onClick={applySettings}>Apply</button>
-        <button type="button" className="btn" onClick={resetToInitial}>Cancel</button>
+        <button type="button" className="btn primary" onClick={applySettings}>{translator("event.settings.apply")}</button>
+        <button type="button" className="btn" onClick={resetToInitial}>{translator("event.settings.cancel")}</button>
       </div>
     </div>
   );

@@ -12,4 +12,29 @@
   <search>
     <placeholder>Search</placeholder>
   </search>
+  <event>
+    <settings>
+      <title>Event settings</title>
+      <nstages>Number of stages</nstages>
+      <annexrankings>Annex rankings</annexrankings>
+      <noannexranking>No annex rankings defined</noannexranking>
+      <addannexranking>Add annex ranking</addannexranking>
+      <apply>Apply</apply>
+      <cancel>Cancel</cancel>
+      <annex>
+        <title>Title</title>
+        <priority>Priority</priority>
+        <type>
+          <team>Team</team>
+          <points>Points</points>
+          <filter>Filter</filter>
+        </type>
+        <remove>Remove</remove>
+        <teamsize>Team size</teamsize>
+        <points>Points (per place)</points>
+        <filter>Filter expression</filter>
+        <filterdescription>A simple expression to filter racers (e.g. category=='elite')</filterdescription>
+      </annex>
+    </settings>
+  </event>
 </translation>

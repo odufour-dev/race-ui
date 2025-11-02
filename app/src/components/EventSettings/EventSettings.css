@@ -38,6 +38,28 @@
   margin-bottom: 8px;
 }
 
+.annex-item {
+  border: 1px solid var(--border-color, #e6e6e6);
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: var(--card-bg, #fff);
+}
+
+.annex-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 12px;
+}
+.annex-h-left { display:flex; gap:8px; align-items:center; }
+.annex-h-right { display:flex; gap:8px; align-items:center; }
+.annex-title { padding:6px 8px; border:1px solid #ddd; border-radius:4px; min-width:220px; }
+.annex-priority { width:72px; padding:6px 8px; border:1px solid #ddd; border-radius:4px; }
+.annex-body { margin-top:8px; display:flex; flex-direction:column; gap:8px; }
+.annex-field label { font-weight:600; margin-bottom:4px; display:block; }
+.annex-field input, .annex-field select { padding:6px 8px; border:1px solid #ddd; border-radius:4px; }
+
 .event-settings .annex-list .muted {
   color: #666;
   margin-bottom: 8px;

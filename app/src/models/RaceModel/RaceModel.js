@@ -273,10 +273,9 @@ export class EventSettingsTeamRanking {
 
 export class EventSettings {
 
-  constructor(nstages = 1, annexrankings = [], teamranking = new EventSettingsTeamRanking()){
+  constructor(nstages = 1, annexrankings = []){
     this.nstages_ = nstages;
     this.annexrankings_ = annexrankings;
-    this.teamranking_ = teamranking;
   }
 
   get nStages(){
@@ -284,9 +283,6 @@ export class EventSettings {
   }
   get annexRankings(){
     return this.annexrankings_;
-  }
-  get teamRanking(){
-    return this.teamranking_;
   }
 
   update(settings){
@@ -297,11 +293,7 @@ export class EventSettings {
       const ranking = new EventSettingsAnnexRanking(r.id);
       return ranking.update(r);
     })
-
-    if (settings.teamRanking){
-      this.teamranking_.update(settings.teamRanking);
-    }
-    return new EventSettings(this.nstages_, this.annexrankings_, this.teamranking_);
+    return new EventSettings(this.nstages_, this.annexrankings_);
   }
 
 }
