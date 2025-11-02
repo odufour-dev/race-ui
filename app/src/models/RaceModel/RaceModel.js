@@ -213,15 +213,38 @@ export class RaceManager {
   }
 }
 
-export class RaceModel {
+export class EventSettings {
 
-  constructor(racers = new RacerManager(), classifications = new Classification()) {
-    this.racers_ = racers;
-    this.classifications_ = classifications;
+  constructor(nstages = 1, annexrankings = [], teamranking = {enable: true, size: 3}){
+    this.nstages_ = nstages;
+    this.annexrankings_ = annexrankings;
+    this.teamranking_ = teamranking;
   }
 
-  getNumberOfStages() {
-    return 21;
+  get nStages(){
+    return this.nstages_;
+  }
+  get annexRankings(){
+    return this.annexrankings_;
+  }
+  get teamRanking(){
+    return this.teamranking_;
+  }
+
+  update(settings){
+    if (settings.nStages){
+      this.nstages_ = settings.nStages;
+    }
+  }
+
+}
+
+export class RaceModel {
+
+  constructor(racers = new RacerManager(), eventsettings = new EventSettings(), classifications = new Classification()) {
+    this.racers_ = racers;
+    this.classifications_ = classifications;
+    this.eventsettings_ = eventsettings;
   }
 
   getRacerManager() {
@@ -230,7 +253,16 @@ export class RaceModel {
 
   updateRacerManager(racerManager) {
     this.racers_ = racerManager;
-    return new RaceModel(this.racers_, this.classifications_);
+    return new RaceModel({racers: this.racers_, eventsettings: this.eventsettings_, classifications: this.classifications_});
+  }
+
+  getEventSettings(){
+    return this.eventsettings_;
+  }
+
+  updateEventSettings(eventsettings){
+    this.eventsettings_.update(eventsettings);
+    return new RaceModel({racers: this.racers_, eventsettings: this.eventsettings_, classifications: this.classifications_});
   }
 
   getClassifications(){

@@ -1,0 +1,85 @@
+.event-settings {
+  padding: 16px;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #e6e6e6);
+  border-radius: 6px;
+  max-width: 720px;
+}
+
+.event-settings h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+}
+
+.event-settings .field {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-settings label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.event-settings input[type="text"],
+.event-settings input[type="number"] {
+  padding: 8px 10px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  width: 200px;
+}
+
+.event-settings .annex-list .annex-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.event-settings .annex-list .muted {
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.event-settings .actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #1e40af;
+}
+
+.btn.danger {
+  background: #fee2e2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.btn.small {
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.label-inline {
+  margin-left: 8px;
+}

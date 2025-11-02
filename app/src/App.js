@@ -9,17 +9,18 @@ import { NavigationItem, NavigationGroup, NavigationRegistry } from './navigatio
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
 import InformationBanner from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
+import EventSettings from './components/EventSettings/EventSettings';
 
 function App() {
 
   const { t: translator } = useTranslation('translation');
 
   const { raceModel, forceUpdate } = useContext(RaceModelContext);
-  const [ nbStages, setNbStages ] = useState( raceModel.getNumberOfStages() );
+  const [ nbStages, setNbStages ] = useState( raceModel.getEventSettings().nStages );
   const [ nav, setNav ] = useState( new NavigationRegistry() );
 
   useEffect(() => {
-    setNbStages( raceModel.getNumberOfStages() );
+    setNbStages( raceModel.getEventSettings().nStages );
   }, [raceModel]);
 
   const updateRacerManager = (racerManager) => {
@@ -31,21 +32,27 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
 
+    // Create the navigation panel components
+  const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5, component: (props) => (
+    <EventSettings {...props} settings={raceModel.getEventSettings()} onApply={(settings) => {
+      raceModel.updateEventSettings(settings); 
+      setNbStages(raceModel.getEventSettings().nStages);
+      forceUpdate();
+    }} />
+  ) });
+  const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
+    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
+  )});
+  const navRacerImport = new NavigationItem({ id: 'import', title: translator('navigation.import'), order: 20, component: (props) => (
+    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
+  )});
+
+  const navEventGroup = new NavigationGroup({id: 'event', title: translator('navigation.event'), order: 0, items: [navEventConfiguration]});
+  const navRacersGroup = new NavigationGroup({id:'racers', title: translator('navigation.racers'), order: 1, items: [navRacerRegistration, navRacerImport]});  
+
   useEffect(() => {
 
-    // Create the navigation panel components
-    const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5 });
-    const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
-      <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
-    )});
-    const navRacerImport = new NavigationItem({ id: 'import', title: translator('navigation.import'), order: 20, component: (props) => (
-      <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
-    )});
-
-    const navEventGroup = new NavigationGroup({id: 'event', title: translator('navigation.event'), order: 0, items: [navEventConfiguration]});
-    const navRacersGroup = new NavigationGroup({id:'racers', title: translator('navigation.racers'), order: 1, items: [navRacerRegistration, navRacerImport]});  
     const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
-
     for (let stage=1; stage<=nbStages; stage++) {
       const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: translator('navigation.stage') + " " + stage, order: 2 + stage});
       const navStageRanking = new NavigationItem({id: "ranking", title: translator('navigation.ranking'), order: 1} );
