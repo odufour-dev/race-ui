@@ -1,6 +1,8 @@
 // src/models/RaceModel.js
 import React, { createContext, useState } from 'react';
 
+import { EventSettings } from '../EventSettings/EventSettings';
+
 class Classification {
 
   get Level(){
@@ -211,110 +213,6 @@ export class RaceManager {
       })
       .sort((a, b) => a.totalTime - b.totalTime);
   }
-}
-
-export class EventSettingsAnnexRanking {
-
-  constructor(id, title = "", priority = 1){
-    this.id_ = id;
-    this.title_ = title;
-    this.priority_ = priority;
-  }
-
-  get type(){
-    return "PROUT";
-  }
-
-  get id(){
-    return this.id_;
-  }
-
-  get title(){
-    return this.title_;
-  }
-
-  get priority(){
-    return this.priority_;
-  }
-
-  update(settings){
-    if ("title" in settings){
-      this.title_ = settings.title;
-    }
-    if ("priority" in settings){
-      this.priority_ = settings.priority;
-    }
-    return new EventSettingsAnnexRanking(this.id_,this.title_,this.priority_);
-  }
-
-}
-
-export class EventSettingsTeamRanking {
-
-  constructor(enable = true, size = 3){
-    this.enable_ = enable;
-    this.size_ = size;
-  }
-
-  get enable(){
-    return this.enable_;
-  }
-  get size(){
-    return this.size_;
-  }
-
-  update(settings){
-    if ("enable" in settings){
-      this.enable_ = settings.enable;
-    }
-    if ("size" in settings){
-      this.size_ = settings.size;
-    }
-    return new EventSettingsTeamRanking(this.enable_, this.size_);
-  }
-
-}
-
-export class EventSettings {
-
-  constructor(nstages = 1, annexrankings = []){
-    this.nstages_ = nstages;
-    this.annexrankings_ = annexrankings;
-  }
-
-  get nStages(){
-    return this.nstages_;
-  }
-  get annexRankings(){
-    return this.annexrankings_;
-  }
-  get annexRankingTypes(){
-    return ["points", "team", "filter"];
-  }
-
-  addAnnexRanking(type,id){
-    
-    if (type === "points"){
-      return new EventSettingsAnnexRanking(id);
-    } else if (type === "team"){
-      return new EventSettingsAnnexRanking(id);
-    } else if (type === "filter"){
-      return new EventSettingsAnnexRanking(id);
-    }
-
-  }
-
-  update(settings){
-    if (settings.nStages){
-      this.nstages_ = settings.nStages;
-    }
-    this.annexrankings_ = settings.annexRankings.map((r) => {
-      const ranking = new EventSettingsAnnexRanking(r.id);
-      return ranking.update(r);
-    })
-    return new EventSettings(this.nstages_, this.annexrankings_);
-  }
-
 }
 
 export class RaceModel {
