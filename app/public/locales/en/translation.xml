@@ -14,6 +14,7 @@
   </search>
   <event>
     <settings>
+      <addstage>Add</addstage>
       <title>Event settings</title>
       <nstages>Number of stages</nstages>
       <annexrankings>Annex rankings</annexrankings>
@@ -35,6 +36,15 @@
         <filter>Filter expression</filter>
         <filterdescription>A simple expression to filter racers (e.g. category=='elite')</filterdescription>
       </annex>
+      <stage>
+        <nostage>No stages defined</nostage>
+        <addstage>Add stage</addstage>
+        <name>Name</name>
+        <date>Date</date>
+        <distance>Distance (km)</distance>
+        <stage>Stage</stage>
+        <remove>Remove</remove>
+      </stage>
     </settings>
   </event>
 </translation>

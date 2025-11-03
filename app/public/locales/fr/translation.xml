@@ -14,6 +14,7 @@
   </search>
   <event>
     <settings>
+      <addstage>Ajouter</addstage>
       <title>Paramètres de l'événement</title>
       <nstages>Nombre d'étapes</nstages>
       <annexrankings>Classements annexes</annexrankings>
@@ -35,6 +36,15 @@
         <filter>Expression de filtre</filter>
         <filterdescription>Une expression simple pour filtrer les coureurs (ex: category=='elite')</filterdescription>
       </annex>
+      <stage>
+        <nostage>Aucune étape définie</nostage>
+        <addstage>Ajouter une étape</addstage>
+        <name>Nom</name>
+        <date>Date</date>
+        <distance>Distance (km)</distance>
+        <stage>Étape</stage>
+        <remove>Supprimer</remove>
+      </stage>
     </settings>
   </event>
 </translation>
