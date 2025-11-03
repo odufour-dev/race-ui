@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-export default function AnnexItem({ translator, annex, onChange, onRemove }) {
+export default function AnnexItem({ translator, annex, onRemove }) {
   
   const [ item, setItem ] = useState( annex );
 
@@ -30,7 +30,6 @@ export default function AnnexItem({ translator, annex, onChange, onRemove }) {
           <button type="button" className="btn small danger" onClick={() => onRemove && onRemove(item.id)}>{translator('event.settings.annex.remove')}</button>
         </div>
       </div>
-
 
     </div>
   );

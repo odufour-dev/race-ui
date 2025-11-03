@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './EventSettings.css';
 import AnnexItem from './AnnexItem';
+import StageItem from './StageItem';
 
 /**
  * EventSettings
@@ -27,12 +28,20 @@ export default function EventSettings({ translator, settings, onApply }) {
 
       <div className="field">
         <label>{translator("event.settings.nstages")}</label>
-        <input
-          type="number"
-          min="1"
-          value={ evtSettings.nStages }
-          onChange={e => setEvtSettings(evtSettings.update({nStages: e.target.value}))}
-        />
+        <div className="stage-list">
+          {evtSettings.stages.length === 0 && <div className="muted">{translator("event.settings.nostage")}</div>}
+          {(evtSettings.stages || []).map((s, idx) => (
+            <StageItem
+              translator={translator}
+              key={s.id ?? idx}
+              stage={s}
+              onRemove={() => setEvtSettings(evtSettings.update({stages: evtSettings.stages.filter((_,i) => i != idx)}))}
+            />
+          ))}
+        </div>
+        <div className="stage-actions">
+          <button type="button" className="btn" onClick={() => setEvtSettings( evtSettings.addStage() )}>{translator("event.settings.addstage")}</button>
+        </div>
       </div>
 
       <div className="field">
@@ -44,17 +53,16 @@ export default function EventSettings({ translator, settings, onApply }) {
               translator={translator}
               key={a.id ?? idx}
               annex={a}
-              onChange={(updated) => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.map((r) => r.id === a.id ? updated : r)}))}
               onRemove={() => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.filter((r) => r.id != a.id)}))}
             />
           ))}
           <div className="annex-actions">
             <select value={annexType} onChange={e => setAnnexType(e.target.value)}>
-      {
-        evtSettings.annexRankingTypes.map((t) => (
-          <option key={t} value={t}>{translator("event.settings.annex.type." + t)}</option>
-        ))
-      }
+            {
+              evtSettings.annexRankingTypes.map((t) => (
+                <option key={t} value={t}>{translator("event.settings.annex.type." + t)}</option>
+              ))
+            }
             </select>
             <button type="button" className="btn" onClick={addAnnex}>{translator("event.settings.addannexranking")}</button>
           </div>
