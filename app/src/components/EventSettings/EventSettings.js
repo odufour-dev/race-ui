@@ -17,10 +17,7 @@ export default function EventSettings({ translator, settings, onApply }) {
   const [ evtSettings, setEvtSettings ]     = useState( settings );
   const [ annexType, setAnnexType ]         = useState( settings.annexRankingTypes[0] );
   
-  function addAnnex() {
-    const id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
-    setEvtSettings( evtSettings.addAnnexRanking(annexType,id) );
-  }
+  useEffect(() => { onApply && onApply( evtSettings ) }, [ evtSettings ]);
 
   return (
     <div className="event-settings">
@@ -66,14 +63,11 @@ export default function EventSettings({ translator, settings, onApply }) {
               ))
             }
             </select>
-            <button type="button" className="btn" onClick={addAnnex}>{translator("event.settings.addannexranking")}</button>
+            <button type="button" className="btn" onClick={() => setEvtSettings( evtSettings.addAnnexRanking(annexType,evtSettings.annexRankings.length + 1) )}>{translator("event.settings.addannexranking")}</button>
           </div>
         </div>
       </div>
 
-      <div className="actions">
-        <button type="button" className="btn primary" onClick={() => onApply( evtSettings )}>{translator("event.settings.apply")}</button>²
-      </div>
     </div>
   );
 }

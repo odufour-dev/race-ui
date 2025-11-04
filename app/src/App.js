@@ -42,7 +42,7 @@ function App() {
     for (let stage=1; stage<=evtSettings.nStages; stage++) {
       
       const s = evtSettings.stages[stage-1];
-      const parts = [translator('navigation.stage'), String(s.id)];
+      const parts = [translator('navigation.stage') + " " + String(s.id)];
       if (s && s.name) parts.push(String(s.name));
       if (s && s.date) parts.push(String(s.date));
       const stageName = parts.join(' - ');

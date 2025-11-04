@@ -4,11 +4,7 @@ export default function StageItem({ translator, stage, onApply, onRemove }) {
   
   const [ item, setItem ] = useState( stage );
 
-  const updateItem = (obj) => {
-      const val = item.update(obj);
-      setItem( val );
-      onApply && onApply( val );
-    }
+  useEffect(() => { onApply && onApply( item ) }, [ item ]);
 
   return (
 
@@ -20,13 +16,13 @@ export default function StageItem({ translator, stage, onApply, onRemove }) {
             className="stage-name"
             placeholder={translator('event.settings.stage.name')}
             value={item.name ?? ''}
-            onChange={e => updateItem({name: e.target.value })}
+            onChange={e => setItem( item.update({name: e.target.value }))}
           />
           <input
             className="stage-date"
             type="date"
             value={item.date ?? 0}
-            onChange={e => updateItem({date: e.target.value })}
+            onChange={e => setItem( item.update({date: e.target.value }))}
             title={translator('event.settings.stage.date')}
           />
           <input
@@ -34,7 +30,7 @@ export default function StageItem({ translator, stage, onApply, onRemove }) {
             type="number"
             min="0"
             value={item.distance ?? 0}
-            onChange={e => updateItem({distance: e.target.value })}
+            onChange={e => setItem( item.update({distance: e.target.value }))}
             title={translator('event.settings.stage.distance')}
           /><span>km</span>
         </div>
