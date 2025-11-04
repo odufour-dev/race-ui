@@ -223,13 +223,17 @@ export class RaceModel {
     this.eventsettings_ = eventsettings;
   }
 
+  clone(){
+    return new RaceModel(this.racers_, this.eventsettings_, this.classifications_);
+  }
+
   getRacerManager() {
     return this.racers_;
   }
 
   updateRacerManager(racerManager) {
     this.racers_ = racerManager;
-    return new RaceModel({racers: this.racers_, eventsettings: this.eventsettings_, classifications: this.classifications_});
+    return this.clone();
   }
 
   getEventSettings(){
@@ -237,8 +241,8 @@ export class RaceModel {
   }
 
   updateEventSettings(eventsettings){
-    this.eventsettings_.update(eventsettings);
-    return new RaceModel({racers: this.racers_, eventsettings: this.eventsettings_, classifications: this.classifications_});
+    this.eventsettings_ = eventsettings;
+    return this.clone();
   }
 
   getClassifications(){
@@ -247,8 +251,10 @@ export class RaceModel {
 
 };
 
+/*
 export const RaceModelContext = createContext();
 export const RaceModelProvider = ({ children }) => {
+
   const [raceModel, setRaceModel] = useState(new RaceModel());
 
   // Pour forcer le re-render après mutation
@@ -261,4 +267,6 @@ export const RaceModelProvider = ({ children }) => {
       {children}
     </RaceModelContext.Provider>
   );
+
 };
+*/

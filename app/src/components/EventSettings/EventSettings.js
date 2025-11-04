@@ -35,6 +35,7 @@ export default function EventSettings({ translator, settings, onApply }) {
               translator={translator}
               key={s.id ?? idx}
               stage={s}
+              onApply={ (stage) => setEvtSettings(evtSettings.update({stages: evtSettings.stages.map((stg) => stg.id === s.id ? stage : stg)})) }
               onRemove={() => setEvtSettings(evtSettings.update({stages: evtSettings.stages.filter((_,i) => i != idx)}))}
             />
           ))}

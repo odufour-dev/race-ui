@@ -51,6 +51,10 @@ export class Stage {
     get date(){return this.date_;}
     get distance(){return this.distance_;}
 
+    clone(){
+      return new Stage(this.id_,this.name_,this.date_,this.distance_);
+    }
+
     update(stage){
         if ("id" in stage){
             this.id_ = stage.id;
@@ -64,8 +68,9 @@ export class Stage {
         if ("distance" in stage){
             this.distance_ = stage.distance;
         }
-        return new Stage(this.id_,this.name_,this.date_,this.distance_);
+        return this.clone();
     }
+
 }
 
 export class FilterRanking extends AnnexRanking {

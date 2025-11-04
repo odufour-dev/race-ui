@@ -7,7 +7,7 @@ function InformationBanner({ dataModel }) {
   const { t: translator } = useTranslation('InformationBanner');
   const [nbRacers, setNbRacers ] = useState(0);
 
-  useEffect(() => {
+  useEffect(() => {console.debug(dataModel);
     const racermanager = dataModel.getRacerManager();
     setNbRacers(racermanager.length);
     console.log('InformationBanner render with data model:', dataModel);

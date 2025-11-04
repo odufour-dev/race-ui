@@ -3,7 +3,7 @@ import './App.css';
 import React, { useContext, useEffect, useState, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RaceModelContext } from './models/RaceModel/RaceModel';
+import { RaceModel } from './models/RaceModel/RaceModel';
 import Sidebar from './components/Sidebar/Sidebar';
 import { NavigationItem, NavigationGroup, NavigationRegistry } from './navigationPanel/navigationPanel';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
@@ -15,35 +15,21 @@ function App() {
 
   const { t: translator } = useTranslation('translation');
 
-  const { raceModel, forceUpdate } = useContext(RaceModelContext);
-  const [ evtSettings, setEvtSettings ] = useState( raceModel.getEventSettings() );
-  const [ nav, setNav ] = useState( new NavigationRegistry() );
-
-  useEffect(() => {
-    setEvtSettings({ ...raceModel.getEventSettings() });
-  }, [raceModel]);
-
-  const updateRacerManager = (racerManager) => {
-    raceModel.updateRacerManager(racerManager); 
-    forceUpdate();
-  }
-
+  const [ raceModel, setRaceModel ]     = useState( new RaceModel() );
+  const [ nav, setNav ]                 = useState( new NavigationRegistry() );
   const [selectedItem, setSelectedItem] = useState(nav.find('event.configuration'));
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
+  const [sidebarOpen, setSidebarOpen]   = useState(false);
+  const [isDesktop, setIsDesktop]       = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
 
-    // Create the navigation panel components
+  // Create the navigation panel components
   const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5, component: (props) => (
-    <EventSettings {...props} translator={translator} settings={raceModel.getEventSettings()} onApply={(settings) => {
-      raceModel.updateEventSettings(settings); 
-      forceUpdate();
-    }} />
+    <EventSettings {...props} translator={translator} settings={raceModel.getEventSettings()} onApply={(settings) => setRaceModel(raceModel.updateEventSettings(settings))} />
   ) });
   const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
-    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={updateRacerManager} />
+    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
   )});
   const navRacerImport = new NavigationItem({ id: 'import', title: translator('navigation.import'), order: 20, component: (props) => (
-    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={updateRacerManager} />
+    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
   )});
 
   const navEventGroup = new NavigationGroup({id: 'event', title: translator('navigation.event'), order: 0, items: [navEventConfiguration]});
@@ -52,9 +38,17 @@ function App() {
   useEffect(() => {
 
     const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
-    for (let stage=1; stage<=raceModel.getEventSettings().nStages; stage++) {
+    const evtSettings = raceModel.getEventSettings();
+    for (let stage=1; stage<=evtSettings.nStages; stage++) {
       
-      const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: translator('navigation.stage') + " " + stage, order: 2 + stage});
+      const s = evtSettings.stages[stage-1];
+      const parts = [translator('navigation.stage'), String(s.id)];
+      if (s && s.name) parts.push(String(s.name));
+      if (s && s.date) parts.push(String(s.date));
+      const stageName = parts.join(' - ');
+      
+      console.debug('nav stageName:', stageName);
+      const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: stageName, order: 2 + stage});
       
       const navStageRanking = new NavigationItem({id: "ranking", title: translator('navigation.ranking'), order: 1} );
       navRaceGroup.add(navStageRanking);
@@ -62,14 +56,14 @@ function App() {
       const navGeneralRanking = new NavigationItem({id: "general", title: translator('navigation.general'), order: 2} );
       navRaceGroup.add(navGeneralRanking);
 
-      raceModel.getEventSettings().annexRankings.map((r) => {
+      evtSettings.annexRankings.map((r) => {
 
       });
 
       setNav(baseNav.add(navRaceGroup));
     }
 
-  }, [evtSettings]);
+  }, [raceModel]);
 
   useEffect(() => {
     function onResize() {
