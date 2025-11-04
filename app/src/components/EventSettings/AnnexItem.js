@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-export default function AnnexItem({ translator, annex, onRemove }) {
+export default function AnnexItem({ translator, annex, onApply, onRemove }) {
   
   const [ item, setItem ] = useState( annex );
+
+  const updateItem = (obj) => {
+      const val = item.update(obj);
+      setItem( val );
+      onApply && onApply( val );
+    }
 
   return (
 
@@ -13,14 +19,14 @@ export default function AnnexItem({ translator, annex, onRemove }) {
             className="annex-title"
             placeholder={translator('event.settings.annex.title')}
             value={item.title ?? ''}
-            onChange={e => setItem( item.update({title: e.target.value }))}
+            onChange={e => updateItem({title: e.target.value })}
           />
           <input
             className="annex-priority"
             type="number"
             min="0"
             value={item.priority ?? 0}
-            onChange={e => setItem( item.update({priority: e.target.value }))}
+            onChange={e => updateItem({priority: e.target.value })}
             title={translator('event.settings.annex.priority')}
           />
         </div>

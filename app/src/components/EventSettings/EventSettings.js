@@ -54,6 +54,7 @@ export default function EventSettings({ translator, settings, onApply }) {
               translator={translator}
               key={a.id ?? idx}
               annex={a}
+              onApply={ (annex) => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.map((r) => r.id === a.id ? annex : r)})) }
               onRemove={() => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.filter((r) => r.id != a.id)}))}
             />
           ))}
