@@ -46,6 +46,21 @@
         <stage>Étape</stage>
         <remove>Supprimer</remove>
       </stage>
+      <points>
+        <title>Nom du classement</title>
+        <name>Points</name>
+        <remove>Supprimer</remove>
+      </points>
+      <team>
+        <title>Nom du classement</title>
+        <name>par équipe</name>
+        <remove>Supprimer</remove>
+      </team>
+      <filter>
+        <title>Nom du classement</title>
+        <name>général</name>
+        <remove>Supprimer</remove>
+      </filter>
     </settings>
   </event>
 </translation>

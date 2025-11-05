@@ -46,6 +46,21 @@
         <stage>Stage</stage>
         <remove>Remove</remove>
       </stage>
+      <points>
+        <title>Name</title>
+        <name>Points</name>
+        <remove>Remove</remove>
+      </points>
+      <team>
+        <title>Name</title>
+        <name>Per team</name>
+        <remove>Remove</remove>
+      </team>
+      <filter>
+        <title>Name</title>
+        <name>General</name>
+        <remove>Remove</remove>
+      </filter>
     </settings>
   </event>
 </translation>
