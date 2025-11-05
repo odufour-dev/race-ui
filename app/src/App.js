@@ -46,16 +46,17 @@ function App() {
       if (s && s.name) parts.push(String(s.name));
       const stageName = parts.join(' - ');
       
-      const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: stageName, order: 2 + stage});
+      const navRaceGroup = new NavigationGroup({id: "stage_" + stage, title: stageName, order: 10 * stage});
       
-      const navStageRanking = new NavigationItem({id: "ranking", title: translator('navigation.ranking'), order: 1} );
+      const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 1} );
       navRaceGroup.add(navStageRanking);
       
-      const navGeneralRanking = new NavigationItem({id: "general", title: translator('navigation.general'), order: 2} );
+      const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: translator('navigation.general'), order: 2} );
       navRaceGroup.add(navGeneralRanking);
 
-      evtSettings.annexRankings.map((r) => {
-
+      evtSettings.annexRankings.map((r,i) => {console.debug(r);
+        const navAnnexRanking = new NavigationItem({id: "annex_" + stage + "_" + i, title: r.title, order: 3 + i} );
+        navRaceGroup.add(navAnnexRanking);
       });
 
       setNav(baseNav.add(navRaceGroup));
