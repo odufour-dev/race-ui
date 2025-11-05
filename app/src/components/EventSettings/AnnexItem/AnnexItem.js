@@ -18,6 +18,7 @@ export function AnnexItem( {translator, data, onApply, onRemove} ) {
             value={item.title ?? ''}
             onChange={e => setItem( item.update({title: e.target.value }))}
           />
+          <span>{ translator( 'event.settings.annex.priority' ) }</span>
           <input
             className="annex-priority"
             type="number"

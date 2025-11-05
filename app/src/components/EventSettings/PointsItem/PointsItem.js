@@ -18,6 +18,7 @@ export function PointsItem( {translator, data, onApply, onRemove} ) {
                         value={item.title ?? ''}
                         onChange={e => setItem( item.update({title: e.target.value }))}
                     />
+                    <span>{ translator( 'event.settings.points.priority' ) }</span>
                     <input
                         className="points-priority"
                         type="number"

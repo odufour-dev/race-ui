@@ -17,7 +17,7 @@
 .filter-h-left { display:flex; gap:10px; align-items:center; }
 .filter-h-right { display:flex; gap:8px; align-items:center; }
 
-.filter-title { min-width:220px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
+.filter-title,.filter-pattern { min-width:220px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
 .filter-priority { padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
 
 .filter-body { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }

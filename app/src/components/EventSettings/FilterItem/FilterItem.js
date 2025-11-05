@@ -18,6 +18,7 @@ export function FilterItem( {translator, data, onApply, onRemove} ) {
                         value={item.title ?? ''}
                         onChange={e => setItem( item.update({title: e.target.value }))}
                     />
+                    <span>{ translator( 'event.settings.filter.priority' ) }</span>
                     <input
                         className="filter-priority"
                         type="number"
@@ -25,6 +26,12 @@ export function FilterItem( {translator, data, onApply, onRemove} ) {
                         value={item.priority ?? 0}
                         onChange={e => setItem( item.update({priority: e.target.value }))}
                         title={translator('event.settings.filter.priority')}
+                    />
+                    <input
+                        className="filter-pattern"
+                        placeholder={translator('event.settings.filter.pattern')}
+                        value={item.pattern ?? ''}
+                        onChange={e => setItem( item.update({pattern: e.target.value }))}
                     />
                 </div>
 

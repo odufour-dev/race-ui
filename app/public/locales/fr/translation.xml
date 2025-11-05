@@ -50,16 +50,21 @@
         <title>Nom du classement</title>
         <name>Points</name>
         <remove>Supprimer</remove>
+        <priority>Ordre</priority>
       </points>
       <team>
         <title>Nom du classement</title>
         <name>par équipe</name>
         <remove>Supprimer</remove>
+        <priority>Ordre</priority>
+        <nracers>Nb coureurs</nracers>
       </team>
       <filter>
         <title>Nom du classement</title>
         <name>général</name>
         <remove>Supprimer</remove>
+        <priority>Ordre</priority>
+        <pattern>Filtre</pattern>
       </filter>
     </settings>
   </event>

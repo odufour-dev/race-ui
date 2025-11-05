@@ -75,9 +75,18 @@ export class Stage {
 
 export class FilterRanking extends AnnexRanking {
 
+    constructor(id,type,title,priority,pattern = ""){
+      super(id,type,title,priority)
+      this.pattern_ = pattern;
+    }
+
     update(settings){
         this.updateCommon(settings);
-        return new FilterRanking(this.id_,this.type_,this.title_,this.priority_);
+        console.debug(settings);
+        if ("pattern" in settings){
+          this.pattern_ = settings.pattern;
+        }
+        return new FilterRanking(this.id_,this.type_,this.title_,this.priority_,this.pattern_);
     }
 
 }
@@ -93,9 +102,19 @@ export class PointsRanking extends AnnexRanking {
 
 export class TeamRanking extends AnnexRanking {
 
+    constructor(id,type,title,priority,nracers = 3){
+      super(id,type,title,priority)
+      this.nracers_ = nracers;
+    }
+
+    get nracers(){return this.nracers_;}
+
     update(settings){
         this.updateCommon(settings);
-        return new TeamRanking(this.id_,this.type_,this.title_,this.priority_);
+        if ("nracers" in settings){
+          this.nracers_ = settings.nracers;
+        }
+        return new TeamRanking(this.id_,this.type_,this.title_,this.priority_,this.nracers_);
     }
 
 }

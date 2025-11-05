@@ -55,11 +55,15 @@
         <title>Name</title>
         <name>Per team</name>
         <remove>Remove</remove>
+        <priority>Order</priority>
+        <nracers>Nb racerss</nracers>
       </team>
       <filter>
         <title>Name</title>
         <name>General</name>
         <remove>Remove</remove>
+        <priority>Order</priority>
+        <pattern>Filter</pattern>
       </filter>
     </settings>
   </event>

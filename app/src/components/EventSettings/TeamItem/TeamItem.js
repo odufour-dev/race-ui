@@ -18,6 +18,7 @@ export function TeamItem( {translator, data, onApply, onRemove} ) {
                         value={item.title ?? ''}
                         onChange={e => setItem( item.update({title: e.target.value }))}
                     />
+                    <span>{ translator( 'event.settings.team.priority' ) }</span>
                     <input
                         className="team-priority"
                         type="number"
@@ -25,6 +26,15 @@ export function TeamItem( {translator, data, onApply, onRemove} ) {
                         value={item.priority ?? 0}
                         onChange={e => setItem( item.update({priority: e.target.value }))}
                         title={translator('event.settings.team.priority')}
+                    />
+                    <span>{ translator( 'event.settings.team.nracers' ) }</span>
+                    <input
+                        className="team-nracers"
+                        type="number"
+                        min="0"
+                        value={item.nracers ?? 0}
+                        onChange={e => setItem( item.update({nracers: e.target.value }))}
+                        title={translator('event.settings.team.nracers')}
                     />
                 </div>
 
