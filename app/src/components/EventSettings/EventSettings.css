@@ -54,35 +54,6 @@
 
 .muted { color: var(--muted); }
 
-.stage-list, .annex-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.stage-item, .annex-item {
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-  border: 1px solid var(--border);
-  padding: 12px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.stage-header, .annex-header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-.stage-h-left, .annex-h-left { display:flex; gap:10px; align-items:center; }
-.stage-h-right, .annex-h-right { display:flex; gap:8px; align-items:center; }
-
-.stage-name, .annex-title { min-width:220px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
-.stage-date, .stage-distance, .annex-priority { padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
-
-.annex-body, .stage-body { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
-.annex-field label { font-weight:600; margin-bottom:6px; display:block; color:#dbeafe; }
-.annex-field input, .annex-field select { background: rgba(255,255,255,0.02); border:1px solid var(--border); color:inherit }
-
-.annex-actions { display:flex; gap:8px; align-items:center; margin-top:6px }
-.annex-actions select { background: rgba(255,255,255,0.02); border-radius:8px; color:inherit }
-
 .btn { cursor:pointer; border-radius:8px; padding:8px 12px; border:1px solid transparent; background: rgba(255,255,255,0.03); color:inherit }
 .btn.primary { background: linear-gradient(90deg,var(--accent),var(--accent-strong)); box-shadow: 0 6px 18px rgba(37,99,235,0.12); color:white }
 .btn.danger { background: linear-gradient(90deg,#fee2e2,#fecaca); color:var(--danger); border-color: rgba(0,0,0,0.06) }
