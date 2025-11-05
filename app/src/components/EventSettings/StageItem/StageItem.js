@@ -14,7 +14,7 @@ export function StageItem({ translator, data, onApply, onRemove }) {
         <div className="stage-h-left">
             <span>{translator("event.settings.stage.stage")} #{ item.id }</span>
           <input
-            className="stage-name"
+            className="stage-title"
             placeholder={translator('event.settings.stage.name')}
             value={item.name ?? ''}
             onChange={e => setItem( item.update({name: e.target.value }))}
