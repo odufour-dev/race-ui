@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import "./TeamItem.css"
 
 export function TeamItem( {translator, data, onApply, onRemove} ) {
 

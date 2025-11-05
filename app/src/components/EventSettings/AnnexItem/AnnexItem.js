@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import "./AnnexItem.css"
 
 export function AnnexItem( {translator, data, onApply, onRemove} ) {
   

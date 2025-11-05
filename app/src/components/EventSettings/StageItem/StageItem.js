@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import "./StageItem.css"
 
-export default function StageItem({ translator, stage, onApply, onRemove }) {
+export function StageItem({ translator, data, onApply, onRemove }) {
   
-  const [ item, setItem ] = useState( stage );
+  const [ item, setItem ] = useState( data );
 
   useEffect(() => { onApply && onApply( item ) }, [ item ]);
 
@@ -39,7 +40,6 @@ export default function StageItem({ translator, stage, onApply, onRemove }) {
           <button type="button" className="btn small danger" onClick={() => onRemove && onRemove(item.id)}>{translator('event.settings.stage.remove')}</button>
         </div>
       </div>
-
 
     </div>
   );

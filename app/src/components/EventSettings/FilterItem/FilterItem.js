@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import "./FilterItem.css"
 
 export function FilterItem( {translator, data, onApply, onRemove} ) {
 

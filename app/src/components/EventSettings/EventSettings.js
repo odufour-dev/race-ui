@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './EventSettings.css';
 import { AnnexItemFactory } from './AnnexItemFactory';
-import StageItem from './StageItem';
 
 /**
  * EventSettings
@@ -28,10 +27,10 @@ export default function EventSettings({ translator, settings, onApply }) {
         <div className="stage-list">
           {evtSettings.stages.length === 0 && <div className="muted">{translator("event.settings.nostage")}</div>}
           {(evtSettings.stages || []).map((s, idx) => (
-            <StageItem
+            <AnnexItemFactory
+              type="stage"
               translator={translator}
-              key={s.id ?? idx}
-              stage={s}
+              data={s}
               onApply={ (stage) => setEvtSettings(evtSettings.update({stages: evtSettings.stages.map((stg) => stg.id === s.id ? stage : stg)})) }
               onRemove={() => setEvtSettings(evtSettings.update({stages: evtSettings.stages.filter((_,i) => i != idx)}))}
             />
@@ -48,6 +47,7 @@ export default function EventSettings({ translator, settings, onApply }) {
           {evtSettings.annexRankings.length === 0 && <div className="muted">{translator("event.settings.noannexranking")}</div>}
           {(evtSettings.annexRankings || []).map((data) => (
             <AnnexItemFactory 
+              type={data.type}
               translator={translator}
               data={data}
               onApply={ (annex) => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.map((r) => r.id === data.id ? annex : r)})) }
