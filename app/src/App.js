@@ -48,14 +48,17 @@ function App() {
       
       const navRaceGroup = new NavigationGroup({id: "stage_" + stage, title: stageName, order: 10 * stage});
       
-      const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 1} );
+      const navConfigRanking = new NavigationItem({id: "config_" + stage, title: translator('navigation.configuration'), order: 1} );
+      navRaceGroup.add(navConfigRanking);
+
+      const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2} );
       navRaceGroup.add(navStageRanking);
       
-      const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: translator('navigation.general'), order: 2} );
+      const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: translator('navigation.general'), order: 3} );
       navRaceGroup.add(navGeneralRanking);
 
       evtSettings.annexRankings.map((r,i) => {console.debug(r);
-        const navAnnexRanking = new NavigationItem({id: "annex_" + stage + "_" + i, title: r.title, order: 3 + i} );
+        const navAnnexRanking = new NavigationItem({id: "annex_" + stage + "_" + i, title: r.title, order: 4 + i} );
         navRaceGroup.add(navAnnexRanking);
       });
 
