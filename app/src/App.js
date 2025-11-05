@@ -46,7 +46,6 @@ function App() {
       if (s && s.name) parts.push(String(s.name));
       const stageName = parts.join(' - ');
       
-      console.debug('nav stageName:', stageName);
       const navRaceGroup = new NavigationGroup({id: `stage${stage}`, title: stageName, order: 2 + stage});
       
       const navStageRanking = new NavigationItem({id: "ranking", title: translator('navigation.ranking'), order: 1} );
