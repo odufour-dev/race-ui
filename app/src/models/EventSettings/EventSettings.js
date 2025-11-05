@@ -143,6 +143,7 @@ export class EventSettings {
 
   addAnnexRanking(type,id){
     const ranking = this.rankingfactory_.build(type,id);
+    ranking.priority = this.annexrankings_.length + 1;
     this.annexrankings_.push(ranking);
     return this.clone();
   }

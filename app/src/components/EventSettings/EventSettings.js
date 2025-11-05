@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './EventSettings.css';
-import AnnexItem from './AnnexItem';
+import { AnnexItemFactory } from './AnnexItemFactory';
 import StageItem from './StageItem';
 
 /**
@@ -46,15 +46,14 @@ export default function EventSettings({ translator, settings, onApply }) {
         <label>{translator("event.settings.annexrankings")}</label>
         <div className="annex-list">
           {evtSettings.annexRankings.length === 0 && <div className="muted">{translator("event.settings.noannexranking")}</div>}
-          {(evtSettings.annexRankings || []).map((a, idx) => (
-            <AnnexItem
+          {(evtSettings.annexRankings || []).map((data) => (
+            <AnnexItemFactory 
               translator={translator}
-              key={a.id ?? idx}
-              annex={a}
-              onApply={ (annex) => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.map((r) => r.id === a.id ? annex : r)})) }
-              onRemove={() => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.filter((r) => r.id != a.id)}))}
+              data={data}
+              onApply={ (annex) => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.map((r) => r.id === data.id ? annex : r)})) }
+              onRemove={ () => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.filter((r) => r.id != data.id)})) } 
             />
-          ))}
+          ))}          
           <div className="annex-actions">
             <select value={annexType} onChange={e => setAnnexType(e.target.value)}>
             {

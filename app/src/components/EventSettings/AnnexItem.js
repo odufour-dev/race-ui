@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-export default function AnnexItem({ translator, annex, onApply, onRemove }) {
+export function AnnexItem( {translator, data, onApply, onRemove} ) {
   
-  const [ item, setItem ] = useState( annex );
+  const [ item, setItem ] = useState( data );
 
   useEffect(() => { onApply && onApply( item ) }, [ item ]);
 
@@ -28,7 +28,7 @@ export default function AnnexItem({ translator, annex, onApply, onRemove }) {
         </div>
 
         <div className="annex-h-right">
-          <span>Type: { item.type }</span>
+          <span>{ translator('event.settings.annex.name') }</span>
           <button type="button" className="btn small danger" onClick={() => onRemove && onRemove(item.id)}>{translator('event.settings.annex.remove')}</button>
         </div>
       </div>
