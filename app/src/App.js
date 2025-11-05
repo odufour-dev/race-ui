@@ -44,7 +44,6 @@ function App() {
       const s = evtSettings.stages[stage-1];
       const parts = [translator('navigation.stage') + " " + String(s.id)];
       if (s && s.name) parts.push(String(s.name));
-      if (s && s.date) parts.push(String(s.date));
       const stageName = parts.join(' - ');
       
       console.debug('nav stageName:', stageName);
