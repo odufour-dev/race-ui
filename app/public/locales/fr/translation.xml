@@ -8,6 +8,7 @@
     <import>Chargement</import>
     <stage>Etape</stage>
     <ranking>Classement</ranking>
+    <general>General</general>
   </navigation>
   <search>
     <placeholder>Rechercher</placeholder>

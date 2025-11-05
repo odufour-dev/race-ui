@@ -8,6 +8,7 @@
     <import>Import</import>
     <stage>Stage</stage>
     <ranking>Ranking</ranking>
+    <general>General</general>
   </navigation>
   <search>
     <placeholder>Search</placeholder>
