@@ -20,3 +20,7 @@
 .actions button:active { transform: translateY(1px) }
 .actions .delete { color: #ef4444 }
 .actions .insert { color: #10b981 }
+
+.edit-toggle { display:flex; align-items:center; gap:8px; margin-bottom:8px }
+.edit-toggle button { padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); cursor:pointer }
+.edit-toggle button.active { background: rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.24) }

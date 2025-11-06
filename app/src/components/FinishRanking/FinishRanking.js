@@ -102,6 +102,7 @@ export default function FinishRanking({ data = [], onChange }) {
   };
 
   const [rows, setRows] = useState(buildRows(data));
+  const [globalEdit, setGlobalEdit] = useState('time');
   const refsMap = React.useRef({});
   const pendingFocus = React.useRef(null);
 
@@ -223,9 +224,46 @@ export default function FinishRanking({ data = [], onChange }) {
     });
   }
 
+  function applyGlobalEdit(mode) {
+    setGlobalEdit(mode);
+    setRows(prev => {
+      if (!prev || prev.length === 0) return prev;
+      const firstTime = prev[0] && prev[0].timeSeconds != null ? prev[0].timeSeconds : null;
+      const next = prev.map((r, idx) => {
+        const copy = { ...r };
+        if (idx === 0) {
+          copy.mode = 'time';
+          return copy;
+        }
+        copy.mode = mode;
+        if (mode === 'delay') {
+          // compute delay from time if needed
+          if ((copy.delaySeconds == null || copy.editDelay === '') && copy.timeSeconds != null && firstTime != null) {
+            copy.delaySeconds = Math.max(0, copy.timeSeconds - firstTime);
+            copy.editDelay = formatMS(copy.delaySeconds);
+          }
+        } else if (mode === 'time') {
+          // compute time from delay if needed
+          if ((copy.timeSeconds == null || copy.editTime === '') && copy.delaySeconds != null && firstTime != null) {
+            copy.timeSeconds = firstTime + copy.delaySeconds;
+            copy.editTime = formatHMS(copy.timeSeconds);
+          }
+        }
+        return copy;
+      });
+      return ensureTrailingEmpty(next);
+    });
+  }
+
   useEffect(() => {
     setRows(prev => ensureTrailingEmpty(buildRows(data)));
   }, [JSON.stringify(data)]);
+
+  // ensure rows honor initial globalEdit mode on mount/when data loads
+  useEffect(() => {
+    applyGlobalEdit(globalEdit);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (typeof onChange === 'function') {
@@ -419,6 +457,11 @@ export default function FinishRanking({ data = [], onChange }) {
 
   return (
     <div className="finish-ranking">
+      <div className="edit-toggle">
+        <span className="muted">Editable column:</span>
+        <button className={globalEdit === 'time' ? 'active' : ''} onClick={() => applyGlobalEdit('time')}>Time</button>
+        <button className={globalEdit === 'delay' ? 'active' : ''} onClick={() => applyGlobalEdit('delay')}>Delay</button>
+      </div>
       <table className="finish-table">
         <thead>
           <tr>
