@@ -10,6 +10,7 @@ import RegistrationTable from './components/RegistrationTable/RegistrationTable'
 import InformationBanner from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
 import EventSettings from './components/EventSettings/EventSettings';
+import FinishRanking from './components/FinishRanking/FinishRanking';
 
 function App() {
 
@@ -51,7 +52,9 @@ function App() {
       const navConfigRanking = new NavigationItem({id: "config_" + stage, title: translator('navigation.configuration'), order: 1} );
       navRaceGroup.add(navConfigRanking);
 
-      const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2} );
+      const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2, component: 
+        (prop) => (<FinishRanking />)
+      } );
       navRaceGroup.add(navStageRanking);
       
       const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: translator('navigation.general'), order: 3} );

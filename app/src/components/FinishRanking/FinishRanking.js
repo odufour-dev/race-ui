@@ -384,6 +384,7 @@ export default function FinishRanking({ data = [], onChange }) {
       <table className="finish-table">
         <thead>
           <tr>
+            <th>#</th>
             <th>Bib</th>
             <th>Time (HH:MM:SS)</th>
             <th>Delay (MM:SS)</th>
@@ -392,6 +393,7 @@ export default function FinishRanking({ data = [], onChange }) {
         <tbody>
           {rows.map((r, idx) => (
             <tr key={r.id} className={idx===0 ? 'winner' : ''}>
+              <td className="rank-cell">{idx + 1}</td>
               <td>
                 <input
                   ref={el => setCellRef(r.id, 'bib', el)}
