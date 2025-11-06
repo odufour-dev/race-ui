@@ -3,7 +3,6 @@ import './App.css';
 import React, { useContext, useEffect, useState, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RaceModel } from './models/RaceModel/RaceModel';
 import Sidebar from './components/Sidebar/Sidebar';
 import { NavigationItem, NavigationGroup, NavigationRegistry } from './navigationPanel/navigationPanel';
 import RegistrationTable from './components/RegistrationTable/RegistrationTable';
@@ -12,9 +11,14 @@ import ExcelReader from './components/ExcelReader/ExcelReader';
 import EventSettings from './components/EventSettings/EventSettings';
 import FinishRanking from './components/FinishRanking/FinishRanking';
 
+import { RaceModel } from './models/RaceModel/RaceModel';
+
+import { Time } from "./tools/Time/Time";
+
 function App() {
 
   const { t: translator } = useTranslation('translation');
+  const time = new Time();
 
   const [ raceModel, setRaceModel ]     = useState( new RaceModel() );
   const [ nav, setNav ]                 = useState( new NavigationRegistry() );
@@ -53,7 +57,7 @@ function App() {
       navRaceGroup.add(navConfigRanking);
 
       const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2, component: 
-        (prop) => (<FinishRanking />)
+        (props) => (<FinishRanking {...props} data={[]} time={time} />)
       } );
       navRaceGroup.add(navStageRanking);
       

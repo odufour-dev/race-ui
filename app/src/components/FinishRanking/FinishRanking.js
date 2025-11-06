@@ -1,81 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import './FinishRanking.css';
 
-// Helpers: parse/format time
-function parseHMS(input) {
-  if (input == null) return null;
-  const s = String(input).trim();
-  if (!s) return null;
-  const parts = s.split(':').map(p => p.trim());
-  // allow ss, mm:ss, hh:mm:ss
-  if (parts.length === 1) {
-    const sec = Number(parts[0]);
-    return Number.isFinite(sec) ? Math.floor(sec) : null;
-  }
-  if (parts.length === 2) {
-    const m = Number(parts[0]);
-    const sec = Number(parts[1]);
-    if (!Number.isFinite(m) || !Number.isFinite(sec)) return null;
-    return Math.floor(m * 60 + sec);
-  }
-  if (parts.length === 3) {
-    const h = Number(parts[0]);
-    const m = Number(parts[1]);
-    const sec = Number(parts[2]);
-    if (![h,m,sec].every(Number.isFinite)) return null;
-    return Math.floor(h * 3600 + m * 60 + sec);
-  }
-  return null;
-}
-
-function formatHMS(secs) {
-  const s = Number(secs) || 0;
-  const abs = Math.max(0, Math.floor(s));
-  const h = Math.floor(abs / 3600);
-  const m = Math.floor((abs % 3600) / 60);
-  const sec = abs % 60;
-  const hh = String(h).padStart(2, '0');
-  const mm = String(m).padStart(2, '0');
-  const ss = String(sec).padStart(2, '0');
-  return `${hh}:${mm}:${ss}`;
-}
-
-function parseMS(input) {
-  if (input == null) return null;
-  const s = String(input).trim();
-  if (!s) return null;
-  const parts = s.split(':').map(p => p.trim());
-  if (parts.length === 1) {
-    const sec = Number(parts[0]);
-    return Number.isFinite(sec) ? Math.floor(sec) : null;
-  }
-  if (parts.length === 2) {
-    const m = Number(parts[0]);
-    const sec = Number(parts[1]);
-    if (!Number.isFinite(m) || !Number.isFinite(sec)) return null;
-    return Math.floor(m * 60 + sec);
-  }
-  return null;
-}
-
-function formatMS(secs) {
-  const s = Number(secs) || 0;
-  const abs = Math.max(0, Math.floor(s));
-  const m = Math.floor(abs / 60);
-  const sec = abs % 60;
-  const mm = String(m).padStart(2, '0');
-  const ss = String(sec).padStart(2, '0');
-  return `${mm}:${ss}`;
-}
-
 // Row shape: { id, bib, timeSeconds, delaySeconds, mode }
-export default function FinishRanking({ data = [], onChange }) {
+export default function FinishRanking({ data = [], time, onChange }) {
   // Initialize rows from data prop. data expected as array of { id?, bib?, time?: 'HH:MM:SS' }
   const buildRows = (src) => {
     const rows = (src || []).map((r, idx) => {
       const id = r.id ?? `r${idx}`;
-      const timeSeconds = r.time != null ? parseHMS(r.time) : null;
-      return { id, bib: r.bib ?? '', timeSeconds, delaySeconds: null, mode: null, editTime: timeSeconds != null ? formatHMS(timeSeconds) : '', editDelay: '' };
+      const timeSeconds = r.time != null ? time.parseHMS(r.time) : null;
+      return { id, bib: r.bib ?? '', timeSeconds, delaySeconds: null, mode: null, editTime: timeSeconds != null ? time.formatHMS(timeSeconds) : '', editDelay: '' };
     });
     // compute delays relative to first row time if available
     const firstTime = rows[0] && rows[0].timeSeconds != null ? rows[0].timeSeconds : null;
@@ -85,13 +18,13 @@ export default function FinishRanking({ data = [], onChange }) {
         row.delaySeconds = 0;
         row.mode = 'time';
         if (row.timeSeconds == null) {
-          row.timeSeconds = 0; row.editTime = formatHMS(0);
+          row.timeSeconds = 0; row.editTime = time.formatHMS(0);
         }
-        row.editDelay = formatMS(0);
+        row.editDelay = time.formatMS(0);
       } else {
         if (row.timeSeconds != null && firstTime != null) {
           row.delaySeconds = Math.max(0, row.timeSeconds - firstTime);
-          row.editDelay = formatMS(row.delaySeconds);
+          row.editDelay = time.formatMS(row.delaySeconds);
         } else {
           row.delaySeconds = null;
           row.editDelay = '';
@@ -240,13 +173,13 @@ export default function FinishRanking({ data = [], onChange }) {
           // compute delay from time if needed
           if ((copy.delaySeconds == null || copy.editDelay === '') && copy.timeSeconds != null && firstTime != null) {
             copy.delaySeconds = Math.max(0, copy.timeSeconds - firstTime);
-            copy.editDelay = formatMS(copy.delaySeconds);
+            copy.editDelay = time.formatMS(copy.delaySeconds);
           }
         } else if (mode === 'time') {
           // compute time from delay if needed
           if ((copy.timeSeconds == null || copy.editTime === '') && copy.delaySeconds != null && firstTime != null) {
             copy.timeSeconds = firstTime + copy.delaySeconds;
-            copy.editTime = formatHMS(copy.timeSeconds);
+            copy.editTime = time.formatHMS(copy.timeSeconds);
           }
         }
         return copy;
@@ -268,7 +201,7 @@ export default function FinishRanking({ data = [], onChange }) {
   useEffect(() => {
     if (typeof onChange === 'function') {
       // expose simplified data to parent
-      const out = rows.map(r => ({ id: r.id, bib: r.bib, time: r.timeSeconds != null ? formatHMS(r.timeSeconds) : null, delay: r.delaySeconds != null ? formatMS(r.delaySeconds) : null }));
+      const out = rows.map(r => ({ id: r.id, bib: r.bib, time: r.timeSeconds != null ? time.formatHMS(r.timeSeconds) : null, delay: r.delaySeconds != null ? time.formatMS(r.delaySeconds) : null }));
       onChange(out);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -284,26 +217,26 @@ export default function FinishRanking({ data = [], onChange }) {
         const copy = { ...r };
         if (idx === 0) {
           copy.delaySeconds = 0;
-          copy.editDelay = formatMS(0);
-          if (copy.timeSeconds == null) { copy.timeSeconds = 0; copy.editTime = formatHMS(0); }
+          copy.editDelay = time.formatMS(0);
+          if (copy.timeSeconds == null) { copy.timeSeconds = 0; copy.editTime = time.formatHMS(0); }
         } else {
           if (copy.mode === 'time') {
             // ensure delay updates from time
             if (copy.timeSeconds != null && firstTime != null) {
               copy.delaySeconds = Math.max(0, copy.timeSeconds - firstTime);
-              copy.editDelay = formatMS(copy.delaySeconds);
+              copy.editDelay = time.formatMS(copy.delaySeconds);
             }
           } else if (copy.mode === 'delay') {
             // ensure time updates from delay
             if (copy.delaySeconds != null && firstTime != null) {
               copy.timeSeconds = firstTime + copy.delaySeconds;
-              copy.editTime = formatHMS(copy.timeSeconds);
+              copy.editTime = time.formatHMS(copy.timeSeconds);
             }
           } else {
             // if neither mode set, keep computed delay if possible
             if (copy.timeSeconds != null && firstTime != null) {
               copy.delaySeconds = Math.max(0, copy.timeSeconds - firstTime);
-              copy.editDelay = formatMS(copy.delaySeconds);
+              copy.editDelay = time.formatMS(copy.delaySeconds);
             }
           }
         }
@@ -327,30 +260,30 @@ export default function FinishRanking({ data = [], onChange }) {
         const cur = next[idx];
         const prevRow = prev[idx - 1];
         if (prevRow && prevRow.timeSeconds != null && (!cur.editTime || !String(cur.editTime).trim())) {
-          next[idx] = { ...cur, timeSeconds: prevRow.timeSeconds, editTime: formatHMS(prevRow.timeSeconds), mode: 'time' };
+          next[idx] = { ...cur, timeSeconds: prevRow.timeSeconds, editTime: time.formatHMS(prevRow.timeSeconds), mode: 'time' };
           // recompute delays relative to first row
           const firstTime = next[0] && next[0].timeSeconds != null ? next[0].timeSeconds : null;
           for (let i = 0; i < next.length; i++) {
             const r = next[i];
             if (i === 0) {
               r.delaySeconds = 0;
-              r.editDelay = formatMS(0);
-              if (r.timeSeconds == null) { r.timeSeconds = 0; r.editTime = formatHMS(0); }
+              r.editDelay = time.formatMS(0);
+              if (r.timeSeconds == null) { r.timeSeconds = 0; r.editTime = time.formatHMS(0); }
             } else {
               if (r.mode === 'time') {
                 if (r.timeSeconds != null && firstTime != null) {
                   r.delaySeconds = Math.max(0, r.timeSeconds - firstTime);
-                  r.editDelay = formatMS(r.delaySeconds);
+                  r.editDelay = time.formatMS(r.delaySeconds);
                 }
               } else if (r.mode === 'delay') {
                 if (r.delaySeconds != null && firstTime != null) {
                   r.timeSeconds = firstTime + r.delaySeconds;
-                  r.editTime = formatHMS(r.timeSeconds);
+                  r.editTime = time.formatHMS(r.timeSeconds);
                 }
               } else {
                 if (r.timeSeconds != null && firstTime != null) {
                   r.delaySeconds = Math.max(0, r.timeSeconds - firstTime);
-                  r.editDelay = formatMS(r.delaySeconds);
+                  r.editDelay = time.formatMS(r.delaySeconds);
                 }
               }
             }
@@ -438,7 +371,7 @@ export default function FinishRanking({ data = [], onChange }) {
   function commitTime(id) {
     const r = rows.find(x => x.id === id);
     if (!r) return;
-    const secs = parseHMS(r.editTime);
+    const secs = time.parseHMS(r.editTime);
     if (secs == null) return; // ignore invalid
     updateRow(id, { timeSeconds: secs });
   }
@@ -450,7 +383,7 @@ export default function FinishRanking({ data = [], onChange }) {
   function commitDelay(id) {
     const r = rows.find(x => x.id === id);
     if (!r) return;
-    const secs = parseMS(r.editDelay);
+    const secs = time.parseMS(r.editDelay);
     if (secs == null) return;
     updateRow(id, { delaySeconds: secs });
   }
