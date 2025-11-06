@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import './FinishRanking.css';
 
 // Helpers: parse/format time
@@ -105,6 +105,11 @@ export default function FinishRanking({ data = [], onChange }) {
   const refsMap = React.useRef({});
   const pendingFocus = React.useRef(null);
 
+  function newEmptyRow() {
+    const id = `r${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
+    return { id, bib: '', timeSeconds: null, delaySeconds: null, mode: null, editTime: '', editDelay: '' };
+  }
+
   function setCellRef(id, col, el) {
     if (!refsMap.current[id]) refsMap.current[id] = {};
     refsMap.current[id][col] = el;
@@ -179,10 +184,43 @@ export default function FinishRanking({ data = [], onChange }) {
     }
     // append empty if last is not empty
     if (copy.length === 0 || (String(copy[copy.length - 1].bib || '').trim() || String(copy[copy.length - 1].editTime || '').trim() || String(copy[copy.length - 1].editDelay || '').trim())) {
-      const id = `r${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
-      copy.push({ id, bib: '', timeSeconds: null, delaySeconds: null, mode: null, editTime: '', editDelay: '' });
+      copy.push(newEmptyRow());
     }
     return copy;
+  }
+
+  // compute duplicate bibs set
+  const duplicateBibs = useMemo(() => {
+    const map = Object.create(null);
+    (rows || []).forEach(r => {
+      const b = String(r.bib || '').trim();
+      if (!b) return;
+      map[b] = (map[b] || 0) + 1;
+    });
+    const s = new Set();
+    Object.keys(map).forEach(k => { if (map[k] > 1) s.add(k); });
+    return s;
+  }, [rows]);
+
+  function insertRowAt(index) {
+    pendingFocus.current = { row: index, col: 'bib' };
+    setRows(prev => {
+      const copy = prev.slice();
+      copy.splice(index, 0, newEmptyRow());
+      return ensureTrailingEmpty(copy);
+    });
+  }
+
+  function deleteRowAt(index) {
+    setRows(prev => {
+      if (index < 0 || index >= prev.length) return prev;
+      const copy = prev.slice();
+      copy.splice(index, 1);
+      // set focus to same index (next row) if possible
+      const nextIndex = Math.min(index, copy.length - 1);
+      pendingFocus.current = { row: Math.max(0, nextIndex), col: 'bib' };
+      return ensureTrailingEmpty(copy);
+    });
   }
 
   useEffect(() => {
@@ -388,11 +426,13 @@ export default function FinishRanking({ data = [], onChange }) {
             <th>Bib</th>
             <th>Time (HH:MM:SS)</th>
             <th>Delay (MM:SS)</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {rows.map((r, idx) => (
-            <tr key={r.id} className={idx===0 ? 'winner' : ''}>
+            <tr key={r.id} className={[idx===0 ? 'winner' : '', duplicateBibs.has(String(r.bib || '').trim()) ? 'duplicate' : ''].filter(Boolean).join(' ')}>
+              
               <td className="rank-cell">{idx + 1}</td>
               <td>
                 <input
@@ -426,6 +466,10 @@ export default function FinishRanking({ data = [], onChange }) {
                   onBlur={() => commitDelay(r.id)}
                   disabled={idx === 0 || r.mode === 'time'}
                 />
+              </td>
+              <td className="actions">
+                <button title={`Insert row after ${idx + 1}`} className="insert" onClick={() => insertRowAt(idx + 1)}>＋</button>
+                <button title={`Delete row ${idx + 1}`} className="delete" onClick={() => deleteRowAt(idx)}>-</button>
               </td>
             </tr>
           ))}

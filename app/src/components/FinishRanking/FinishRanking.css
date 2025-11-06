@@ -8,3 +8,15 @@
 .time-input[disabled], .delay-input[disabled] { opacity: 0.5; }
 .finish-table tbody tr:hover { background: rgba(255,255,255,0.01); }
 .finish-table tbody tr td .muted { color: #94a3b8 }
+
+/* duplicate bib highlight */
+.finish-table tbody tr.duplicate { background: rgba(220,38,38,0.06); }
+
+.rank-cell { width: 48px; text-align: center; font-weight: 600; color: #94a3b8 }
+
+.actions { width: 88px; text-align: center }
+.actions button { margin: 0 4px; padding: 6px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.02); color: inherit; cursor: pointer }
+.actions button:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.06) }
+.actions button:active { transform: translateY(1px) }
+.actions .delete { color: #ef4444 }
+.actions .insert { color: #10b981 }
