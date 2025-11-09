@@ -11,6 +11,8 @@
     <name>Name</name>
     <firstName>First name</firstName>
     <club>Club</club>
+    <sex>Sex</sex>
+    <age>Age</age>
     <category>Category</category>
     <serie>Serie</serie>
     <licenseId>License ID</licenseId>

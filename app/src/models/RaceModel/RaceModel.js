@@ -1,5 +1,57 @@
-// src/models/RaceModels.js
+// src/models/RaceModel.js
 import React, { createContext, useState } from 'react';
+
+import { EventSettings } from '../EventSettings/EventSettings';
+
+class Classification {
+
+  get Level(){
+    return [
+      'elite',
+      'open',
+      'access',
+    ];
+  }
+
+  get Category(){
+    return [
+      '',
+      'pro',
+      'elite',
+      'open1',
+      'open2',
+      'open3',
+      'access1',
+      'access2',
+      'access3',
+      'access4',
+    ];
+  }
+
+  get Age(){
+    return [
+      'senior',
+      'master',
+      'veteran',
+      'u23',
+      'u19',
+      'u17',
+      'u15',
+      'u13',
+      'u11',
+      'u9',
+      'u7',
+    ];
+  }
+
+  get Sex(){
+    return [
+      'H',
+      'F',
+    ];
+  }
+
+}
 
 // 👤 Racer class
 export class Racer {
@@ -11,7 +63,6 @@ export class Racer {
     this.sex          = "";
     this.age          = "";
     this.category     = "";
-    this.subcategory  = "";
     this.club         = "";
     this.uciID        = "";
     this.ffcID        = "";
@@ -57,8 +108,8 @@ export class TimingRecord {
 
 class RacerManager {
 
-  constructor() {
-    this.racers = [];
+  constructor(racers = []) {
+    this.racers = racers;
   }
 
   add(data) {
@@ -66,18 +117,54 @@ class RacerManager {
     Object.keys(data).map((k) => {
       if (k in racer){
         racer[k] = data[k];
+      } else {
+        console.log("Unknown racer field: ", k);
       }
     });    
     this.racers.push(racer);
+    return new RacerManager(this.racers);
   }
 
   clear(){
     this.racers = [];
   }
 
+  getAll() {
+    return this.racers;
+  }
+
   getFields() {
     return ['id', 'firstName', 'lastName', 'sex', 'age', 'category', 'subcategory', 'club', 'uciID', 'ffcID'];
   }
+
+  edit(index, field, newValue) {
+    if (index < 0 || index >= this.racers.length) return;
+    if (!(field in this.racers[index])) return;
+    this.racers[index][field] = newValue;
+    return new RacerManager(this.racers);
+  }
+
+  remove(index){
+    this.racers = this.racers.filter((_,idx) => idx !== index);
+    return new RacerManager(this.racers);
+  }
+
+  generateIds() {
+    this.racers = this.racers.map((racer, index) => {
+      racer.id = index + 1;
+      return racer;
+    });
+    return new RacerManager(this.racers);
+  }
+
+  shuffleRacers() {
+    for (let i = this.racers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.racers[i], this.racers[j]] = [this.racers[j], this.racers[i]];
+    }
+    return new RacerManager(this.racers);
+  }
+  
   get length() {
     return this.racers.length;
   }
@@ -130,18 +217,44 @@ export class RaceManager {
 
 export class RaceModel {
 
-  constructor() {
-    this.racers_ = new RacerManager();
+  constructor(racers = new RacerManager(), eventsettings = new EventSettings(), classifications = new Classification()) {
+    this.racers_ = racers;
+    this.classifications_ = classifications;
+    this.eventsettings_ = eventsettings;
+  }
+
+  clone(){
+    return new RaceModel(this.racers_, this.eventsettings_, this.classifications_);
   }
 
   getRacerManager() {
     return this.racers_;
   }
 
+  updateRacerManager(racerManager) {
+    this.racers_ = racerManager;
+    return this.clone();
+  }
+
+  getEventSettings(){
+    return this.eventsettings_;
+  }
+
+  updateEventSettings(eventsettings){
+    this.eventsettings_ = eventsettings;
+    return this.clone();
+  }
+
+  getClassifications(){
+    return this.classifications_;
+  }
+
 };
 
+/*
 export const RaceModelContext = createContext();
 export const RaceModelProvider = ({ children }) => {
+
   const [raceModel, setRaceModel] = useState(new RaceModel());
 
   // Pour forcer le re-render après mutation
@@ -154,4 +267,6 @@ export const RaceModelProvider = ({ children }) => {
       {children}
     </RaceModelContext.Provider>
   );
+
 };
+*/

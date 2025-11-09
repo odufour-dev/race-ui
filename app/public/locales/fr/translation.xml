@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<translation>
+  <navigation>
+    <event>Evénement</event>
+    <racers>Coureurs</racers>
+    <configuration>Configuration</configuration>
+    <registration>Enregistrement</registration>
+    <import>Chargement</import>
+    <stage>Etape</stage>
+    <ranking>Classement</ranking>
+    <general>General</general>
+  </navigation>
+  <search>
+    <placeholder>Rechercher</placeholder>
+  </search>
+  <event>
+    <settings>
+      <addstage>Ajouter</addstage>
+      <title>Paramètres de l'événement</title>
+      <nstages>Nombre d'étapes</nstages>
+      <annexrankings>Classements annexes</annexrankings>
+      <noannexranking>Aucun classement annexe défini</noannexranking>
+      <addannexranking>Ajouter un classement annexe</addannexranking>
+      <apply>Appliquer</apply>
+      <cancel>Annuler</cancel>
+      <annex>
+        <title>Titre</title>
+        <priority>Priorité</priority>
+        <type>
+          <team>Équipe</team>
+          <points>Points</points>
+          <filter>Filtre</filter>
+        </type>
+        <remove>Supprimer</remove>
+        <teamsize>Taille de l'équipe</teamsize>
+        <points>Points (par place)</points>
+        <filter>Expression de filtre</filter>
+        <filterdescription>Une expression simple pour filtrer les coureurs (ex: category=='elite')</filterdescription>
+      </annex>
+      <stage>
+        <nostage>Aucune étape définie</nostage>
+        <addstage>Ajouter une étape</addstage>
+        <name>Nom</name>
+        <date>Date</date>
+        <distance>Distance (km)</distance>
+        <stage>Étape</stage>
+        <remove>Supprimer</remove>
+      </stage>
+      <points>
+        <title>Nom du classement</title>
+        <name>Points</name>
+        <remove>Supprimer</remove>
+        <priority>Ordre</priority>
+      </points>
+      <team>
+        <title>Nom du classement</title>
+        <name>par équipe</name>
+        <remove>Supprimer</remove>
+        <priority>Ordre</priority>
+        <nracers>Nb coureurs</nracers>
+      </team>
+      <filter>
+        <title>Nom du classement</title>
+        <name>général</name>
+        <remove>Supprimer</remove>
+        <priority>Ordre</priority>
+        <pattern>Filtre</pattern>
+      </filter>
+    </settings>
+  </event>
+</translation>

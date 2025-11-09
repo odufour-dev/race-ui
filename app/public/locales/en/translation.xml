@@ -1,20 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <translation>
-  <registration>
-    <title>Registration</title>
-    <filter>Filter all...</filter>
-    <addUser>Add user</addUser>
-    <usersCount>Users count: {{count}}</usersCount>
-  </registration>
-  <columns>
-    <bib>Bib</bib>
-    <name>Name</name>
-    <firstName>First name</firstName>
-    <club>Club</club>
-    <category>Category</category>
-    <serie>Serie</serie>
-    <licenseId>License ID</licenseId>
-    <uciId>UCI ID</uciId>
-    <actions>Actions</actions>
-  </columns>
+  <navigation>
+    <event>Event</event>
+    <racers>Racers</racers>
+    <configuration>Configuration</configuration>
+    <registration>Registration</registration>
+    <import>Import</import>
+    <stage>Stage</stage>
+    <ranking>Ranking</ranking>
+    <general>General</general>
+  </navigation>
+  <search>
+    <placeholder>Search</placeholder>
+  </search>
+  <event>
+    <settings>
+      <addstage>Add</addstage>
+      <title>Event settings</title>
+      <nstages>Number of stages</nstages>
+      <annexrankings>Annex rankings</annexrankings>
+      <noannexranking>No annex rankings defined</noannexranking>
+      <addannexranking>Add annex ranking</addannexranking>
+      <apply>Apply</apply>
+      <cancel>Cancel</cancel>
+      <annex>
+        <title>Title</title>
+        <priority>Priority</priority>
+        <type>
+          <team>Team</team>
+          <points>Points</points>
+          <filter>Filter</filter>
+        </type>
+        <remove>Remove</remove>
+        <teamsize>Team size</teamsize>
+        <points>Points (per place)</points>
+        <filter>Filter expression</filter>
+        <filterdescription>A simple expression to filter racers (e.g. category=='elite')</filterdescription>
+      </annex>
+      <stage>
+        <nostage>No stages defined</nostage>
+        <addstage>Add stage</addstage>
+        <name>Name</name>
+        <date>Date</date>
+        <distance>Distance (km)</distance>
+        <stage>Stage</stage>
+        <remove>Remove</remove>
+      </stage>
+      <points>
+        <title>Name</title>
+        <name>Points</name>
+        <remove>Remove</remove>
+      </points>
+      <team>
+        <title>Name</title>
+        <name>Per team</name>
+        <remove>Remove</remove>
+        <priority>Order</priority>
+        <nracers>Nb racerss</nracers>
+      </team>
+      <filter>
+        <title>Name</title>
+        <name>General</name>
+        <remove>Remove</remove>
+        <priority>Order</priority>
+        <pattern>Filter</pattern>
+      </filter>
+    </settings>
+  </event>
 </translation>

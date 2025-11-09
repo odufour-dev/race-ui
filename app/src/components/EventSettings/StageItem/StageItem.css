@@ -1,0 +1,32 @@
+.stage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stage-item {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.stage-h-left { display:flex; gap:10px; align-items:center; }
+.stage-h-right { display:flex; gap:8px; align-items:center; }
+
+.stage-title { min-width:220px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
+.stage-priority { padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
+
+.stage-body { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
+.stage-field label { font-weight:600; margin-bottom:6px; display:block; color:#dbeafe; }
+.stage-field input, .stage-field select { background: rgba(255,255,255,0.02); border:1px solid var(--border); color:inherit }
+
+.stage-actions { display:flex; gap:8px; align-items:center; margin-top:6px }
+.stage-actions select { background: rgba(255,255,255,0.02); border-radius:8px; color:inherit }
+
+@media (max-width: 720px) {
+  .stage-h-left { flex-direction: column; align-items:stretch }
+}
