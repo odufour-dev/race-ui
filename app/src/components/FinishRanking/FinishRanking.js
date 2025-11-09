@@ -200,11 +200,14 @@ export default function FinishRanking({ data = [], time, onChange }) {
 
   useEffect(() => {
     if (typeof onChange === 'function') {
-      // expose simplified data to parent
-      const out = rows.map(r => ({ id: r.id, bib: r.bib, time: r.timeSeconds != null ? time.formatHMS(r.timeSeconds) : null, delay: r.delaySeconds != null ? time.formatMS(r.delaySeconds) : null }));
+      const out = rows.map((r,idx) => ({ 
+        id: r.id, 
+        position: idx + 1,
+        bib: r.bib, 
+        time: r.timeSeconds != null ? time.formatHMS(r.timeSeconds) : null
+      })).filter(r => String(r.bib || '').trim() && r.time != null);
       onChange(out);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
 
   function updateRow(id, patch) {

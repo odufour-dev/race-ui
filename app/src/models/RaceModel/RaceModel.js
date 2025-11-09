@@ -251,22 +251,4 @@ export class RaceModel {
 
 };
 
-/*
-export const RaceModelContext = createContext();
-export const RaceModelProvider = ({ children }) => {
 
-  const [raceModel, setRaceModel] = useState(new RaceModel());
-
-  // Pour forcer le re-render après mutation
-  const forceUpdate = () => {
-    setRaceModel(Object.assign(new RaceModel(), raceModel));
-  };
-
-  return (
-    <RaceModelContext.Provider value={{ raceModel, forceUpdate }}>
-      {children}
-    </RaceModelContext.Provider>
-  );
-
-};
-*/

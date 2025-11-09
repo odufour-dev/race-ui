@@ -57,14 +57,14 @@ function App() {
       navRaceGroup.add(navConfigRanking);
 
       const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2, component: 
-        (props) => (<FinishRanking {...props} data={[]} time={time} />)
+        (props) => (<FinishRanking {...props} data={[]} time={time} onChange={(data)=>console.debug(data)}/>)
       } );
       navRaceGroup.add(navStageRanking);
       
       const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: translator('navigation.general'), order: 3} );
       navRaceGroup.add(navGeneralRanking);
 
-      evtSettings.annexRankings.map((r,i) => {console.debug(r);
+      evtSettings.annexRankings.map((r,i) => {
         const navAnnexRanking = new NavigationItem({id: "annex_" + stage + "_" + i, title: r.title, order: 4 + i} );
         navRaceGroup.add(navAnnexRanking);
       });
