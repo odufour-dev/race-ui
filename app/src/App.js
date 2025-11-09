@@ -9,7 +9,7 @@ import RegistrationTable from './components/RegistrationTable/RegistrationTable'
 import InformationBanner from './components/InformationBanner/InformationBanner';
 import ExcelReader from './components/ExcelReader/ExcelReader';
 import EventSettings from './components/EventSettings/EventSettings';
-import FinishRanking from './components/FinishRanking/FinishRanking';
+import TimeRankingTable from './components/TimeRankingTable/TimeRankingTable';
 
 import { RaceModel } from './models/RaceModel/RaceModel';
 
@@ -57,7 +57,7 @@ function App() {
       navRaceGroup.add(navConfigRanking);
 
       const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2, component: 
-        (props) => (<FinishRanking {...props} data={[]} time={time} onChange={(data)=>console.debug(data)}/>)
+        (props) => (<TimeRankingTable {...props} data={[]} time={time} onChange={(data)=>console.debug(data)}/>)
       } );
       navRaceGroup.add(navStageRanking);
       

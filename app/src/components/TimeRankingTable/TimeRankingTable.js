@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import './FinishRanking.css';
+import './TimeRankingTable.css';
 
 // Row shape: { id, bib, timeSeconds, delaySeconds, mode }
 export default function FinishRanking({ data = [], time, onChange }) {
