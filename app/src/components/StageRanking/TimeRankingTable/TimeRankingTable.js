@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import './TimeRankingTable.css';
 
 // Row shape: { id, bib, timeSeconds, delaySeconds, mode }
-export default function FinishRanking({ data = [], time, onChange }) {
+export default function TimeRankingTable({ data = [], time, onChange }) {
   // Initialize rows from data prop. data expected as array of { id?, bib?, time?: 'HH:MM:SS' }
   const buildRows = (src) => {
     const rows = (src || []).map((r, idx) => {
@@ -392,13 +392,13 @@ export default function FinishRanking({ data = [], time, onChange }) {
   }
 
   return (
-    <div className="finish-ranking">
+    <div className="time-ranking-table">
       <div className="edit-toggle">
         <span className="muted">Editable column:</span>
         <button className={globalEdit === 'time' ? 'active' : ''} onClick={() => applyGlobalEdit('time')}>Time</button>
         <button className={globalEdit === 'delay' ? 'active' : ''} onClick={() => applyGlobalEdit('delay')}>Delay</button>
       </div>
-      <table className="finish-table">
+      <table className="ranking-table">
         <thead>
           <tr>
             <th>#</th>

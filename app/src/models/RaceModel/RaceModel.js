@@ -235,15 +235,20 @@ export class RaceModel {
     return this.eventsettings_;
   }
 
+  updateEventSettings(eventsettings){
+    let data = this.clone();
+    data.eventsettings_ = eventsettings;
+    return data;
+  }
+
   updateRacerManager(racerManager) {
     let data = this.clone();
     data.racers_ = racerManager;
     return data;
   }
 
-  updateEventSettings(eventsettings){
+  updateStageMain(stage,ranking){
     let data = this.clone();
-    data.eventsettings_ = eventsettings;
     return data;
   }
 
