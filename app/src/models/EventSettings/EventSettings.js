@@ -80,23 +80,32 @@ export class FilterRanking extends AnnexRanking {
       this.pattern_ = pattern;
     }
 
+    clone(){
+      return new FilterRanking(this.id_,this.type_,this.title_,this.priority_,this.pattern_);
+    }
+
     update(settings){
-        this.updateCommon(settings);
-        console.debug(settings);
-        if ("pattern" in settings){
-          this.pattern_ = settings.pattern;
-        }
-        return new FilterRanking(this.id_,this.type_,this.title_,this.priority_,this.pattern_);
+      let data = this.clone();
+      data.updateCommon(settings);
+      if ("pattern" in settings){
+        data.pattern_ = settings.pattern;
+      }
+      return data;
     }
 
 }
 
 export class PointsRanking extends AnnexRanking {
 
-    update(settings){
-        this.updateCommon(settings);
-        return new PointsRanking(this.id_,this.type_,this.title_,this.priority_);
-    }
+  clone(){
+    return new PointsRanking(this.id_,this.type_,this.title_,this.priority_);
+  }
+
+  update(settings){
+    let data = this.clone();
+    data.updateCommon(settings);
+    return data;
+  }
 
 }
 
@@ -109,12 +118,17 @@ export class TeamRanking extends AnnexRanking {
 
     get nracers(){return this.nracers_;}
 
+    clone(){
+      return new TeamRanking(this.id_,this.type_,this.title_,this.priority_,this.nracers_);
+    }
+
     update(settings){
-        this.updateCommon(settings);
-        if ("nracers" in settings){
-          this.nracers_ = settings.nracers;
-        }
-        return new TeamRanking(this.id_,this.type_,this.title_,this.priority_,this.nracers_);
+      let data = this.clone();
+      data.updateCommon(settings);
+      if ("nracers" in settings){
+        data.nracers_ = settings.nracers;
+      }
+      return data;
     }
 
 }
@@ -179,20 +193,21 @@ export class EventSettings {
 
   update(settings){
 
+    let data = this.clone();
     if (settings.stages){
-      this.stages_ = settings.stages.map((s,idx) => {
+      data.stages_ = settings.stages.map((s,idx) => {
         const stage = new Stage(s.id ?? idx+1);
         return stage.update(s);
       });
     }
 
     if (settings.annexRankings){
-        this.annexrankings_ = settings.annexRankings.map((r) => {
-            const ranking = this.rankingfactory_.build(r.type,r.id);
+        data.annexrankings_ = settings.annexRankings.map((r) => {
+            const ranking = data.rankingfactory_.build(r.type,r.id);
             return ranking.update(r);
         })
     }
-    return this.clone();
+    return data;
   }
 
 }

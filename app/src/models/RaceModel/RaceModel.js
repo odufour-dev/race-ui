@@ -230,19 +230,21 @@ export class RaceModel {
   getRacerManager() {
     return this.racers_;
   }
-
-  updateRacerManager(racerManager) {
-    this.racers_ = racerManager;
-    return this.clone();
-  }
-
+  
   getEventSettings(){
     return this.eventsettings_;
   }
 
+  updateRacerManager(racerManager) {
+    let data = this.clone();
+    data.racers_ = racerManager;
+    return data;
+  }
+
   updateEventSettings(eventsettings){
-    this.eventsettings_ = eventsettings;
-    return this.clone();
+    let data = this.clone();
+    data.eventsettings_ = eventsettings;
+    return data;
   }
 
   getClassifications(){
