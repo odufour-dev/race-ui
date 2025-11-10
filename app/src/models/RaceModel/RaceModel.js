@@ -56,17 +56,42 @@ class Classification {
 // 👤 Racer class
 export class Racer {
 
-  constructor() {
-    this.id           = "";
-    this.firstName    = "";
-    this.lastName     = "";
-    this.sex          = "";
-    this.age          = "";
-    this.category     = "";
-    this.club         = "";
-    this.uciID        = "";
-    this.ffcID        = "";
+  constructor( id = "",firstName = "",lastName = "", sex = "", age = "", category = "", club = "", uciID = "", ffcID = "", stageRank = [], annexRank = []) {
+    this.id           = id;
+    this.firstname_   = firstName;
+    this.lastname_    = lastName;
+    this.sex_         = sex;
+    this.age_         = age;
+    this.category_    = category;
+    this.club_        = club;
+    this.uciid_       = uciID;
+    this.ffcid_       = ffcID;
+    this.stagerank_   = stageRank;
+    this.annexrank_   = annexRank;
   }
+
+  get id(){return this.id_;}
+  set id(value){this.id_ = value;}
+  get firstName(){return this.firstname_;}
+  set firstName(value){this.firstname_ = value;}
+  get lastName(){return this.lastname_;}
+  set lastName(value){this.lastname_ = value;}
+  get sex(){return this.sex_;}
+  set sex(value){this.sex_ = value;}
+  get age(){return this.age_;}
+  set age(value){this.age_ = value;}
+  get category(){return this.category_;}
+  set category(value){this.category_ = value;}
+  get club(){return this.club_;}
+  set club(value){this.club_ = value;}
+  get uciID(){return this.uciid_;}
+  set uciID(value){this.uciid_ = value;}
+  get ffcID(){return this.ffcid_;}
+  set ffcID(value){this.ffcid_ = value;}
+  get StageRank(){return this.stagerank_;}
+  set StageRank(value){this.stagerank_ = value;}
+  get AnnexRank(){return this.annexrank_;}
+  set AnnexRank(value){this.annexrank_ = value;}
 
   get fullName() {
     return `${this.firstName} ${this.lastName}`;
@@ -112,17 +137,24 @@ class RacerManager {
     this.racers = racers;
   }
 
-  add(data) {
+  clone(){
+    return new RacerManager(this.racers);
+  }
+
+  add(r) {
+
     const racer = new Racer();    
-    Object.keys(data).map((k) => {
+    Object.keys(r).map((k) => {
       if (k in racer){
-        racer[k] = data[k];
+        racer[k] = r[k];
       } else {
         console.log("Unknown racer field: ", k);
       }
     });    
-    this.racers.push(racer);
-    return new RacerManager(this.racers);
+
+    let data = this.clone();
+    data.racers.push(racer);
+    return data;
   }
 
   clear(){
@@ -140,29 +172,50 @@ class RacerManager {
   edit(index, field, newValue) {
     if (index < 0 || index >= this.racers.length) return;
     if (!(field in this.racers[index])) return;
-    this.racers[index][field] = newValue;
-    return new RacerManager(this.racers);
+    let data = this.clone();
+    data.racers[index][field] = newValue;
+    return data;
   }
 
   remove(index){
-    this.racers = this.racers.filter((_,idx) => idx !== index);
-    return new RacerManager(this.racers);
+    let data = this.clone();
+    data.racers = data.racers.filter((_,idx) => idx !== index);
+    return data;
   }
 
   generateIds() {
-    this.racers = this.racers.map((racer, index) => {
+    let data = this.clone();
+    data.racers = data.racers.map((racer, index) => {
       racer.id = index + 1;
       return racer;
     });
-    return new RacerManager(this.racers);
+    return data;
   }
 
   shuffleRacers() {
-    for (let i = this.racers.length - 1; i > 0; i--) {
+    let data = this.clone();
+    for (let i = data.racers.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [this.racers[i], this.racers[j]] = [this.racers[j], this.racers[i]];
+      [data.racers[i], data.racers[j]] = [data.racers[j], data.racers[i]];
     }
-    return new RacerManager(this.racers);
+    return data;
+  }
+
+  updateRanking(stage, ranking){
+    // ranking:
+    //  - bib = Racer identifier
+    //  - position
+    //  - time
+    //  - status : unknown, dnf, dns, abs, done
+    let data = this.clone();
+    ranking.map((rank) => {console.debug(rank);
+      data.racers.filter((r) => r.id == rank.bib)[stage] = {
+        position: rank.position,
+        time: rank.time,
+        //status: rank.status
+      };
+    })
+    return data;
   }
   
   get length() {
@@ -227,6 +280,10 @@ export class RaceModel {
     return new RaceModel(this.racers_, this.eventsettings_, this.classifications_);
   }
 
+  get RaceManager(){
+    return this.race_;
+  }
+
   getRacerManager() {
     return this.racers_;
   }
@@ -249,6 +306,7 @@ export class RaceModel {
 
   updateStageMain(stage,ranking){
     let data = this.clone();
+    data.racers_.updateRanking(stage,ranking);
     return data;
   }
 

@@ -1,0 +1,72 @@
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  font-weight: bold;
+}
+
+/* Unknown */
+.status-unknown {
+  background-color: white;
+}
+
+/* DNF - Do not finish */
+.status-dnf::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: red;
+  transform: rotate(45deg);
+}
+
+/* DNS - Do Not Start */
+.status-dns::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: red;
+  transform: rotate(-45deg);
+}
+
+/* Done */
+.status-done {
+  background-color: green;
+}
+.status-done::before,
+.status-done::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: red;
+}
+.status-done::before {
+  transform: rotate(45deg);
+}
+.status-done::after {
+  transform: rotate(-45deg);
+}
+
+/* ABS - Absent */
+.status-abs {
+  background-color: #eee;
+  color: transparent;
+}
