@@ -11,9 +11,8 @@ function Cell({ value, status, onChange }) {
   // Automatic choices : done, abs
   //
 
-  useEffect(() => {
-    onChange(value, state);
-  }, [ state ]);
+  useEffect(() => setState(status), [ status ]);
+  useEffect(() => onChange(value, state), [ state ]);
 
   const handleClick = () => {
     setState((prev) => {
@@ -31,23 +30,15 @@ function Cell({ value, status, onChange }) {
 }
 
 // Composant Grille
-export default function Grid() {
+export default function Grid({data = [], onChange}) {
+  
+  const [ bibs, setBibs ] = useState( data );
 
-  let allBibs = [];
-  for (let i = 1; i < 100; i++){
-    if ((i % 10) > 0 && (i % 10) < 7){
-      allBibs.push({ id: i, status: "unknown" });
-    }
-  }
-  const [ bibs, setBibs ] = useState( allBibs );
-
-  useEffect(() => {
-    console.debug(bibs);
-  }, [ bibs ]);
-
+  useEffect(() => setBibs(data), [ data ]);
+  
   const grid = [];
-  const rows = Math.ceil(bibs[bibs.length - 1].id / 10);
-  const cols = Math.max(...bibs.map((b) => b.id % 10));
+  const rows = bibs.length > 0 ? Math.ceil(bibs[bibs.length - 1].id / 10) : 0;
+  const cols = bibs.length > 0 ? Math.max(...bibs.map((b) => b.id % 10)) : 0;
   let ibib = 0;
   for (let r = 0; r < rows; r++) {
     const row = [];
@@ -63,7 +54,7 @@ export default function Grid() {
       {grid.map((row, i) => (
         <div key={i} className="row">
           {row.map((r, j) => (
-            <Cell key={j} value={r.id} status={r.status} onChange={(value,status) => setBibs((bibs) => bibs.map((b) => b.id === value ? {id: value, status: status} : b))}/>
+            <Cell key={j} value={r.id} status={r.status} onChange={(value,status) => onChange((bibs) => bibs.map((b) => b.id === value ? {id: value, status: status} : b))}/>
           ))}
         </div>
       ))}

@@ -207,14 +207,19 @@ class RacerManager {
     //  - position
     //  - time
     //  - status : unknown, dnf, dns, abs, done
-    let data = this.clone();
-    ranking.map((rank) => {console.debug(rank);
-      data.racers.filter((r) => r.id == rank.bib)[stage] = {
-        position: rank.position,
-        time: rank.time,
-        //status: rank.status
-      };
-    })
+    const data = this.clone();
+    data.racers = this.racers.map((racer) => {
+      const racerrank = ranking.filter((rank) => racer.id === rank.bib);
+      if (racerrank.length > 0){
+        racer.StageRank[stage-1] = {
+            position: racerrank[0].position,
+            time: racerrank[0].time,
+            status: racerrank[0].status
+          };
+      }
+      return racer;
+    });
+    
     return data;
   }
   
