@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Grid.css"; // on met le style séparé pour plus de lisibilité
 
 // Composant Cellule
-function Cell({ value, status }) {
+function Cell({ value, status, onChange }) {
 
   const [ state, setState ] = useState( status ); 
   // unknown, done, dnf, dns, abs
@@ -10,6 +10,10 @@ function Cell({ value, status }) {
   // Manual choices : unknown, dnf, dns
   // Automatic choices : done, abs
   //
+
+  useEffect(() => {
+    onChange(value, state);
+  }, [ state ]);
 
   const handleClick = () => {
     setState((prev) => {
@@ -37,6 +41,10 @@ export default function Grid() {
   }
   const [ bibs, setBibs ] = useState( allBibs );
 
+  useEffect(() => {
+    console.debug(bibs);
+  }, [ bibs ]);
+
   const grid = [];
   const rows = Math.ceil(bibs[bibs.length - 1].id / 10);
   const cols = Math.max(...bibs.map((b) => b.id % 10));
@@ -55,7 +63,7 @@ export default function Grid() {
       {grid.map((row, i) => (
         <div key={i} className="row">
           {row.map((r, j) => (
-            <Cell key={j} value={r.id} status={r.status} />
+            <Cell key={j} value={r.id} status={r.status} onChange={(value,status) => setBibs((bibs) => bibs.map((b) => b.id === value ? {id: value, status: status} : b))}/>
           ))}
         </div>
       ))}
