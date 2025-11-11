@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Grid.css"; // on met le style séparé pour plus de lisibilité
 
 // Composant Cellule
-function Cell({ value }) {
-    
-  const [status, setStatus] = useState("unknown"); 
+function Cell({ value, status }) {
+
+  const [ state, setState ] = useState( status ); 
   // unknown, done, dnf, dns, abs
   //
   // Manual choices : unknown, dnf, dns
@@ -12,7 +12,7 @@ function Cell({ value }) {
   //
 
   const handleClick = () => {
-    setStatus((prev) => {
+    setState((prev) => {
         if (prev == "unknown"){return "dnf"}
         else if (prev == "dnf"){return "dns"}
         else {return "unknown"}
@@ -20,22 +20,32 @@ function Cell({ value }) {
   };
 
   return (
-    <div className={`cell status-${status}`} onClick={handleClick}>
-      {status !== "abs" ? value : ""} 
+    <div className={`cell status-${state}`} onClick={handleClick}>
+      {state !== "abs" ? value : ""} 
     </div>
   );
 }
 
 // Composant Grille
-export default function Grid({ rows = 5, cols = 8 }) {
-  // rows = nombre de lignes, cols = nombre de colonnes (entre 6 et 10)
-  const grid = [];
+export default function Grid() {
 
+  let allBibs = [];
+  for (let i = 1; i < 100; i++){
+    if ((i % 10) > 0 && (i % 10) < 7){
+      allBibs.push({ id: i, status: "unknown" });
+    }
+  }
+  const [ bibs, setBibs ] = useState( allBibs );
+
+  const grid = [];
+  const rows = Math.ceil(bibs[bibs.length - 1].id / 10);
+  const cols = Math.max(...bibs.map((b) => b.id % 10));
+  let ibib = 0;
   for (let r = 0; r < rows; r++) {
-    const start = 1 + r * 10; // 1, 11, 21, ...
     const row = [];
     for (let c = 0; c < cols; c++) {
-      row.push(start + c);
+      row.push(bibs[ibib]);
+      ibib = ibib + 1;
     }
     grid.push(row);
   }
@@ -44,8 +54,8 @@ export default function Grid({ rows = 5, cols = 8 }) {
     <div className="grid">
       {grid.map((row, i) => (
         <div key={i} className="row">
-          {row.map((num, j) => (
-            <Cell key={j} value={num} />
+          {row.map((r, j) => (
+            <Cell key={j} value={r.id} status={r.status} />
           ))}
         </div>
       ))}
