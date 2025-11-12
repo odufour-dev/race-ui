@@ -20,9 +20,15 @@ export default function StageRanking({ data = [], time, onChange }) {
     //  Bib set in TimeRanking shall be set as "done" in the Grid
     useEffect(() => {
         const bibSet = new Set(timeranking.map(item => Number(item.bib)));
-        setStatus(status.map(item =>
-            bibSet.has(item.id) ? { ...item, status: "done" } : item
-        ));
+        setStatus(status.map(item =>{
+            if (bibSet.has(item.id)){
+                return { ...item, status: "done" };
+            } else if (item.status === "done") {
+                return { ...item, status: "unknown"};
+            } else {
+                return item;
+            }
+        }));
     }, [ timeranking ]);
 
     useEffect(() => {
