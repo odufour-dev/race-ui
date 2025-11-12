@@ -19,9 +19,16 @@ export default function StageRanking({ data = [], time, onChange }) {
     // Update the Grid status when TimeRanking is updated
     //  Bib set in TimeRanking shall be set as "done" in the Grid
     useEffect(() => {
-        const bibSet = new Set(timeranking.map(item => Number(item.bib)));
+        const bibs = timeranking.map(item => Number(item.bib));
+        const bibSet = new Set(bibs);
+        const bibOcc = bibs.reduce((acc, item) => {
+            acc[item] = (acc[item] || 0) + 1;
+            return acc;
+        }, {});
         setStatus(status.map(item =>{
-            if (bibSet.has(item.id)){
+            if (item.id in bibOcc && bibOcc[item.id] > 1){
+                return { ...item, status: "duplicate" };
+            } else if (bibSet.has(item.id)){
                 return { ...item, status: "done" };
             } else if (item.status === "done") {
                 return { ...item, status: "unknown"};

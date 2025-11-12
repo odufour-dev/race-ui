@@ -65,6 +65,25 @@
   transform: rotate(-45deg);
 }
 
+/* Duplicate */
+.status-duplicate {
+  background-color: red;
+}
+.status-duplicate::before,
+.status-duplicate::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: white;
+}
+.status-duplicate::before {
+  transform: rotate(45deg);
+}
+.status-duplicate::after {
+  transform: rotate(-45deg);
+}
+
 /* ABS - Absent */
 .status-abs {
   background-color: #eee;
