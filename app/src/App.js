@@ -1,6 +1,6 @@
 import './App.css';
 
-import React, { useContext, useEffect, useState, startTransition } from 'react';
+import React, { useEffect, useState, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Sidebar from './components/Sidebar/Sidebar';
@@ -11,7 +11,7 @@ import ExcelReader from './components/ExcelReader/ExcelReader';
 import EventSettings from './components/EventSettings/EventSettings';
 import StageRanking from './components/StageRanking/StageRanking';
 
-import { RaceModel } from './models/RaceModel/RaceModel';
+import { RaceModel } from './models/RaceModel';
 
 import { Time } from "./tools/Time/Time";
 
@@ -28,7 +28,7 @@ function App() {
 
   // Create the navigation panel components
   const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5, component: (props) => (
-    <EventSettings {...props} translator={translator} settings={raceModel.getEventSettings()} onApply={(settings) => setRaceModel(raceModel.updateEventSettings(settings))} />
+    <EventSettings {...props} translator={translator} settings={raceModel.getRace()} onApply={(settings) => setRaceModel(raceModel.updateRace(settings))} />
   ) });
   const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
     <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
@@ -43,7 +43,7 @@ function App() {
   useEffect(() => {
 
     const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
-    const evtSettings = raceModel.getEventSettings();
+    const evtSettings = raceModel.getRace();
     for (let stage=1; stage<=evtSettings.nStages; stage++) {
       
       const s = evtSettings.stages[stage-1];
@@ -68,9 +68,9 @@ function App() {
         const navAnnexRanking = new NavigationItem({id: "annex_" + stage + "_" + i, title: r.title, order: 4 + i} );
         navRaceGroup.add(navAnnexRanking);
       });
-
-      setNav(baseNav.add(navRaceGroup));
+      baseNav.add(navRaceGroup);
     }
+    setNav(baseNav);
 
   }, [raceModel]);
 

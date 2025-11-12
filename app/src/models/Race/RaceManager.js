@@ -1,10 +1,9 @@
-import { RankingFactory } from "../AnnexRanking/RankingFactory";
-import { Stage } from "../Stage/Stage"
+import { Stage } from "./Stage"
 
-export class EventSettings {
+export class RaceManager {
 
-  constructor(stages = [new Stage()], annexrankings = [], rankingfactory = new RankingFactory()){
-    this.stages_ = stages;
+  constructor(annexrankings, rankingfactory){
+    this.stages_ = [new Stage()];
     this.annexrankings_ = annexrankings;
     this.rankingfactory_ = rankingfactory;
   }
@@ -18,7 +17,7 @@ export class EventSettings {
   get annexRankings(){
     return this.annexrankings_;
   }
-  get annexRankingTypes(){
+  get annexRankingTypes(){console.debug(this.rankingfactory_);
     return this.rankingfactory_.list;
   }
 
@@ -36,7 +35,9 @@ export class EventSettings {
   }
 
   clone(){
-    return new EventSettings(this.stages_, this.annexrankings_, this.rankingfactory_);
+    const rmanager = new RaceManager(this.annexrankings_, this.rankingfactory_);
+    rmanager.stages_ = this.stages_;
+    return rmanager;
   }
 
   update(settings){
