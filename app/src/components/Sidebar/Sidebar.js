@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import './Sidebar.css';
 
 function Sidebar({ nav, selectedId, onSelect, translator }) {
-
+console.log(nav);
   const [query, setQuery] = useState('');
   const [openGroups, setOpenGroups] = useState(() => new Set(nav.groups.map(g => g.group)));
 

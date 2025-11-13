@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import './FinishRanking.css';
+import './TimeRankingTable.css';
 
 // Row shape: { id, bib, timeSeconds, delaySeconds, mode }
-export default function FinishRanking({ data = [], time, onChange }) {
+export default function TimeRankingTable({ data = [], time, onChange }) {
   // Initialize rows from data prop. data expected as array of { id?, bib?, time?: 'HH:MM:SS' }
   const buildRows = (src) => {
     const rows = (src || []).map((r, idx) => {
@@ -200,11 +200,14 @@ export default function FinishRanking({ data = [], time, onChange }) {
 
   useEffect(() => {
     if (typeof onChange === 'function') {
-      // expose simplified data to parent
-      const out = rows.map(r => ({ id: r.id, bib: r.bib, time: r.timeSeconds != null ? time.formatHMS(r.timeSeconds) : null, delay: r.delaySeconds != null ? time.formatMS(r.delaySeconds) : null }));
+      const out = rows.map((r,idx) => ({ 
+        id: r.id, 
+        position: idx + 1,
+        bib: r.bib, 
+        time: r.timeSeconds != null ? time.formatHMS(r.timeSeconds) : null
+      })).filter(r => String(r.bib || '').trim() && r.time != null);
       onChange(out);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
 
   function updateRow(id, patch) {
@@ -389,13 +392,13 @@ export default function FinishRanking({ data = [], time, onChange }) {
   }
 
   return (
-    <div className="finish-ranking">
+    <div className="time-ranking-table">
       <div className="edit-toggle">
         <span className="muted">Editable column:</span>
         <button className={globalEdit === 'time' ? 'active' : ''} onClick={() => applyGlobalEdit('time')}>Time</button>
         <button className={globalEdit === 'delay' ? 'active' : ''} onClick={() => applyGlobalEdit('delay')}>Delay</button>
       </div>
-      <table className="finish-table">
+      <table className="ranking-table">
         <thead>
           <tr>
             <th>#</th>
