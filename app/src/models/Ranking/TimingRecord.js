@@ -1,13 +1,18 @@
 
 export class TimingRecord {
-  constructor(personId, raceId, legTimes = [], lapTimes = []) {
-    this.personId = personId;
-    this.raceId = raceId;
-    this.legTimes = legTimes;
-    this.lapTimes = lapTimes;
+
+  constructor(bib, stage, position, time, status) {
+    this.bib_       = bib;
+    this.stage_     = stage;
+    this.position_  = position;
+    this.time_      = time;
+    this.status_    = status;
   }
 
-  get totalTime() {
-    return [...this.legTimes, ...this.lapTimes].reduce((sum, t) => sum + t, 0);
-  }
+  get bib()     {return this.bib_;      }
+  get position(){return this.position_; }
+  get stage()   {return this.stage_;    }
+  get status()  {return this.status_;   }
+  get time()    {return this.time_;     }
+
 }
