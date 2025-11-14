@@ -8,7 +8,7 @@ create:
 
 # Install / Update the packages in sandbox running NPM INSTALL
 install:
-	docker run --rm -v $(PWD)/$(SOURCES):/app -w /app node:18-alpine npm install
+	docker run --rm -v $(PWD)/$(SOURCES):/app -w /app node:18-alpine npm install $(PACKAGE)
 
 #
 # Development environment
@@ -22,6 +22,9 @@ start-dev:
 stop-dev:
 	docker stop ui-dev
 
+test:
+	docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -e CI=true -w /app $(IMAGE)-dev npm test -- --watchAll=false
+
 #
 # Production environment
 #
@@ -33,6 +36,3 @@ start-prod: build-prod
 
 stop-prod:
 	docker stop ui-prod
-
-test:
-	docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -w /app $(IMAGE)-dev npm test

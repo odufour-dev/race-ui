@@ -1,0 +1,32 @@
+.team-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.team-item {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.team-h-left { display:flex; gap:10px; align-items:center; }
+.team-h-right { display:flex; gap:8px; align-items:center; }
+
+.team-title { min-width:220px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
+.team-priority { padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
+
+.team-body { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
+.team-field label { font-weight:600; margin-bottom:6px; display:block; color:#dbeafe; }
+.team-field input, .team-field select { background: rgba(255,255,255,0.02); border:1px solid var(--border); color:inherit }
+
+.team-actions { display:flex; gap:8px; align-items:center; margin-top:6px }
+.team-actions select { background: rgba(255,255,255,0.02); border-radius:8px; color:inherit }
+
+@media (max-width: 720px) {
+  .team-h-left { flex-direction: column; align-items:stretch }
+}

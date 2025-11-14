@@ -1,0 +1,69 @@
+.event-settings {
+  --bg: #0f172a; /* page background */
+  --card-bg: #0b1220;
+  --muted: #94a3b8;
+  --border: rgba(255,255,255,0.06);
+  --accent: #3b82f6;
+  --accent-strong: #2563eb;
+  --danger: #ef4444;
+  color: #e6eef8;
+  padding: 20px;
+  background: linear-gradient(180deg, rgba(11,18,32,0.6), rgba(6,10,18,0.6));
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(2,6,23,0.6);
+  max-width: 980px;
+  margin: 16px auto;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+
+.event-settings h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.25rem;
+  letter-spacing: -0.2px;
+}
+
+.event-settings .field {
+  margin-bottom: 18px;
+}
+
+.event-settings label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #dbeafe;
+}
+
+.event-settings input[type="text"],
+.event-settings input[type="number"],
+.event-settings input[type="date"],
+.event-settings select {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: #e6eef8;
+  padding: 10px 12px;
+  border-radius: 8px;
+  outline: none;
+  transition: box-shadow 140ms ease, transform 120ms ease;
+}
+
+.event-settings input:focus, .event-settings select:focus {
+  box-shadow: 0 6px 20px rgba(37,99,235,0.12);
+  transform: translateY(-1px);
+  border-color: var(--accent-strong);
+}
+
+.muted { color: var(--muted); }
+
+.btn { cursor:pointer; border-radius:8px; padding:8px 12px; border:1px solid transparent; background: rgba(255,255,255,0.03); color:inherit }
+.btn.primary { background: linear-gradient(90deg,var(--accent),var(--accent-strong)); box-shadow: 0 6px 18px rgba(37,99,235,0.12); color:white }
+.btn.danger { background: linear-gradient(90deg,#fee2e2,#fecaca); color:var(--danger); border-color: rgba(0,0,0,0.06) }
+.btn.small { padding:6px 8px; font-size:0.85rem }
+
+.actions { display:flex; gap:10px; margin-top:16px }
+
+.error { color: #fecaca; font-size:0.9rem; margin-top:6px }
+
+@media (max-width: 720px) {
+  .event-settings { padding: 14px; margin: 8px; }
+  .stage-h-left, .annex-h-left { flex-direction: column; align-items:stretch }
+}

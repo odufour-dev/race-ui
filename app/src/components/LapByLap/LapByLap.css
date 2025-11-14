@@ -1,0 +1,74 @@
+.editable-input-table-cell {
+  padding: 0;
+}
+
+.editable-input-table-input {
+  margin: 0;
+  border-radius: 0;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+  background: transparent;
+  box-shadow: none;
+  width: 100%;
+  font-size: 1rem;
+  color: #1e3a8a;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.editable-input-table-input:focus {
+  border-color: #2563eb;
+  background: #e0e7ff;
+}
+
+.editable-input-table-input.duplicate {
+  border-color: #f59e42;
+  box-shadow: 0 0 0 2px #f59e42;
+}
+/* LapByLap.css: Styles for the LapByLap component */
+
+.editable-input-table-container {
+  padding: 1rem;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.editable-input-table {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.editable-input-table th {
+  background: #dbeafe;
+  color: #1e3a8a;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.editable-input-table td {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #1f2937;
+}
+
+.editable-input-table input {
+  border: 1px solid #93c5fd;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  font-size: 1rem;
+  color: #1e3a8a;
+  background: #f1f5f9;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.editable-input-table input:focus {
+  border-color: #2563eb;
+  background: #e0e7ff;
+}

@@ -1,0 +1,60 @@
+import React from 'react';
+
+function DropdownEditor({ allowedValues, value, setData, next }) {
+  
+  // Use native select for category editing. Support options that are strings or objects { value, label }.
+  const options = (allowedValues || []).map(opt => {
+    if (opt && typeof opt === 'object') return { value: opt.value ?? opt, label: opt.label ?? String(opt.value ?? opt) };
+    return { value: opt, label: String(opt) };
+  });
+
+  return (
+    <div className="dropdown-container">
+      <select
+        className="dropdown-input"
+        value={value}
+        autoFocus
+        onChange={e => setData(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'Enter') {
+            // save and move down
+            setData(e.target.value);
+            if (next && typeof next.down === 'function') next.down();
+            e.preventDefault();
+          } else if (e.key === 'Tab') {
+            // save and move right
+            setData(e.target.value);
+            if (next && typeof next.right === 'function') next.right();
+            e.preventDefault();
+          } else if (e.key === 'ArrowDown') {
+            // select next option in the dropdown without closing the editor
+            e.preventDefault();
+            const currentVal = e.target.value;
+            const idx = options.findIndex(o => String(o.value) === String(currentVal));
+            const nextIdx = Math.min(options.length - 1, Math.max(0, idx + 1));
+            const nextVal = options[nextIdx] && options[nextIdx].value;
+            if (typeof nextVal !== 'undefined') {
+              setData(nextVal);
+            }
+          } else if (e.key === 'ArrowUp') {
+            // select previous option in the dropdown without closing the editor
+            e.preventDefault();
+            const currentVal = e.target.value;
+            const idx = options.findIndex(o => String(o.value) === String(currentVal));
+            const prevIdx = Math.max(0, idx - 1);
+            const prevVal = options[prevIdx] && options[prevIdx].value;
+            if (typeof prevVal !== 'undefined') {
+              setData(prevVal);
+            }
+          }
+        }}
+      >
+        {options.map(opt => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+export default DropdownEditor;

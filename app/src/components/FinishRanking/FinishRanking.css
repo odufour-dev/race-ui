@@ -1,0 +1,26 @@
+.finish-ranking { padding: 8px; }
+.finish-table { width: 100%; border-collapse: collapse; background: transparent; }
+.finish-table thead th { text-align: left; padding: 8px 10px; color: #cbd5e1; font-weight:600; }
+.finish-table tbody td { padding: 8px 10px; border-top: 1px solid rgba(255,255,255,0.04); }
+.finish-table tr.winner { background: linear-gradient(90deg, rgba(59,130,246,0.06), rgba(37,99,235,0.04)); }
+.bib-input, .time-input, .delay-input { width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); color: inherit }
+.bib-input:focus, .time-input:focus, .delay-input:focus { box-shadow: 0 6px 18px rgba(37,99,235,0.08); outline: none; }
+.time-input[disabled], .delay-input[disabled] { opacity: 0.5; }
+.finish-table tbody tr:hover { background: rgba(255,255,255,0.01); }
+.finish-table tbody tr td .muted { color: #94a3b8 }
+
+/* duplicate bib highlight */
+.finish-table tbody tr.duplicate { background: rgba(220,38,38,0.06); }
+
+.rank-cell { width: 48px; text-align: center; font-weight: 600; color: #94a3b8 }
+
+.actions { width: 88px; text-align: center }
+.actions button { margin: 0 4px; padding: 6px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.02); color: inherit; cursor: pointer }
+.actions button:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.06) }
+.actions button:active { transform: translateY(1px) }
+.actions .delete { color: #ef4444 }
+.actions .insert { color: #10b981 }
+
+.edit-toggle { display:flex; align-items:center; gap:8px; margin-bottom:8px }
+.edit-toggle button { padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); cursor:pointer }
+.edit-toggle button.active { background: rgba(37,99,235,0.12); border-color: rgba(37,99,235,0.24) }

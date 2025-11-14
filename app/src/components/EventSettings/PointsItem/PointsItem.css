@@ -1,0 +1,32 @@
+.points-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.points-item {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.points-header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.points-h-left { display:flex; gap:10px; align-items:center; }
+.points-h-right { display:flex; gap:8px; align-items:center; }
+
+.points-title { min-width:220px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
+.points-priority { padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:transparent; color:inherit }
+
+.points-body { margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
+.points-field label { font-weight:600; margin-bottom:6px; display:block; color:#dbeafe; }
+.points-field input, .points-field select { background: rgba(255,255,255,0.02); border:1px solid var(--border); color:inherit }
+
+.points-actions { display:flex; gap:8px; align-items:center; margin-top:6px }
+.points-actions select { background: rgba(255,255,255,0.02); border-radius:8px; color:inherit }
+
+@media (max-width: 720px) {
+  .points-h-left { flex-direction: column; align-items:stretch }
+}

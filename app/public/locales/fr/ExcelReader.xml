@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<translation>
+  <title>Lecteur Excel</title>
+  <upload_file>Importer un fichier Excel</upload_file>
+  <header_row>Ligne d'en-tête</header_row>
+  <import_data>Importer les données</import_data>
+  <columns>
+    <skip>Ignore</skip>
+    <name>Nom</name>
+    <firstName>Prénom</firstName>
+    <club>Club</club>
+    <category>Catégorie</category>
+    <serie>Série</serie>
+    <licenseId>Numéro de licence</licenseId>
+    <uciId>UCI ID</uciId>
+    <actions>Actions</actions>
+  </columns>
+  <mapping>
+    <skip>Ignore</skip>
+    <id>ID</id>
+    <lastName>Nom</lastName>
+    <firstName>Prénom</firstName>
+    <sex>Sexe</sex>
+    <age>Age</age>
+    <club>Club</club>
+    <category>Catégorie</category>
+    <subcategory>Série</subcategory>
+    <ffcID>Licence</ffcID>
+    <uciID>UCI ID</uciID>
+    <actions>Actions</actions>
+  </mapping>
+</translation>
