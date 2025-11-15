@@ -2,50 +2,70 @@ import { TimingRecord } from "./TimingRecord";
 
 export class RankingManager {
 
-  constructor(timings = []){
-    this.timings_ = timings;
+  #bibs;
+  #ranking;
+  #stage;
+
+  constructor(ranking = [], bibs = [], stage = 1){
+    this.#bibs    = bibs;
+    this.#ranking = ranking;
+    this.#stage   = stage;
   }
 
-  getRanking(stageId, bibs){
+  clone(){
+    return new RankingManager(this.#ranking, this.#bibs, this.#stage);
+  }
+
+  get Bibs(){return this.#bibs;}
+  set Bibs(bibs){this.#bibs = bibs;}
+  get Stage(){return this.#stage;}
+  set Stage(stage){this.#stage = stage;}
+  
+  get Ranking(){
     
     // Create a variable with timingRecords to avoid modifications in object property    
-    let timings = this.timings_;
+    let ranking = this.#ranking;
 
-    // Extract all the timings which match the stageId
-    if (timings.length > 0){      
-      timings = timings.filter((t) => t.stage == stageId);      
-      timings.sort((a,b) => a.position - b.position);
+    // Extract all the ranking which match the stageId
+    if (ranking.length > 0){      
+      ranking = ranking.filter((t) => t.stage == this.#stage);      
+      ranking.sort((a,b) => a.position - b.position);
     }
+    
+    return this.#fillMissingBibs(ranking);
 
-    // Add missing bibs in the timings with 'unknown' status
-    bibs.map((b) => {
-      if (!timings.some((t) => t.bib == b)){
-        const prevTiming = this.timings_.filter((t) => t.bib == b && t.stage == stageId-1);
-        const status = stageId == 1 || (prevTiming.length > 0 && prevTiming[0].status == "done") ? "unknown" : "abs";
-        timings.push(new TimingRecord(b,stageId,999,NaN,status));
-      }
+  }
+
+  update(ranking){
+
+    // Append bibs that appear in ranking to the list (if missing)
+    ranking.map((r) => {
+      if (!this.#bibs.some((b) => b == r.bib)){this.#bibs.push(r.bib)}
     });
-    return timings;
+    this.#bibs.sort((a,b) => a-b);
+
+    // Create a variable with timingRecords to avoid modifications in object property    
+    ranking = this.#fillMissingBibs(ranking);
+
+    const data = this.clone();
+    data.#ranking = data.#ranking.filter((r) => r.stage != this.#stage).concat(ranking.filter((r) => r.stage == this.#stage));
+    return data;
 
   }
 
-  update(stageId, ranking){
+  #fillMissingBibs(ranking){
 
+    if (this.#bibs.length > 0){
+      // Add missing bibs in the ranking with 'unknown' status
+      this.#bibs.map((b) => {
+        if (!ranking.some((t) => t.bib == b)){
+          const prevTiming = this.#ranking.filter((t) => t.bib == b && t.stage == this.#stage-1);
+          const status = this.#stage == 1 || (prevTiming.length > 0 && prevTiming[0].status == "done") ? "unknown" : "abs";
+          ranking.push(new TimingRecord(b,this.#stage,999,NaN,status));
+        }
+      });
+    }
+    return ranking;
   }
 
-  /*
-  getRankings(raceId) {
-    return this.timings
-      .filter(record => record.raceId === raceId)
-      .map(record => {
-        const person = this.getPersonById(record.personId);
-        return {
-          name: person.fullName,
-          category: person.category,
-          totalTime: record.totalTime
-        };
-      })
-      .sort((a, b) => a.totalTime - b.totalTime);
-  }
-  */
 }
