@@ -8,28 +8,38 @@ export class RaceModel {
 
   constructor() {
     this.racers_          = new RacerManager();
-    this.ranking_         = new RankingManager();
     this.annex_           = [];
     this.classifications_ = new Classification();
     this.race_            = new RaceManager(this.annex_,new RankingFactory());
+    this.ranking_         = new RankingManager();
   }
 
   clone(){
     const model = new RaceModel();
-    model.racers_           = this.racers_;
-    model.ranking_          = this.ranking_;
+    model.racers_           = this.racers_.clone();
+    model.ranking_          = this.ranking_.clone();
     model.annex_            = this.annex_;
-    model.race_             = this.race_;
+    model.race_             = this.race_.clone();
     model.classifications_  = this.classifications_;
     return model;
+  }
+
+  getClassifications(){
+    return this.classifications_;
+  }
+
+  getRace(){
+    return this.race_;
   }
 
   getRacerManager() {
     return this.racers_;
   }
-  
-  getRace(){
-    return this.race_;
+    
+  getStageRanking(stage){
+    this.ranking_.Bibs  = this.racers_.getAll().map((r) => r.id);
+    this.ranking_.Stage = stage;
+    return this.ranking_.Ranking;
   }
 
   updateRace(race){
@@ -44,16 +54,14 @@ export class RaceModel {
     return data;
   }
 
-  updateStageMain(stage,ranking){
+  updateStageRanking(stage,ranking){
     let data = this.clone();
-    data.racers_.updateRanking(stage,ranking);
+    data.ranking_.Bibs  = data.racers_.getAll().map((r) => r.id);
+    data.ranking_.Stage = stage;
+    data.ranking_ = this.ranking_.update(ranking);
     return data;
   }
-
-  getClassifications(){
-    return this.classifications_;
-  }
-
+  
 };
 
 
