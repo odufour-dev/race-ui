@@ -1,64 +1,80 @@
-import { Classification } from './References/Classification';
-import { RaceManager }    from './Race/RaceManager';
-import { RacerManager }   from './Racers/RacerManager'; 
-import { RankingManager } from './Ranking/RankingManager';
-import { RankingFactory } from './AnnexRanking/RankingFactory';
+import { Classification }       from './References/Classification';
+import { RaceManager }          from './Race/RaceManager';
+import { RacerManager }         from './Racers/RacerManager'; 
+import { RankingManager }       from './Ranking/RankingManager';
+import { AnnexRankingManager }  from './AnnexRanking/AnnexRankingManager';
 
 export class RaceModel {
 
-  constructor() {
-    this.racers_          = new RacerManager();
-    this.annex_           = [];
-    this.classifications_ = new Classification();
-    this.race_            = new RaceManager(this.annex_,new RankingFactory());
-    this.ranking_         = new RankingManager();
+  #annex
+  #classifications
+  #race
+  #racers
+  #ranking
+
+  constructor(racers = new RacerManager(), annex = new AnnexRankingManager(), classifications = new Classification(), race = new RaceManager(), ranking = new RankingManager()) {
+    this.#annex           = annex;
+    this.#classifications = classifications;
+    this.#race            = race;
+    this.#racers          = racers;
+    this.#ranking         = ranking;
   }
 
   clone(){
-    const model = new RaceModel();
-    model.racers_           = this.racers_.clone();
-    model.ranking_          = this.ranking_.clone();
-    model.annex_            = this.annex_;
-    model.race_             = this.race_.clone();
-    model.classifications_  = this.classifications_;
+    const model = new RaceModel(this.#racers.clone(), this.#annex.clone(), this.classifications, this.#race.clone(), this.#ranking.clone());
+    model.#racers           = this.#racers.clone();
+    model.#ranking          = this.#ranking.clone();
+    model.#annex            = this.#annex.clone();
+    model.#race             = this.#race.clone();
+    model.#classifications  = this.#classifications;
     return model;
   }
 
   getClassifications(){
-    return this.classifications_;
+    return this.#classifications;
   }
 
   getRace(){
-    return this.race_;
+    return this.#race;
   }
 
   getRacerManager() {
-    return this.racers_;
+    return this.#racers;
+  }
+
+  get annexRankingTypes(){
+    return this.#annex.list;
+  }
+
+  addAnnexRanking(type,id){
+    const ranking = this.#annex.build(type,id);
+    this.#race    = addAnnexRanking(ranking);
+    return this.clone();
   }
     
   getStageRanking(stage){
-    this.ranking_.Bibs  = this.racers_.getAll().map((r) => r.id);
-    this.ranking_.Stage = stage;
-    return this.ranking_.Ranking;
+    this.#ranking.Bibs  = this.#racers.getAll().map((r) => r.id);
+    this.#ranking.Stage = stage;
+    return this.#ranking.Ranking;
   }
 
   updateRace(race){
     let data = this.clone();
-    data.race_ = race;
+    data.#race = race;
     return data;
   }
 
   updateRacerManager(racerManager) {
     let data = this.clone();
-    data.racers_ = racerManager;
+    data.#racers = racerManager;
     return data;
   }
 
   updateStageRanking(stage,ranking){
     let data = this.clone();
-    data.ranking_.Bibs  = data.racers_.getAll().map((r) => r.id);
-    data.ranking_.Stage = stage;
-    data.ranking_ = this.ranking_.update(ranking);
+    data.#ranking.Bibs  = data.#racers.getAll().map((r) => r.id);
+    data.#ranking.Stage = stage;
+    data.#ranking = this.#ranking.update(ranking);
     return data;
   }
   
