@@ -26,14 +26,16 @@ export class RaceManager {
   
   addAnnexRanking(ranking){
     ranking.priority = this.#annexrankings.length + 1;
-    this.#annexrankings.push(ranking);
-    return this.clone();
+    const data = this.clone();
+    data.#annexrankings.push(ranking);
+    return data;
   }
 
-  addStage(){
+  addStage(){    
     const stage = new Stage(this.#stages.length + 1);
-    this.#stages.push(stage);
-    return this.clone();
+    const data = this.clone();
+    data.#stages.push(stage);
+    return data.clone();
   }  
 
   update(settings){
