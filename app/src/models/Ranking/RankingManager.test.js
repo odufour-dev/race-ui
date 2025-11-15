@@ -6,9 +6,9 @@ describe('RankingManager', () => {
   it('getRanking - no timing - no stage', () => {
 
     const bibs = [1,2,3,4,5];
-    const sut = new RankingManager();
+    const sut = new RankingManager([],bibs,1);
 
-    const actual = sut.getRanking(1, bibs);
+    const actual = sut.Ranking;
 
     expect(actual).toEqual([
         new TimingRecord(1, 1, 999, NaN, "unknown"),
@@ -30,9 +30,9 @@ describe('RankingManager', () => {
         new TimingRecord(4, 1, 1, 120, "done"),
         new TimingRecord(5, 1, 4, 130, "done"),
     ];
-    const sut = new RankingManager(timings);
+    const sut = new RankingManager(timings, bibs, 1);
 
-    const actual = sut.getRanking(1, bibs);
+    const actual = sut.Ranking;
 
     expect(actual).toEqual([
         new TimingRecord(4, 1, 1, 120, "done"),
@@ -56,9 +56,9 @@ describe('RankingManager', () => {
         new TimingRecord(4, 1, 1, 120, "done"),
         new TimingRecord(5, 1, 4, 130, "done"),
     ];
-    const sut = new RankingManager(timings);
+    const sut = new RankingManager(timings, bibs, 1);
 
-    const actual = sut.getRanking(1, bibs);
+    const actual = sut.Ranking;
 
     expect(actual).toEqual([
         new TimingRecord(4, 1, 1, 120, "done"),
@@ -82,9 +82,9 @@ describe('RankingManager', () => {
         new TimingRecord(4, 1, 1, 120, "done"),
         new TimingRecord(5, 1, 4, 130, "done"),
     ];
-    const sut = new RankingManager(timings);
+    const sut = new RankingManager(timings, bibs, 1);
 
-    const actual = sut.getRanking(1, bibs);
+    const actual = sut.Ranking;
 
     expect(actual).toEqual([
         new TimingRecord(4, 1, 1, 120, "done"),
@@ -106,9 +106,9 @@ describe('RankingManager', () => {
         new TimingRecord(5, 2, 1, 50, "done"),
         new TimingRecord(3, 1, 3, 122, "done"),
     ];
-    const sut = new RankingManager(timings);
+    const sut = new RankingManager(timings, bibs, 1);
 
-    const actual = sut.getRanking(1, bibs);
+    const actual = sut.Ranking;
 
     expect(actual).toEqual([
         new TimingRecord(1, 1, 2, 122, "done"),
@@ -130,9 +130,9 @@ describe('RankingManager', () => {
         new TimingRecord(5, 2, 1, 50, "done"),
         new TimingRecord(3, 1, 3, 122, "done"),
     ];
-    const sut = new RankingManager(timings);
+    const sut = new RankingManager(timings, bibs, 2);
 
-    const actual = sut.getRanking(2, bibs);
+    const actual = sut.Ranking;
 
     expect(actual).toEqual([
         new TimingRecord(5, 2, 1, 50,   "done"),
