@@ -1,44 +1,52 @@
 export class Racer {
 
-  constructor( id = "",firstName = "",lastName = "", sex = "", age = "", category = "", club = "", uciID = "", ffcID = "", stageRank = [], annexRank = []) {
-    this.id           = id;
-    this.firstname_   = firstName;
-    this.lastname_    = lastName;
-    this.sex_         = sex;
-    this.age_         = age;
-    this.category_    = category;
-    this.club_        = club;
-    this.uciid_       = uciID;
-    this.ffcid_       = ffcID;
-    this.stagerank_   = stageRank;
-    this.annexrank_   = annexRank;
+  #age
+  #category
+  #club
+  #id
+  #firstname
+  #ffcid
+  #lastname
+  #sex
+  #uciid
+
+  constructor( id = 0,firstName = "",lastName = "", sex = "", age = 0, category = "", club = "", uciID = "", ffcID = "") {
+    this.#id           = id;
+    this.#firstname   = firstName;
+    this.#lastname    = lastName;
+    this.#sex         = sex;
+    this.#age         = age;
+    this.#category    = category;
+    this.#club        = club;
+    this.#uciid       = uciID;
+    this.#ffcid       = ffcID;
   }
 
-  get id(){return this.id_;}
-  set id(value){this.id_ = value;}
-  get firstName(){return this.firstname_;}
-  set firstName(value){this.firstname_ = value;}
-  get lastName(){return this.lastname_;}
-  set lastName(value){this.lastname_ = value;}
-  get sex(){return this.sex_;}
-  set sex(value){this.sex_ = value;}
-  get age(){return this.age_;}
-  set age(value){this.age_ = value;}
-  get category(){return this.category_;}
-  set category(value){this.category_ = value;}
-  get club(){return this.club_;}
-  set club(value){this.club_ = value;}
-  get uciID(){return this.uciid_;}
-  set uciID(value){this.uciid_ = value;}
-  get ffcID(){return this.ffcid_;}
-  set ffcID(value){this.ffcid_ = value;}
-  get StageRank(){return this.stagerank_;}
-  set StageRank(value){this.stagerank_ = value;}
-  get AnnexRank(){return this.annexrank_;}
-  set AnnexRank(value){this.annexrank_ = value;}
+  get age()       {return this.#age;}
+  get category()  {return this.#category;}
+  get club()      {return this.#club;}
+  get ffcID()     {return this.#ffcid;}
+  get firstName() {return this.#firstname;}
+  get fullName()  {return `${this.#firstname} ${this.#lastname}`;}
+  get id()        {return this.#id;}  
+  get lastName()  {return this.#lastname;}   
+  get sex()       {return this.#sex;}
+  get uciID()     {return this.#uciid;}
 
-  get fullName() {
-    return `${this.firstName} ${this.lastName}`;
+  set age(value)      {this.#age        = value;}
+  set category(value) {this.#category   = value;}
+  set club(value)     {this.#club       = value;}
+  set ffcID(value)    {this.#ffcid      = value;}
+  set firstName(value){this.#firstname  = value;}
+  set id(value)       {this.#id         = value;}
+  set lastName(value) {this.#lastname   = value;}
+  set sex(value)      {this.#sex        = value;}
+  set uciID(value)    {this.#uciid      = value;}
+
+  setProperty(prop,value){
+    if (prop in this){
+      this[prop] = value;
+    }
   }
 
 }
