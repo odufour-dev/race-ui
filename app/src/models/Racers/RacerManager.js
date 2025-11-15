@@ -2,12 +2,14 @@ import { Racer } from "./Racer"
 
 export class RacerManager {
 
+  #racers
+
   constructor(racers = []) {
-    this.racers = racers;
+    this.#racers = racers;
   }
 
   clone(){
-    return new RacerManager(this.racers);
+    return new RacerManager(this.#racers);
   }
 
   add(r) {
@@ -15,16 +17,16 @@ export class RacerManager {
     racer.update(r);
 
     let data = this.clone();
-    data.racers.push(racer);
+    data.#racers.push(racer);
     return data;
   }
 
   clear(){
-    this.racers = [];
+    return new RacerManager([]);
   }
 
   getAll() {
-    return this.racers;
+    return this.#racers;
   }
 
   getFields() {
@@ -32,22 +34,22 @@ export class RacerManager {
   }
 
   edit(index, field, newValue) {
-    if (index < 0 || index >= this.racers.length) return;
-    if (!(field in this.racers[index])) return;
+    if (index < 0 || index >= this.#racers.length) return;
+    if (!(field in this.#racers[index])) return;
     let data = this.clone();
-    data.racers[index][field] = newValue;
+    data.#racers[index][field] = newValue;
     return data;
   }
 
   remove(index){
     let data = this.clone();
-    data.racers = data.racers.filter((_,idx) => idx !== index);
+    data.#racers = data.#racers.filter((_,idx) => idx !== index);
     return data;
   }
 
   generateIds() {
     let data = this.clone();
-    data.racers = data.racers.map((racer, index) => {
+    data.#racers = data.#racers.map((racer, index) => {
       racer.id = index + 1;
       return racer;
     });
@@ -56,9 +58,9 @@ export class RacerManager {
 
   shuffleRacers() {
     let data = this.clone();
-    for (let i = data.racers.length - 1; i > 0; i--) {
+    for (let i = data.#racers.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [data.racers[i], data.racers[j]] = [data.racers[j], data.racers[i]];
+      [data.#racers[i], data.#racers[j]] = [data.#racers[j], data.#racers[i]];
     }
     return data;
   }
@@ -70,7 +72,7 @@ export class RacerManager {
     //  - time
     //  - status : unknown, dnf, dns, abs, done
     const data = this.clone();
-    data.racers = this.racers.map((racer) => {
+    data.#racers = this.#racers.map((racer) => {
       const racerrank = ranking.filter((rank) => racer.id === rank.bib);
       if (racerrank.length > 0){
         racer.StageRank[stage-1] = {
@@ -86,7 +88,7 @@ export class RacerManager {
   }
   
   get length() {
-    return this.racers.length;
+    return this.#racers.length;
   }
 
 }
