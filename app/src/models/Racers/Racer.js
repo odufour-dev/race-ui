@@ -22,6 +22,10 @@ export class Racer {
     this.#ffcid       = ffcID;
   }
 
+  clone(){
+    return new Racer(this.#id,this.#firstname,this.#lastname,this.#sex,this.#age,this.#category,this.#club,this.#uciid,this.#ffcid);
+  }
+
   get age()       {return this.#age;}
   get category()  {return this.#category;}
   get club()      {return this.#club;}
@@ -43,10 +47,16 @@ export class Racer {
   set sex(value)      {this.#sex        = value;}
   set uciID(value)    {this.#uciid      = value;}
 
-  setProperty(prop,value){
-    if (prop in this){
-      this[prop] = value;
-    }
+  update(values){
+
+    const data = this.clone();
+    Object.keys(values).map((k) => {
+      if (k in this){
+        data[k] = values[k];
+      }
+    }); 
+    return data;
+
   }
 
 }

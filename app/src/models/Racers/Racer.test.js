@@ -100,18 +100,28 @@ describe('Racer', () => {
 
   });
 
-  it('setProperty - Existing', () => {
+  it('clone', () => {
 
-    const sut = new Racer();
-    sut.setProperty("id", 26);
-    expect(sut.id).toEqual(26);
+    const sut = new Racer(14,"Paul","POULE","H",25,"open2","V.C. Best","22236548974","41420057893");
+    const actual = sut.clone();
+
+    expect(actual.age).toEqual(25);
+    expect(actual.category).toEqual("open2");
+    expect(actual.club).toEqual("V.C. Best");
+    expect(actual.ffcID).toEqual("41420057893");
+    expect(actual.firstName).toEqual("Paul");
+    expect(actual.fullName).toEqual("Paul POULE");
+    expect(actual.id).toEqual(14);
+    expect(actual.lastName).toEqual("POULE");
+    expect(actual.sex).toEqual("H");
+    expect(actual.uciID).toEqual("22236548974");
 
   });
 
-  it('setProperty - NOT Existing', () => {
+  it('update', () => {
 
     const sut = new Racer();
-    sut.setProperty("unknown", "new value");
+    const actual = sut.update({"id": 26, "unknown": "new value", "category": "open2"});
     
     expect(sut.age).toEqual(0);
     expect(sut.category).toEqual("");
@@ -124,7 +134,17 @@ describe('Racer', () => {
     expect(sut.sex).toEqual("");
     expect(sut.uciID).toEqual("");
 
-  });
+    expect(actual.age).toEqual(0);
+    expect(actual.category).toEqual("open2");
+    expect(actual.club).toEqual("");
+    expect(actual.ffcID).toEqual("");
+    expect(actual.firstName).toEqual("");
+    expect(actual.fullName).toEqual(" ");
+    expect(actual.id).toEqual(26);
+    expect(actual.lastName).toEqual("");
+    expect(actual.sex).toEqual("");
+    expect(actual.uciID).toEqual("");
 
+  });
 
 });
