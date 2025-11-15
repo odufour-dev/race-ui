@@ -21,13 +21,7 @@ export class RaceModel {
   }
 
   clone(){
-    const model = new RaceModel(this.#racers.clone(), this.#annex.clone(), this.classifications, this.#race.clone(), this.#ranking.clone());
-    model.#racers           = this.#racers.clone();
-    model.#ranking          = this.#ranking.clone();
-    model.#annex            = this.#annex.clone();
-    model.#race             = this.#race.clone();
-    model.#classifications  = this.#classifications;
-    return model;
+    return new RaceModel(this.#racers.clone(), this.#annex.clone(), this.classifications, this.#race.clone(), this.#ranking.clone());
   }
 
   getClassifications(){
