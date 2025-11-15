@@ -11,15 +11,8 @@ export class RacerManager {
   }
 
   add(r) {
-
     const racer = new Racer();    
-    Object.keys(r).map((k) => {
-      if (k in racer){
-        racer[k] = r[k];
-      } else {
-        console.log("Unknown racer field: ", k);
-      }
-    });    
+    racer.update(r);
 
     let data = this.clone();
     data.racers.push(racer);
