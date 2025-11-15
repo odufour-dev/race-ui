@@ -2,60 +2,57 @@ import { Stage } from "./Stage"
 
 export class RaceManager {
 
-  constructor(annexrankings, rankingfactory){
-    this.stages_ = [new Stage()];
-    this.annexrankings_ = annexrankings;
-    this.rankingfactory_ = rankingfactory;
+  #stages
+  #annexrankings
+
+  constructor(stages = [new Stage()], annexrankings = []){
+    this.#stages = stages;
+    this.#annexrankings = annexrankings;
+  }
+
+  clone(){
+    return new RaceManager(this.#stages, this.#annexrankings);
   }
 
   get nStages(){
-    return this.stages_.length;
+    return this.#stages.length;
   }
   get stages(){
-    return this.stages_;
+    return this.#stages;
   }
   get annexRankings(){
-    return this.annexrankings_;
+    return this.#annexrankings;
   }
-  get annexRankingTypes(){console.debug(this.rankingfactory_);
-    return this.rankingfactory_.list;
-  }
-
-  addAnnexRanking(type,id){
-    const ranking = this.rankingfactory_.build(type,id);
-    ranking.priority = this.annexrankings_.length + 1;
-    this.annexrankings_.push(ranking);
+  
+  addAnnexRanking(ranking){
+    ranking.priority = this.#annexrankings.length + 1;
+    this.#annexrankings.push(ranking);
     return this.clone();
   }
 
   addStage(){
-    const stage = new Stage(this.stages_.length + 1);
-    this.stages_.push(stage);
+    const stage = new Stage(this.#stages.length + 1);
+    this.#stages.push(stage);
     return this.clone();
-  }
-
-  clone(){
-    const rmanager = new RaceManager(this.annexrankings_, this.rankingfactory_);
-    rmanager.stages_ = this.stages_;
-    return rmanager;
-  }
+  }  
 
   update(settings){
 
     let data = this.clone();
     if (settings.stages){
-      data.stages_ = settings.stages.map((s,idx) => {
+      data.#stages = settings.stages.map((s,idx) => {
         const stage = new Stage(s.id ?? idx+1);
         return stage.update(s);
       });
     }
-
+/*
     if (settings.annexRankings){
-        data.annexrankings_ = settings.annexRankings.map((r) => {
-            const ranking = data.rankingfactory_.build(r.type,r.id);
+        data.#annexrankings = settings.annexRankings.map((r) => {
+            const ranking = data.#rankingfactory.build(r.type,r.id);
             return ranking.update(r);
         })
     }
+*/
     return data;
   }
 
