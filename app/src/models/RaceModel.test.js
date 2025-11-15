@@ -17,4 +17,26 @@ describe('RaceModel', () => {
 
   });
 
+  it('updateRacerManager', () => {
+
+    const racers = new RacerManager();
+
+    const sut = new RaceModel();
+
+    const actual = sut.getStageRanking(1);
+
+    expect(actual).toEqual([]);
+    
+  });
+
+  it('getStageRanking - no data', () => {
+
+    const sut = new RaceModel();
+
+    const actual = sut.getStageRanking(1);
+
+    expect(actual).toEqual([]);
+    
+  });
+
 });
