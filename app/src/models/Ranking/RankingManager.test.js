@@ -3,10 +3,43 @@ import { TimingRecord }     from "./TimingRecord";
 
 describe('RankingManager', () => {
 
-  it('getRanking - no timing - no stage', () => {
+  it('Constructor - default', () => {
+
+    const sut = new RankingManager();
+
+    expect(sut.Bibs).toEqual([]);
+    expect(sut.Ranking).toEqual([]);
+    expect(sut.Stage).toEqual(1);
+
+  });
+
+  it('Get/Set Bibs', () => {
 
     const bibs = [1,2,3,4,5];
-    const sut = new RankingManager([],bibs,1);
+
+    const sut = new RankingManager();
+
+    sut.Bibs = bibs;
+    expect(sut.Bibs).toEqual(bibs);
+
+  });
+
+  it('Get/Set Stage', () => {
+
+    const stage = 4;
+
+    const sut = new RankingManager();
+
+    sut.Stage = stage;
+    expect(sut.Stage).toEqual(stage);
+
+  });
+
+  it('getRanking - no timing - no stage', () => {
+
+    const bibs    = [1,2,3,4,5];
+    const timings = [];
+    const sut = new RankingManager(timings,bibs);
 
     const actual = sut.Ranking;
 
@@ -22,7 +55,8 @@ describe('RankingManager', () => {
 
   it('getRanking - perfect match', () => {
 
-    const bibs = [1,2,3,4,5];
+    const bibs    = [1,2,3,4,5];
+    const stage   = 1;
     const timings = [
         new TimingRecord(1, 1, 2, 122, "done"),
         new TimingRecord(2, 1, 999, NaN, "dnf"),
@@ -30,7 +64,7 @@ describe('RankingManager', () => {
         new TimingRecord(4, 1, 1, 120, "done"),
         new TimingRecord(5, 1, 4, 130, "done"),
     ];
-    const sut = new RankingManager(timings, bibs, 1);
+    const sut = new RankingManager(timings, bibs, stage);
 
     const actual = sut.Ranking;
 
@@ -46,7 +80,8 @@ describe('RankingManager', () => {
 
   it('getRanking - multiple stages', () => {
 
-    const bibs = [1,2,3,4,5];
+    const bibs    = [1,2,3,4,5];
+    const stage   = 1;
     const timings = [
         new TimingRecord(1, 1, 2, 122, "done"),
         new TimingRecord(1, 2, 999, 122, "dns"),
@@ -56,7 +91,7 @@ describe('RankingManager', () => {
         new TimingRecord(4, 1, 1, 120, "done"),
         new TimingRecord(5, 1, 4, 130, "done"),
     ];
-    const sut = new RankingManager(timings, bibs, 1);
+    const sut = new RankingManager(timings, bibs, stage);
 
     const actual = sut.Ranking;
 
@@ -72,7 +107,8 @@ describe('RankingManager', () => {
 
   it('getRanking - less bibs', () => {
 
-    const bibs = [1,2,3];
+    const bibs    = [1,2,3];
+    const stage   = 1;
     const timings = [
         new TimingRecord(1, 1, 2, 122, "done"),
         new TimingRecord(1, 2, 999, 122, "dns"),
@@ -82,7 +118,7 @@ describe('RankingManager', () => {
         new TimingRecord(4, 1, 1, 120, "done"),
         new TimingRecord(5, 1, 4, 130, "done"),
     ];
-    const sut = new RankingManager(timings, bibs, 1);
+    const sut = new RankingManager(timings, bibs, stage);
 
     const actual = sut.Ranking;
 
@@ -98,7 +134,8 @@ describe('RankingManager', () => {
 
   it('getRanking - more bibs', () => {
 
-    const bibs = [1,2,3,4,5];
+    const bibs    = [1,2,3,4,5];
+    const stage   = 1;
     const timings = [
         new TimingRecord(1, 1, 2, 122, "done"),
         new TimingRecord(1, 2, 999, 122, "dns"),
@@ -106,7 +143,7 @@ describe('RankingManager', () => {
         new TimingRecord(5, 2, 1, 50, "done"),
         new TimingRecord(3, 1, 3, 122, "done"),
     ];
-    const sut = new RankingManager(timings, bibs, 1);
+    const sut = new RankingManager(timings, bibs, stage);
 
     const actual = sut.Ranking;
 
@@ -122,7 +159,8 @@ describe('RankingManager', () => {
 
   it('getRanking - Stage 2 - DNS/DNF/ABS', () => {
 
-    const bibs = [1,2,3,4,5];
+    const bibs    = [1,2,3,4,5];
+    const stage   = 2;
     const timings = [
         new TimingRecord(1, 1, 2, 122, "done"),
         new TimingRecord(1, 2, 999, 122, "dns"),
@@ -130,7 +168,7 @@ describe('RankingManager', () => {
         new TimingRecord(5, 2, 1, 50, "done"),
         new TimingRecord(3, 1, 3, 122, "done"),
     ];
-    const sut = new RankingManager(timings, bibs, 2);
+    const sut = new RankingManager(timings, bibs, stage);
 
     const actual = sut.Ranking;
 
