@@ -50,10 +50,10 @@ describe('RacerManager', () => {
     const racers = [{id: 1},{id: 2}];
 
     const sut = new RacerManager(racers);
-    const actual = sut.clear();
+    sut.clear();
 
-    expect(actual.length).toEqual(0);
-    expect(actual.getAll()).toEqual([]);
+    expect(sut.length).toEqual(0);
+    expect(sut.getAll()).toEqual([]);
 
   });
 

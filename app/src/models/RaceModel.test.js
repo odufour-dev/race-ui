@@ -11,9 +11,9 @@ describe('RaceModel', () => {
 
     const sut = new RaceModel();
 
-    expect(sut.getRacerManager()).toBeInstanceOf(RacerManager);
-    expect(sut.getRace()).toBeInstanceOf(RaceManager);
-    expect(sut.getClassifications()).toBeInstanceOf(Classification);
+    expect(sut.Racers).toBeInstanceOf(RacerManager);
+    expect(sut.Race).toBeInstanceOf(RaceManager);
+    expect(sut.Classifications).toBeInstanceOf(Classification);
 
   });
 
