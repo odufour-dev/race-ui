@@ -50,11 +50,33 @@ export class Racer {
   update(values){
 
     const data = this.clone();
-    Object.keys(values).map((k) => {
-      if (k in this){
-        data[k] = values[k];
-      }
-    }); 
+    if ("age" in values){
+      data.#age = values.age;
+    }
+    if ("category" in values){
+      data.#category = values.category;
+    }
+    if ("club" in values){
+      data.#club = values.club;
+    }
+    if ("ffcID" in values){
+      data.#ffcid = values.ffcID;
+    }
+    if ("firstName" in values){
+      data.#firstname = values.firstName;
+    }
+    if ("id" in values){
+      data.#id = values.id;
+    }
+    if ("lastName" in values){
+      data.#lastname = values.lastName;
+    }
+    if ("sex" in values){
+      data.#sex = values.sex;
+    }
+    if ("uciID" in values){
+      data.#uciid = values.uciID;
+    }
     return data;
 
   }

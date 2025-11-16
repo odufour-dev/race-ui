@@ -105,7 +105,7 @@ const ExcelReader = ( {dataModel, updateData} ) => {
         }
       });
       dataModel.add(data);
-    });
+    });console.debug(dataModel);
     updateData(dataModel);
   };
 

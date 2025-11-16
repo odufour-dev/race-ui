@@ -14,15 +14,13 @@ export class RacerManager {
 
   add(r) {
     const racer = new Racer();    
-    racer.update(r);
-
     let data = this.clone();
-    data.#racers.push(racer);
+    data.#racers.push(racer.update(r));
     return data;
   }
 
   clear(){
-    return new RacerManager([]);
+    this.#racers = [];
   }
 
   getAll() {
