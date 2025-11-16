@@ -9,12 +9,12 @@ import { AnnexItemFactory } from './AnnexItemFactory';
  * - onApply?: optional callback(settings) called after applying settings
  * - onCancel?: optional callback() called when user cancels
  */
-export default function EventSettings({ translator, settings, onApply }) {
+export default function EventSettings({ translator, settings, annexRanking, onApply }) {
   
   // Use safe defaults so inputs never receive `undefined` which causes
   // React's controlled -> uncontrolled warning.
   const [ evtSettings, setEvtSettings ]     = useState( settings );
-  const [ annexType, setAnnexType ]         = useState( settings.annexRankingTypes[0] );
+  const [ annexType, setAnnexType ]         = useState( annexRanking.list[0] );
   
   useEffect(() => { onApply && onApply( evtSettings ) }, [ evtSettings ]);
 
@@ -57,12 +57,16 @@ export default function EventSettings({ translator, settings, onApply }) {
           <div className="annex-actions">
             <select value={annexType} onChange={e => setAnnexType(e.target.value)}>
             {
-              evtSettings.annexRankingTypes.map((t) => (
+              annexRanking.list.map((t) => (
                 <option key={t} value={t}>{translator("event.settings.annex.type." + t)}</option>
               ))
             }
             </select>
-            <button type="button" className="btn" onClick={() => setEvtSettings( evtSettings.addAnnexRanking(annexType,evtSettings.annexRankings.length + 1) )}>{translator("event.settings.addannexranking")}</button>
+            <button 
+              type="button" 
+              className="btn" 
+              onClick={() => setEvtSettings( evtSettings.addAnnexRanking(annexRanking.build(annexType,evtSettings.annexRankings.length + 1)) )}
+            >{translator("event.settings.addannexranking")}</button>
           </div>
         </div>
       </div>

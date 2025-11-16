@@ -1,0 +1,52 @@
+import React, { useEffect, useState, useMemo } from 'react';
+import TimeRankingTable from './TimeRankingTable/TimeRankingTable';
+import Grid from './Grid/Grid';
+
+import './StageRanking.css';
+
+export default function StageRanking({ data = [], time, onChange }) {
+
+    const [ timeranking, setTimeRanking ] = useState( [] );
+    const [ status, setStatus ] = useState( data );
+
+    // Update the Grid status when TimeRanking is updated
+    //  Bib set in TimeRanking shall be set as "done" in the Grid
+    useEffect(() => {
+        const bibs = timeranking.map(item => Number(item.bib));
+        const bibSet = new Set(bibs);
+        const bibOcc = bibs.reduce((acc, item) => {
+            acc[item] = (acc[item] || 0) + 1;
+            return acc;
+        }, {});
+        setStatus(status.map(item =>{
+            const bib = Number(item.bib);
+            if (item.bib in bibOcc && bibOcc[bib] > 1){
+                item.status = "duplicate";
+            } else if (bibSet.has(bib)){
+                item.status = "done";
+            } else if (item.status === "done") {
+                item.status = "unknown";
+            }
+            return item;
+        }));
+    }, [ timeranking ]);
+
+    useEffect(() => {
+        // Add "done" status to all elements of timeranking
+        const out = timeranking.map((tr) => {return {bib: Number(tr.bib), position: tr.position, time: tr.time, status: "done"};});
+        // Append bibs with non "done" status
+        status.map((s) => {
+            if (s.status !== "done"){
+                out.push({bib: Number(s.bib), position: -1, time: "00:00:00", status: s.status});
+            }
+        });
+        onChange(out);
+    }, [ timeranking, status ]);
+
+    return (
+        <div>
+            <Grid data={status} onChange={setStatus} />
+            <TimeRankingTable data={timeranking} time={time} onChange={setTimeRanking}/>
+        </div>
+    );
+}
