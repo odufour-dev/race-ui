@@ -40,15 +40,19 @@ export class RankingManager {
 
     // Append bibs that appear in ranking to the list (if missing)
     ranking.map((r) => {
-      if (!this.#bibs.some((b) => b == r.bib)){this.#bibs.push(r.bib)}
+      if (r.bib && !this.#bibs.some((b) => b == r.bib)){this.#bibs.push(r.bib)}
     });
     this.#bibs.sort((a,b) => a-b);
 
-    // Create a variable with timingRecords to avoid modifications in object property    
-    ranking = this.#fillMissingBibs(ranking);
+    ranking = ranking.map((r) => {
+      const rec = new TimingRecord();
+      rec.update(r);
+      rec.stage = this.#stage;
+      return r;
+    })
 
     const data = this.clone();
-    data.#ranking = data.#ranking.filter((r) => r.stage != this.#stage).concat(ranking.filter((r) => r.stage == this.#stage));
+    data.#ranking = data.#ranking.filter((r) => r.stage != this.#stage).concat(ranking);
     return data;
 
   }

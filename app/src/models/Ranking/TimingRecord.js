@@ -27,4 +27,12 @@ export class TimingRecord {
   set status(value)   {this.#status   = value;}
   set time(value)     {this.#time     = value;}
 
+  update(data){
+    if ("bib"       in data){this.#bib      = data.bib;}
+    if ("position"  in data){this.#position = data.position;}
+    if ("stage"     in data){this.#stage    = data.stage;}
+    if ("status"    in data){this.#status   = data.status;}
+    if ("time"      in data){this.#time     = data.time;}
+  }
+
 }

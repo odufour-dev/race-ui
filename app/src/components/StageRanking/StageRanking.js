@@ -5,14 +5,7 @@ import Grid from './Grid/Grid';
 import './StageRanking.css';
 
 export default function StageRanking({ data = [], time, onChange }) {
-/*
-    let allBibs = [];
-    for (let i = 1; i < 100; i++){
-        if ((i % 10) > 0 && (i % 10) < 7){
-            allBibs.push({ id: i, status: "unknown" });
-        }
-    }
-*/
+
     const [ timeranking, setTimeRanking ] = useState( [] );
     const [ status, setStatus ] = useState( data );
 
@@ -46,7 +39,7 @@ export default function StageRanking({ data = [], time, onChange }) {
             if (s.status !== "done"){
                 out.push({bib: s.id, position: -1, time: "00:00:00", status: s.status});
             }
-        })
+        });
         onChange(out);
     }, [ timeranking, status ]);
 

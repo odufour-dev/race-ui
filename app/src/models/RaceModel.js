@@ -62,10 +62,11 @@ export class RaceModel {
   }
 
   updateStageRanking(stage,ranking){
+
     let data = this.clone();
     data.#ranking.Bibs  = data.#racers.getAll().map((r) => r.id);
     data.#ranking.Stage = stage;
-    data.#ranking = this.#ranking.update(ranking);
+    data.#ranking = data.#ranking.update(ranking);
     return data;
   }
   
