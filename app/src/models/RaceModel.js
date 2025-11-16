@@ -21,14 +21,18 @@ export class RaceModel {
   }
 
   clone(){
-    return new RaceModel(this.#racers.clone(), this.#annex.clone(), this.classifications, this.#race.clone(), this.#ranking.clone());
+    return new RaceModel(this.#racers.clone(), this.#annex.clone(), this.#classifications, this.#race.clone(), this.#ranking.clone());
   }
 
   getClassifications(){
     return this.#classifications;
   }
 
-  getRace(){
+  get Annex(){
+    return this.#annex;
+  }
+
+  get Race(){
     return this.#race;
   }
 
@@ -41,9 +45,10 @@ export class RaceModel {
   }
 
   addAnnexRanking(type,id){
-    const ranking = this.#annex.build(type,id);
-    this.#race    = addAnnexRanking(ranking);
-    return this.clone();
+    let data = this.clone();
+    const ranking = data.#annex.build(type,id);
+    data.#race.addAnnexRanking(ranking);
+    return data.clone();
   }
     
   getStageRanking(stage){
@@ -53,15 +58,11 @@ export class RaceModel {
   }
 
   updateRace(race){
-    let data = this.clone();
-    data.#race = race;
-    return data;
+    return new RaceModel(this.#racers.clone(), this.#annex.clone(), this.#classifications, race, this.#ranking.clone());
   }
 
   updateRacerManager(racerManager) {
-    let data = this.clone();
-    data.#racers = racerManager;
-    return data;
+    return new RaceModel(racerManager, this.#annex.clone(), this.#classifications, this.#racers, this.#ranking.clone());
   }
 
   updateStageRanking(stage,ranking){

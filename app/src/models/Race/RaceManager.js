@@ -47,14 +47,9 @@ export class RaceManager {
         return stage.update(s);
       });
     }
-/*
     if (settings.annexRankings){
-        data.#annexrankings = settings.annexRankings.map((r) => {
-            const ranking = data.#rankingfactory.build(r.type,r.id);
-            return ranking.update(r);
-        })
+        data.#annexrankings = settings.annexRankings.map((r) => r);
     }
-*/
     return data;
   }
 

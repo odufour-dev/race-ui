@@ -28,7 +28,7 @@ function App() {
 
   // Create the navigation panel components
   const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5, component: (props) => (
-    <EventSettings {...props} translator={translator} settings={raceModel.getRace()} onApply={(settings) => setRaceModel(raceModel.updateRace(settings))} />
+    <EventSettings {...props} translator={translator} settings={raceModel.Race} annexRanking={raceModel.Annex} onApply={(settings) => setRaceModel(raceModel.updateRace(settings))} />
   ) });
   const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
     <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
@@ -43,7 +43,7 @@ function App() {
   useEffect(() => {
 
     const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
-    const evtSettings = raceModel.getRace();
+    const evtSettings = raceModel.Race;
     for (let stage=1; stage<=evtSettings.nStages; stage++) {
       
       const s = evtSettings.stages[stage-1];
@@ -57,7 +57,7 @@ function App() {
       navRaceGroup.add(navConfigRanking);
 
       const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2, component: 
-        (props) => (<StageRanking {...props} racers={raceModel.getRacerManager()} time={time} onChange={(data)=>setRaceModel(raceModel.updateStageMain(stage,data))}/>)
+        (props) => (<StageRanking {...props} racers={raceModel.getStageRanking(stage)} time={time} onChange={(data)=>setRaceModel(raceModel.updateStageRanking(stage,data))}/>)
       } );
       navRaceGroup.add(navStageRanking);
       
