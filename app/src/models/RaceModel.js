@@ -24,7 +24,7 @@ export class RaceModel {
     return new RaceModel(this.#racers.clone(), this.#annex.clone(), this.#classifications, this.#race.clone(), this.#ranking.clone());
   }
 
-  getClassifications(){
+  get Classifications(){
     return this.#classifications;
   }
 
@@ -36,12 +36,8 @@ export class RaceModel {
     return this.#race;
   }
 
-  getRacerManager() {
+  get Racers() {
     return this.#racers;
-  }
-
-  get annexRankingTypes(){
-    return this.#annex.list;
   }
 
   addAnnexRanking(type,id){
@@ -62,7 +58,7 @@ export class RaceModel {
   }
 
   updateRacerManager(racerManager) {
-    return new RaceModel(racerManager, this.#annex.clone(), this.#classifications, this.#racers, this.#ranking.clone());
+    return new RaceModel(racerManager, this.#annex.clone(), this.#classifications, this.#race.clone(), this.#ranking.clone());
   }
 
   updateStageRanking(stage,ranking){

@@ -31,10 +31,10 @@ function App() {
     <EventSettings {...props} translator={translator} settings={raceModel.Race} annexRanking={raceModel.Annex} onApply={(settings) => setRaceModel(raceModel.updateRace(settings))} />
   ) });
   const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
-    <RegistrationTable {...props} dataModel={raceModel.getRacerManager()} classificationModel={raceModel.getClassifications()} setData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
+    <RegistrationTable {...props} dataModel={raceModel.Racers} classificationModel={raceModel.Classifications} setData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
   )});
   const navRacerImport = new NavigationItem({ id: 'import', title: translator('navigation.import'), order: 20, component: (props) => (
-    <ExcelReader {...props} dataModel={raceModel.getRacerManager()} updateData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
+    <ExcelReader {...props} dataModel={raceModel.Racers} updateData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
   )});
 
   const navEventGroup = new NavigationGroup({id: 'event', title: translator('navigation.event'), order: 0, items: [navEventConfiguration]});
