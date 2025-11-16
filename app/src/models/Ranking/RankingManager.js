@@ -44,6 +44,7 @@ export class RankingManager {
     });
     this.#bibs.sort((a,b) => a-b);
 
+    // Make sure that each ranking element is a TimingRecord
     ranking = ranking.map((r) => {
       const rec = new TimingRecord();
       rec.update(r);

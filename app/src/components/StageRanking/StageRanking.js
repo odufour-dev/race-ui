@@ -37,7 +37,7 @@ export default function StageRanking({ data = [], time, onChange }) {
         // Append bibs with non "done" status
         status.map((s) => {
             if (s.status !== "done"){
-                out.push({bib: s.id, position: -1, time: "00:00:00", status: s.status});
+                out.push({bib: Number(s.bib), position: -1, time: "00:00:00", status: s.status});
             }
         });
         onChange(out);
