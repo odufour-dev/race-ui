@@ -89,3 +89,9 @@
   background-color: #eee;
   color: transparent;
 }
+
+/* NONE - Empty cell */
+.status-none {
+  background-color: #000;
+  color: transparent;
+}

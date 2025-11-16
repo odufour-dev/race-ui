@@ -1,18 +1,30 @@
 
 export class TimingRecord {
 
+  #bib
+  #stage
+  #position
+  #time
+  #status
+
   constructor(bib, stage, position, time, status) {
-    this.bib_       = bib;
-    this.stage_     = stage;
-    this.position_  = position;
-    this.time_      = time;
-    this.status_    = status;
+    this.#bib       = bib;
+    this.#stage     = stage;
+    this.#position  = position;
+    this.#time      = time;
+    this.#status    = status;
   }
 
-  get bib()     {return this.bib_;      }
-  get position(){return this.position_; }
-  get stage()   {return this.stage_;    }
-  get status()  {return this.status_;   }
-  get time()    {return this.time_;     }
+  get bib()     {return this.#bib;      }
+  get position(){return this.#position; }
+  get stage()   {return this.#stage;    }
+  get status()  {return this.#status;   }
+  get time()    {return this.#time;     }
+
+  set bib(value)      {this.#bib      = value;}
+  set position(value) {this.#position = value;}
+  set stage(value)    {this.#stage    = value;}
+  set status(value)   {this.#status   = value;}
+  set time(value)     {this.#time     = value;}
 
 }

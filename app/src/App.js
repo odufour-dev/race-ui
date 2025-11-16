@@ -57,7 +57,7 @@ function App() {
       navRaceGroup.add(navConfigRanking);
 
       const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: translator('navigation.ranking'), order: 2, component: 
-        (props) => (<StageRanking {...props} racers={raceModel.getStageRanking(stage)} time={time} onChange={(data)=>setRaceModel(raceModel.updateStageRanking(stage,data))}/>)
+        (props) => (<StageRanking {...props} data={raceModel.getStageRanking(stage)} time={time} onChange={(data)=>setRaceModel(raceModel.updateStageRanking(stage,data))}/>)
       } );
       navRaceGroup.add(navStageRanking);
       

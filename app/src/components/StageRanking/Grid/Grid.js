@@ -16,7 +16,8 @@ function Cell({ value, status, onChange }) {
 
   const handleClick = () => {
     setState((prev) => {
-        if (prev == "unknown"){return "dnf"}
+        if (prev == "none"){return "none"}
+        else if (prev == "unknown"){return "dnf"}
         else if (prev == "dnf"){return "dns"}
         else {return "unknown"}
     });
@@ -24,27 +25,35 @@ function Cell({ value, status, onChange }) {
 
   return (
     <div className={`cell status-${state}`} onClick={handleClick}>
-      {state !== "abs" ? value : ""} 
+      {(state !== "abs" && state !== "none") ? value : ""} 
     </div>
   );
 }
 
 // Composant Grille
 export default function Grid({data = [], onChange}) {
-  
+
   const [ bibs, setBibs ] = useState( data );
 
   useEffect(() => setBibs(data), [ data ]);
   
   const grid = [];
-  const rows = bibs.length > 0 ? Math.ceil(bibs[bibs.length - 1].id / 10) : 0;
-  const cols = bibs.length > 0 ? Math.max(...bibs.map((b) => b.id % 10)) : 0;
+  const rows = bibs.length > 0 ? Math.ceil(bibs[bibs.length - 1].bib / 10) : 0;
+  const cols = bibs.length > 0 ? Math.max(...bibs.map((b) => {
+    const mod = b.bib % 10;
+    return (mod > 0 ? mod : 10)
+  })) : 0;
+
   let ibib = 0;
   for (let r = 0; r < rows; r++) {
     const row = [];
     for (let c = 0; c < cols; c++) {
-      row.push(bibs[ibib]);
-      ibib = ibib + 1;
+      if (bibs.length > ibib && bibs[ibib].bib == (10*r + c+1)){
+        row.push(bibs[ibib]);
+        ibib = ibib + 1;
+      } else {
+        row.push({bib: "", status: "none"});
+      }
     }
     grid.push(row);
   }
@@ -54,7 +63,12 @@ export default function Grid({data = [], onChange}) {
       {grid.map((row, i) => (
         <div key={i} className="row">
           {row.map((r, j) => (
-            <Cell key={j} value={r.id} status={r.status} onChange={(value,status) => onChange((bibs) => bibs.map((b) => b.id === value ? {id: value, status: status} : b))}/>
+            <Cell 
+              key={j} 
+              value={r.bib} 
+              status={r.status} 
+              onChange={(value,status) => onChange((bibs) => bibs.map((b) => b.bib === value ? {bib: value, status: status} : b))}
+            />
           ))}
         </div>
       ))}

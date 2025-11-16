@@ -5,16 +5,16 @@ import Grid from './Grid/Grid';
 import './StageRanking.css';
 
 export default function StageRanking({ data = [], time, onChange }) {
-
+/*
     let allBibs = [];
     for (let i = 1; i < 100; i++){
         if ((i % 10) > 0 && (i % 10) < 7){
             allBibs.push({ id: i, status: "unknown" });
         }
     }
-
+*/
     const [ timeranking, setTimeRanking ] = useState( [] );
-    const [ status, setStatus ] = useState( allBibs );
+    const [ status, setStatus ] = useState( data );
 
     // Update the Grid status when TimeRanking is updated
     //  Bib set in TimeRanking shall be set as "done" in the Grid
@@ -26,15 +26,15 @@ export default function StageRanking({ data = [], time, onChange }) {
             return acc;
         }, {});
         setStatus(status.map(item =>{
-            if (item.id in bibOcc && bibOcc[item.id] > 1){
-                return { ...item, status: "duplicate" };
-            } else if (bibSet.has(item.id)){
-                return { ...item, status: "done" };
+            const bib = Number(item.bib);
+            if (item.bib in bibOcc && bibOcc[bib] > 1){
+                item.status = "duplicate";
+            } else if (bibSet.has(bib)){
+                item.status = "done";
             } else if (item.status === "done") {
-                return { ...item, status: "unknown"};
-            } else {
-                return item;
+                item.status = "unknown";
             }
+            return item;
         }));
     }, [ timeranking ]);
 
