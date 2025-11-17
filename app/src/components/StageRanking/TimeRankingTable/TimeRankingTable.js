@@ -7,7 +7,7 @@ export default function TimeRankingTable({ data = [], time, onChange }) {
   const buildRows = (src) => {
     const rows = (src || []).map((r, idx) => {
       const id = r.id ?? `r${idx}`;
-      const timeSeconds = r.time != null ? time.parseHMS(r.time) : null;
+      const timeSeconds = r.time;
       return { id, bib: r.bib ?? '', timeSeconds, delaySeconds: null, mode: null, editTime: timeSeconds != null ? time.formatHMS(timeSeconds) : '', editDelay: '' };
     });
     // compute delays relative to first row time if available
@@ -204,7 +204,7 @@ export default function TimeRankingTable({ data = [], time, onChange }) {
         id: r.id, 
         position: idx + 1,
         bib: r.bib, 
-        time: r.timeSeconds != null ? time.formatHMS(r.timeSeconds) : null
+        time: r.timeSeconds != null ? r.timeSeconds : null
       })).filter(r => String(r.bib || '').trim() && r.time != null);
       onChange(out);
     }

@@ -16,10 +16,11 @@ export class RankingManager {
     return new RankingManager(this.#ranking, this.#bibs, this.#stage);
   }
 
-  get Bibs(){return this.#bibs;}
-  set Bibs(bibs){this.#bibs = bibs;}
-  get Stage(){return this.#stage;}
-  set Stage(stage){this.#stage = stage;}
+  get Bibs()  {return this.#bibs;}
+  get Stage() {return this.#stage;}
+
+  set Bibs(bibs)  {this.#bibs   = bibs.map((b) => Number(b));}
+  set Stage(stage){this.#stage  = stage;}
   
   get Ranking(){
     
@@ -40,7 +41,7 @@ export class RankingManager {
 
     // Append bibs that appear in ranking to the list (if missing)
     ranking.map((r) => {
-      if (r.bib && !this.#bibs.some((b) => b == r.bib)){this.#bibs.push(r.bib)}
+      if (r.bib && !this.#bibs.some((b) => b == r.bib)){this.#bibs.push(Number(r.bib))}
     });
     this.#bibs.sort((a,b) => a-b);
 
