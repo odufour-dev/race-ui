@@ -7,7 +7,7 @@ export class TimingRecord {
   #time
   #status
 
-  constructor(bib, stage, position, time, status) {
+  constructor(bib = 0, stage = 1, position = 999, time = NaN, status = "unknown") {
     this.bib       = bib;
     this.stage     = stage;
     this.position  = position;
@@ -23,9 +23,9 @@ export class TimingRecord {
 
   set bib(value)      {this.#bib      = Number(value);}
   set position(value) {this.#position = Number(value);}
-  set stage(value)    {this.#stage    = value;}
+  set stage(value)    {this.#stage    = Number(value);}
   set status(value)   {this.#status   = value;}
-  set time(value)     {this.#time     = typeof value === "string" ? this.parseHMS(value) : value;}
+  set time(value)     {this.#time     = typeof value === "string" ? this.#parseHMS(value) : value;}
 
   update(data){
     if ("bib"       in data){this.bib      = data.bib;}
@@ -35,7 +35,7 @@ export class TimingRecord {
     if ("time"      in data){this.time     = data.time}
   }
 
-  parseHMS(input) {
+   #parseHMS(input) {
         if (input == null) return null;
         const s = String(input).trim();
         if (!s) return null;
