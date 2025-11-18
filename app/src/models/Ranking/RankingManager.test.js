@@ -244,7 +244,8 @@ describe('RankingManager', () => {
 
     const sut = new RankingManager(ranking, bibs, stage);
     
-    expect(sut.General).toEqual([]);
+    const actual = sut.General.map((g) => g.toObject());
+    expect(actual).toEqual([]);
     
   });
 
@@ -265,11 +266,12 @@ describe('RankingManager', () => {
 
     const sut = new RankingManager(ranking, bibs, stage);
     
-    expect(sut.General).toMatchObject([
-        new TimingRecord(3, 2, 2,   253,    'done'),
-        new TimingRecord(1, 2, 5,   257,    'done'),
-        new TimingRecord(5, 2, 7,   258,    'done'),
-        new TimingRecord(2, 2, 6,   259,    'done'),
+    const actual = sut.General.map((g) => g.toObject());
+    expect(actual).toMatchObject([
+        {bib:3, position:2, stage:2,   time:253,    status:'done'},
+        {bib:1, position:5, stage:2,   time:257,    status:'done'},
+        {bib:5, position:7, stage:2,   time:258,    status:'done'},
+        {bib:2, position:6, stage:2,   time:259,    status:'done'},
     ]);
     
   });
@@ -291,11 +293,12 @@ describe('RankingManager', () => {
 
     const sut = new RankingManager(ranking, bibs, stage);
     
-    expect(sut.General).toMatchObject([
-        new TimingRecord(3, 1, 1,   120,    'done'),
-        new TimingRecord(1, 1, 2,   122,    'done'),
-        new TimingRecord(5, 1, 3,   122,    'done'),
-        new TimingRecord(2, 1, 4,   125,    'done'),
+    const actual = sut.General.map((g) => g.toObject());
+    expect(actual).toMatchObject([
+        {bib:3, position:1, stage:1,   time:120,    status:'done'},
+        {bib:1, position:2, stage:1,   time:122,    status:'done'},
+        {bib:5, position:3, stage:1,   time:122,    status:'done'},
+        {bib:2, position:4, stage:1,   time:125,    status:'done'},
     ]);
     
   });
@@ -316,11 +319,12 @@ describe('RankingManager', () => {
 
     const sut = new RankingManager(ranking, bibs, stage);
     
-    expect(sut.General).toMatchObject([
-        new TimingRecord(3, 2, 2,   253,    'done'),
-        new TimingRecord(1, 2, 5,   257,    'done'),
-        new TimingRecord(5, 2, 7,   NaN,    'dns'),
-        new TimingRecord(2, 1, 6,   NaN,    'dnf'),
+    const actual = sut.General.map((g) => g.toObject());
+    expect(actual).toMatchObject([
+        {bib:3, position:2, stage:2,   time:253,    status:'done'},
+        {bib:1, position:5, stage:2,   time:257,    status:'done'},
+        {bib:5, position:7, stage:2,   time:NaN,    status:'dns'},
+        {bib:2, position:4, stage:1,   time:NaN,    status:'dnf'},
     ]);
     
   });
