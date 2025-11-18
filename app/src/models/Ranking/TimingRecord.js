@@ -27,6 +27,8 @@ export class TimingRecord {
   set status(value)   {this.#status   = value;}
   set time(value)     {this.#time     = typeof value === "string" ? this.#parseHMS(value) : value;}
 
+  toObject(){return {bib: this.#bib, position:this.#position,stage:this.#stage,status:this.#status,time:this.#time};}
+
   update(data){
     if ("bib"       in data){this.bib      = data.bib;}
     if ("position"  in data){this.position = data.position;}
