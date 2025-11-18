@@ -236,4 +236,81 @@ describe('RankingManager', () => {
     
   });
 
+  it('General - 2 stages - all finishers - no equality', () => {
+
+    const bibs    = [1,2,3,5];
+    const stage   = 2;
+    const ranking = [
+        new TimingRecord(1, 1, 2,   122,    "done"),
+        new TimingRecord(2, 1, 4,   125,    "done"),
+        new TimingRecord(3, 1, 1,   120,    "done"),
+        new TimingRecord(5, 1, 3,   122,    "done"),
+        new TimingRecord(1, 2, 3,   135,    "done"),
+        new TimingRecord(2, 2, 2,   134,    "done"),
+        new TimingRecord(3, 2, 1,   133,    "done"),
+        new TimingRecord(5, 2, 4,   136,    "done"),
+    ];
+
+    const sut = new RankingManager(ranking, bibs, stage);
+    
+    expect(sut.General).toMatchObject([
+        new TimingRecord(3, 2, 2,   253,    'done'),
+        new TimingRecord(1, 2, 5,   257,    'done'),
+        new TimingRecord(5, 2, 7,   258,    'done'),
+        new TimingRecord(2, 2, 6,   259,    'done'),
+    ]);
+    
+  });
+
+  it('General - stage 1 - all finishers - no equality', () => {
+
+    const bibs    = [1,2,3,5];
+    const stage   = 1;
+    const ranking = [
+        new TimingRecord(1, 1, 2,   122,    "done"),
+        new TimingRecord(2, 1, 4,   125,    "done"),
+        new TimingRecord(3, 1, 1,   120,    "done"),
+        new TimingRecord(5, 1, 3,   122,    "done"),
+        new TimingRecord(1, 2, 3,   135,    "done"),
+        new TimingRecord(2, 2, 2,   134,    "done"),
+        new TimingRecord(3, 2, 1,   133,    "done"),
+        new TimingRecord(5, 2, 4,   136,    "done"),
+    ];
+
+    const sut = new RankingManager(ranking, bibs, stage);
+    
+    expect(sut.General).toMatchObject([
+        new TimingRecord(3, 1, 1,   120,    'done'),
+        new TimingRecord(1, 1, 2,   122,    'done'),
+        new TimingRecord(5, 1, 3,   122,    'done'),
+        new TimingRecord(2, 1, 4,   125,    'done'),
+    ]);
+    
+  });
+
+  it('General - 2 stages - dnf/dns - no equality', () => {
+
+    const bibs    = [1,2,3,5];
+    const stage   = 2;
+    const ranking = [
+        new TimingRecord(1, 1, 2,   122,    "done"),
+        new TimingRecord(2, 1, 4,   NaN,    "dnf"),
+        new TimingRecord(3, 1, 1,   120,    "done"),
+        new TimingRecord(5, 1, 3,   122,    "done"),
+        new TimingRecord(1, 2, 3,   135,    "done"),
+        new TimingRecord(3, 2, 1,   133,    "done"),
+        new TimingRecord(5, 2, 4,   NaN,    "dns"),
+    ];
+
+    const sut = new RankingManager(ranking, bibs, stage);
+    
+    expect(sut.General).toMatchObject([
+        new TimingRecord(3, 2, 2,   253,    'done'),
+        new TimingRecord(1, 2, 5,   257,    'done'),
+        new TimingRecord(5, 2, 7,   NaN,    'dns'),
+        new TimingRecord(2, 1, 6,   NaN,    'dnf'),
+    ]);
+    
+  });
+
 });

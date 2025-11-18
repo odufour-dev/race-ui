@@ -21,6 +21,32 @@ export class RankingManager {
 
   set Bibs(bibs)  {this.#bibs   = bibs.map((b) => Number(b));}
   set Stage(stage){this.#stage  = stage;}
+
+  get General(){
+
+    let ranking = this.#ranking;
+    if (ranking.length > 0){
+
+      const initval = [];
+      this.#bibs.map((b) => {
+        initval["x" + String(b)] = {bib: b, position: 0, time: 0, status: "unknown"};
+      });
+
+      ranking.sort((a,b) => a.stage - b.stage); // Sort by ascending stages - latest status is the most important
+      ranking = ranking
+                  .filter((r) => r.stage <= this.#stage)
+                  .reduce((gen,r) => {
+                    gen["x" + String(r.bib)].position += r.position;
+                    gen["x" + String(r.bib)].time     += r.time;
+                    gen["x" + String(r.bib)].status   = r.status;
+                    return gen;
+                  },initval);
+      ranking = Object.keys(ranking).map((k) => new TimingRecord(ranking[k].bib, this.#stage, ranking[k].position, ranking[k].time, ranking[k].status))
+      ranking.sort((a,b) => a.time - b.time);
+    }
+    return ranking;
+
+  }
   
   get Ranking(){
     
