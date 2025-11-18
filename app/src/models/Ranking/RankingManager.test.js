@@ -236,6 +236,18 @@ describe('RankingManager', () => {
     
   });
 
+  it('General - empty', () => {
+
+    const bibs    = [];
+    const stage   = 2;
+    const ranking = [];
+
+    const sut = new RankingManager(ranking, bibs, stage);
+    
+    expect(sut.General).toEqual([]);
+    
+  });
+
   it('General - 2 stages - all finishers - no equality', () => {
 
     const bibs    = [1,2,3,5];
