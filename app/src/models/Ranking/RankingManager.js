@@ -99,10 +99,13 @@ export class RankingManager {
 
     // Make sure that each ranking element is a TimingRecord
     ranking = ranking.map((r) => {
+      
       const rec = new TimingRecord();
       rec.update(r);
-      rec.stage = this.#stage;
-      return r;
+      if (!("stage" in r)){
+        rec.stage = this.#stage;
+      }      
+      return rec;
     })
 
     const data = this.clone();

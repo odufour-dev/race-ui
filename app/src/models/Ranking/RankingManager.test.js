@@ -41,14 +41,13 @@ describe('RankingManager', () => {
     const ranking = [];
     const sut = new RankingManager(ranking,bibs);
 
-    const actual = sut.Ranking;
-
-    expect(actual).toEqual([
-        new TimingRecord(1, 1, 999, NaN, "unknown"),
-        new TimingRecord(2, 1, 999, NaN, "unknown"),
-        new TimingRecord(3, 1, 999, NaN, "unknown"),
-        new TimingRecord(4, 1, 999, NaN, "unknown"),
-        new TimingRecord(5, 1, 999, NaN, "unknown"),
+    const actual = sut.Ranking.map((r) => r.toObject());
+    expect(actual).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+        {bib: 2, stage: 1, position: 999, time: NaN, status: "unknown"},
+        {bib: 3, stage: 1, position: 999, time: NaN, status: "unknown"},
+        {bib: 4, stage: 1, position: 999, time: NaN, status: "unknown"},
+        {bib: 5, stage: 1, position: 999, time: NaN, status: "unknown"},
     ])
 
   });
@@ -66,14 +65,13 @@ describe('RankingManager', () => {
     ];
     const sut = new RankingManager(ranking, bibs, stage);
 
-    const actual = sut.Ranking;
-
-    expect(actual).toEqual([
-        new TimingRecord(4, 1, 1, 120, "done"),
-        new TimingRecord(1, 1, 2, 122, "done"),
-        new TimingRecord(3, 1, 3, 122, "done"),
-        new TimingRecord(5, 1, 4, 130, "done"),
-        new TimingRecord(2, 1, 999, NaN, "dnf"),
+    const actual = sut.Ranking.map((r) => r.toObject());
+    expect(actual).toMatchObject([
+        {bib: 4, stage: 1, position: 1,   time: 120, status: "done" },
+        {bib: 1, stage: 1, position: 2,   time: 122, status: "done" },
+        {bib: 3, stage: 1, position: 3,   time: 122, status: "done" },
+        {bib: 5, stage: 1, position: 4,   time: 130, status: "done" },
+        {bib: 2, stage: 1, position: 999, time: NaN, status: "dnf"  },
     ])
 
   });
@@ -93,14 +91,13 @@ describe('RankingManager', () => {
     ];
     const sut = new RankingManager(ranking, bibs, stage);
 
-    const actual = sut.Ranking;
-
-    expect(actual).toEqual([
-        new TimingRecord(4, 1, 1, 120, "done"),
-        new TimingRecord(1, 1, 2, 122, "done"),
-        new TimingRecord(3, 1, 3, 122, "done"),
-        new TimingRecord(5, 1, 4, 130, "done"),
-        new TimingRecord(2, 1, 999, NaN, "dnf"),
+    const actual = sut.Ranking.map((r) => r.toObject());
+    expect(actual).toMatchObject([
+        {bib: 4, stage: 1, position: 1,   time: 120, status: "done" },
+        {bib: 1, stage: 1, position: 2,   time: 122, status: "done" },
+        {bib: 3, stage: 1, position: 3,   time: 122, status: "done" },
+        {bib: 5, stage: 1, position: 4,   time: 130, status: "done" },
+        {bib: 2, stage: 1, position: 999, time: NaN, status: "dnf"  },
     ])
 
   });
@@ -120,14 +117,13 @@ describe('RankingManager', () => {
     ];
     const sut = new RankingManager(ranking, bibs, stage);
 
-    const actual = sut.Ranking;
-
-    expect(actual).toEqual([
-        new TimingRecord(4, 1, 1, 120, "done"),
-        new TimingRecord(1, 1, 2, 122, "done"),
-        new TimingRecord(3, 1, 3, 122, "done"),
-        new TimingRecord(5, 1, 4, 130, "done"),
-        new TimingRecord(2, 1, 999, NaN, "dnf"),
+    const actual = sut.Ranking.map((r) => r.toObject());
+    expect(actual).toMatchObject([
+        {bib: 4, stage: 1, position: 1,   time: 120, status: "done" },
+        {bib: 1, stage: 1, position: 2,   time: 122, status: "done" },
+        {bib: 3, stage: 1, position: 3,   time: 122, status: "done" },
+        {bib: 5, stage: 1, position: 4,   time: 130, status: "done" },
+        {bib: 2, stage: 1, position: 999, time: NaN, status: "dnf"  },
     ])
 
   });
@@ -145,14 +141,13 @@ describe('RankingManager', () => {
     ];
     const sut = new RankingManager(ranking, bibs, stage);
 
-    const actual = sut.Ranking;
-
-    expect(actual).toEqual([
-        new TimingRecord(1, 1, 2, 122, "done"),
-        new TimingRecord(3, 1, 3, 122, "done"),
-        new TimingRecord(2, 1, 999, NaN, "dnf"),
-        new TimingRecord(4, 1, 999, NaN, "unknown"),
-        new TimingRecord(5, 1, 999, NaN, "unknown"),
+    const actual = sut.Ranking.map((r) => r.toObject());
+    expect(actual).toMatchObject([
+        {bib: 1, stage: 1, position: 2,   time: 122, status: "done"   },
+        {bib: 3, stage: 1, position: 3,   time: 122, status: "done"   },
+        {bib: 2, stage: 1, position: 999, time: NaN, status: "dnf"    },
+        {bib: 4, stage: 1, position: 999, time: NaN, status: "unknown"},
+        {bib: 5, stage: 1, position: 999, time: NaN, status: "unknown"},
     ])
 
   });
@@ -170,14 +165,13 @@ describe('RankingManager', () => {
     ];
     const sut = new RankingManager(ranking, bibs, stage);
 
-    const actual = sut.Ranking;
-
-    expect(actual).toEqual([
-        new TimingRecord(5, 2, 1, 50,   "done"),
-        new TimingRecord(1, 2, 999, 122, "dns"),
-        new TimingRecord(2, 2, 999, NaN, "abs"),
-        new TimingRecord(3, 2, 999, NaN, "unknown"),
-        new TimingRecord(4, 2, 999, NaN, "abs"),
+    const actual = sut.Ranking.map((r) => r.toObject());
+    expect(actual).toMatchObject([
+        {bib: 5, stage: 2, position: 1,   time: 50,  status: "done"},
+        {bib: 1, stage: 2, position: 999, time: 122, status: "dns"},
+        {bib: 2, stage: 2, position: 999, time: NaN, status: "abs"},
+        {bib: 3, stage: 2, position: 999, time: NaN, status: "unknown"},
+        {bib: 4, stage: 2, position: 999, time: NaN, status: "abs"},
     ])
 
   });
@@ -193,13 +187,15 @@ describe('RankingManager', () => {
     ];
 
     const sut = new RankingManager();
+    sut.Stage = 1;
+
     const actual = sut.update(ranking);
     
-    expect(actual.Ranking).toEqual([
-        new TimingRecord(1, 1, 2, 122, "done"),
-        new TimingRecord(3, 1, 3, 122, "done"),
-        new TimingRecord(2, 1, 999, NaN, "dnf"),
-        new TimingRecord(5, 1, 999, NaN, "unknown"),
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 2,   time: 122, status: "done"},
+        {bib: 3, stage: 1, position: 3,   time: 122, status: "done"},
+        {bib: 2, stage: 1, position: 999, time: NaN, status: "dnf"},
+        {bib: 5, stage: 1, position: 999, time: NaN, status: "unknown"},
     ]);
     expect(actual.Bibs).toEqual([1,2,3,5]);
     
@@ -226,11 +222,11 @@ describe('RankingManager', () => {
         new TimingRecord(3, 1, 1, 122, "done"),
     ]);
     
-    expect(actual.Ranking).toEqual([
-        new TimingRecord(3, 1, 1, 122, "done"),
-        new TimingRecord(1, 1, 2, 150, "done"),
-        new TimingRecord(2, 1, 4, 175, "done"),
-        new TimingRecord(5, 1, 999, NaN, "unknown"),
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 3, stage: 1, position: 1,   time: 122, status: "done"},
+        {bib: 1, stage: 1, position: 2,   time: 150, status: "done"},
+        {bib: 2, stage: 1, position: 4,   time: 175, status: "done"},
+        {bib: 5, stage: 1, position: 999, time: NaN, status: "unknown"},
     ]);
     expect(actual.Bibs).toEqual([1,2,3,5]);
     
@@ -326,6 +322,28 @@ describe('RankingManager', () => {
         {bib:5, position:7, stage:2,   time:NaN,    status:'dns'},
         {bib:2, position:4, stage:1,   time:NaN,    status:'dnf'},
     ]);
+    
+  });
+
+  it('Update - As called from RaceModel', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1,2,3,5];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: 2,   time: 150, status: "done"},
+        {bib: 2, stage:1, position: 4,   time: 175, status: "done"},
+        {bib: 3, stage:1, position: 1,   time: 122, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 3, stage: 1, position: 1,   time: 122, status: "done"},
+        {bib: 1, stage: 1, position: 2,   time: 150, status: "done"},
+        {bib: 2, stage: 1, position: 4,   time: 175, status: "done"},
+        {bib: 5, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1,2,3,5]);
     
   });
 
