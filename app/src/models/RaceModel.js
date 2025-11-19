@@ -48,9 +48,22 @@ export class RaceModel {
   }
     
   getStageRanking(stage){
+
+    // Configure the ranking manager to get stage ranking
     this.#ranking.Bibs  = this.#racers.getAll().map((r) => r.id);
     this.#ranking.Stage = stage;
-    return this.#ranking.Ranking;
+    let ranking = this.#ranking.Ranking;
+
+    const racers = this.#racers.getAll();
+    return ranking.map((rank) => {
+      const current = racers.filter((racer) => racer.id == rank.bib);
+      if (current.length == 1){
+        return {...rank.toObject(),...current[0].toObject()};          
+      } else {
+        return {...rank.toObject(),...this.#racers.getDefault().toObject()};
+      }      
+    });
+
   }
 
   updateRace(race){

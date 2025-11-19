@@ -59,12 +59,12 @@ describe('RaceModel', () => {
     ]);
 
     const actual = sut.getStageRanking(1);
-    expect(actual.map((g) => g.toObject())).toMatchObject([
-      {bib: 2, stage: 1, position: 1, time: 5010, status: "done"},
-      {bib: 5, stage: 1, position: 2, time: 5010, status: "done"},
-      {bib: 3, stage: 1, position: 3, time: 5010, status: "done"},
-      {bib: 1, stage: 1, position: 4, time: 5010, status: "done"},
-      {bib: 4, stage: 1, position: 5, time: 5010, status: "done"},
+    expect(actual).toMatchObject([
+      {bib: 2, stage: 1, position: 1, time: 5010, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
+      {bib: 5, stage: 1, position: 2, time: 5010, status: "done", firstname: "René",    lastname: "TAUPE"     },
+      {bib: 3, stage: 1, position: 3, time: 5010, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
+      {bib: 1, stage: 1, position: 4, time: 5010, status: "done", firstname: "Paul",    lastname: "POULE"     },
+      {bib: 4, stage: 1, position: 5, time: 5010, status: "done", firstname: "Jean",    lastname: "CROISSANT" },
     ]);
     
   });
@@ -88,12 +88,12 @@ describe('RaceModel', () => {
     ]);
 
     const actual = sut.getStageRanking(1);
-    expect(actual.map((g) => g.toObject())).toMatchObject([
-      {bib: 2, stage: 1, position: 1,   time: 5012,   status: "done"},
-      {bib: 5, stage: 1, position: 2,   time: 5015,   status: "done"},
-      {bib: 3, stage: 1, position: 3,   time: 5015,   status: "done"},
-      {bib: 1, stage: 1, position: 999, time: NaN,    status: "dnf" },
-      {bib: 4, stage: 1, position: 999, time: NaN,    status: "dns" },
+    expect(actual).toMatchObject([
+      {bib: 2, stage: 1, position: 1,   time: 5012,   status: "done", firstname: "Pierre",  lastname: "PONCE"     },
+      {bib: 5, stage: 1, position: 2,   time: 5015,   status: "done", firstname: "René",    lastname: "TAUPE"     },
+      {bib: 3, stage: 1, position: 3,   time: 5015,   status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
+      {bib: 1, stage: 1, position: 999, time: NaN,    status: "dnf" , firstname: "Paul",    lastname: "POULE"     },
+      {bib: 4, stage: 1, position: 999, time: NaN,    status: "dns" , firstname: "Jean",    lastname: "CROISSANT" },
     ]);
     
   });
