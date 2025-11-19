@@ -39,7 +39,7 @@ describe('RaceModel', () => {
     expect(actual).toEqual([]);
     
   });
-/*
+
   it('getStageRanking - all', () => {
 
     let sut = new RaceModel();
@@ -59,7 +59,6 @@ describe('RaceModel', () => {
     ]);
 
     const actual = sut.getStageRanking(1).map((g) => g.toObject());
-    console.log(actual);
     expect(actual).toMatchObject([
       {bib: 2, stage: 1, position: 1, time: 5010, status: "done"},
       {bib: 5, stage: 1, position: 2, time: 5010, status: "done"},
@@ -69,7 +68,7 @@ describe('RaceModel', () => {
     ]);
     
   });
-/*
+
   it('getStageRanking - dnf/dns', () => {
 
     let sut = new RaceModel();
@@ -99,5 +98,5 @@ describe('RaceModel', () => {
     ]);
     
   });
-*/
+
 });
