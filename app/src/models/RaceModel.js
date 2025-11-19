@@ -66,11 +66,11 @@ export class RaceModel {
 
   }
 
-  getGeneralRanking(stage){
+  getGeneralRanking(stage = 0){
 
     // Configure the ranking manager to get stage ranking
     this.#ranking.Bibs  = this.#racers.getAll().map((r) => r.id);
-    this.#ranking.Stage = stage ?? this.#race.nStages;
+    this.#ranking.Stage = stage > 0 ? stage : this.#race.nStages;
     let ranking = this.#ranking.General;
 
     const racers = this.#racers.getAll();

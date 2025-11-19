@@ -92,8 +92,8 @@ describe('RaceModel', () => {
       {bib: 2, stage: 1, position: 1,   time: 5012,   status: "done", firstname: "Pierre",  lastname: "PONCE"     },
       {bib: 5, stage: 1, position: 2,   time: 5015,   status: "done", firstname: "René",    lastname: "TAUPE"     },
       {bib: 3, stage: 1, position: 3,   time: 5015,   status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 1, stage: 1, position: 999, time: NaN,    status: "dnf" , firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: 999, time: NaN,    status: "dns" , firstname: "Jean",    lastname: "CROISSANT" },
+      {bib: 1, stage: 1, position: 4,   time: null,    status: "dnf" , firstname: "Paul",    lastname: "POULE"     },
+      {bib: 4, stage: 1, position: 5,   time: null,    status: "dns" , firstname: "Jean",    lastname: "CROISSANT" },
     ]);
     
   });
@@ -143,4 +143,48 @@ describe('RaceModel', () => {
     
   });
 
+  it('getGeneralRanking - with dnf/dns', () => {
+
+    let sut = new RaceModel();
+
+    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"});
+    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"});
+    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
+    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT"});
+    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"});
+
+    sut = sut.updateStageRanking(1, [
+      {bib: 2, position: 1,   time: 5010, status: "done"},
+      {bib: 5, position: 2,   time: 5010, status: "done"},
+      {bib: 3, position: 3,   time: 5010, status: "done"},
+      {bib: 1, position: 4,   time: 5010, status: "done"},
+      {bib: 4, position: null, time: null,  status: "dnf"},
+    ]);
+    sut = sut.updateStageRanking(2, [
+      {bib: 1, position: 1,   time: 1234, status: "done"},
+      {bib: 3, position: 2,   time: 1236, status: "done"},
+      {bib: 2, position: 3,   time: 1238, status: "done"},
+      {bib: 5, position: null, time: null,  status: "dns" },
+    ]);
+
+    // General ranking after 1st stage (== stage ranking)
+    expect(sut.getGeneralRanking(1)).toMatchObject([
+      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
+      {bib: 5, stage: 1, position: 2,   time: 5010, status: "done", firstname: "René",    lastname: "TAUPE"     },
+      {bib: 3, stage: 1, position: 3,   time: 5010, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
+      {bib: 1, stage: 1, position: 4,   time: 5010, status: "done", firstname: "Paul",    lastname: "POULE"     },
+      {bib: 4, stage: 1, position: null,time: null,  status: "dnf",  firstname: "Jean",    lastname: "CROISSANT" },
+    ]);
+
+    // General ranking after 2nd stage
+    expect(sut.getGeneralRanking(2)).toMatchObject([
+      {bib: 1, stage: 2, position: 5,   time: 6244, status: "done", firstname: "Paul",    lastname: "POULE"     },
+      {bib: 3, stage: 2, position: 5,   time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
+      {bib: 2, stage: 2, position: 4,   time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
+      {bib: 5, stage: 2, position: 2,   time: 5010, status: "dns",  firstname: "René",    lastname: "TAUPE"     },
+      {bib: 4, stage: 1, position: null,time: null,  status: "dnf",  firstname: "Jean",    lastname: "CROISSANT" },
+    ]);
+    
+  });
+  
 });
