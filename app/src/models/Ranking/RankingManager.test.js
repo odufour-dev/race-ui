@@ -347,4 +347,174 @@ describe('RankingManager', () => {
     
   });
 
+  it('Update - Invalid position empty', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: [],   time: 23, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid position nan', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: NaN,   time: 23, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid position numeric', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: -2,   time: 23, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid position empty string', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: "",   time: 23, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid position string cannot be converted to number', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: "none",   time: 23, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid time empty', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: 1,   time: [], status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid time nan', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: 1,   time: NaN, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid time negative', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: 1,   time: -1, status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid time empty string', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: 1,   time: "", status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
+  it('Update - Invalid time string cannot be converted to number', () => {
+
+    const sut = new RankingManager();
+    sut.Bibs  = [1];
+    sut.Stage = 1;
+
+    const actual = sut.update([
+        {bib: 1, stage:1, position: 1,   time: "none", status: "done"},
+    ]);
+    
+    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
+        {bib: 1, stage: 1, position: 999, time: NaN, status: "unknown"},
+    ]);
+    expect(actual.Bibs).toEqual([1]);
+    
+  });
+
 });

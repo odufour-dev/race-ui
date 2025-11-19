@@ -95,6 +95,51 @@ describe('TimingRecord', () => {
     
   });
 
+  it('[SET/GET] time - Empty', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = [];
+    expect(sut.time).toEqual(NaN);
+    
+  });
+
+  it('[SET/GET] time - NaN', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = NaN;
+    expect(sut.time).toEqual(NaN);
+    
+  });
+
+  it('[SET/GET] time - negative value', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = -1;
+    expect(sut.time).toEqual(NaN);
+    
+  });
+
+  it('[SET/GET] time - empty string', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = "";
+    expect(sut.time).toEqual(NaN);
+    
+  });
+
+  it('[SET/GET] time - non numeric string', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = "none";
+    expect(sut.time).toEqual(NaN);
+    
+  });
+
   it('Update - Native types', () => {
 
     const sut = new TimingRecord();

@@ -58,8 +58,8 @@ describe('RaceModel', () => {
       {bib: 4, position: 5, time: 5010, status: "done"},
     ]);
 
-    const actual = sut.getStageRanking(1).map((g) => g.toObject());
-    expect(actual).toMatchObject([
+    const actual = sut.getStageRanking(1);
+    expect(actual.map((g) => g.toObject())).toMatchObject([
       {bib: 2, stage: 1, position: 1, time: 5010, status: "done"},
       {bib: 5, stage: 1, position: 2, time: 5010, status: "done"},
       {bib: 3, stage: 1, position: 3, time: 5010, status: "done"},
@@ -88,13 +88,12 @@ describe('RaceModel', () => {
     ]);
 
     const actual = sut.getStageRanking(1);
-
-    expect(actual).toMatchObject([
-      new TimingRecord(2, 1, 1,   5012,   "done"),
-      new TimingRecord(5, 1, 2,   5015,   "done"),
-      new TimingRecord(3, 1, 3,   5015,   "done"),
-      new TimingRecord(1, 1, -2,  NaN,    "dnf"),
-      new TimingRecord(4, 1, -1,  NaN,    "dns"),
+    expect(actual.map((g) => g.toObject())).toMatchObject([
+      {bib: 2, stage: 1, position: 1,   time: 5012,   status: "done"},
+      {bib: 5, stage: 1, position: 2,   time: 5015,   status: "done"},
+      {bib: 3, stage: 1, position: 3,   time: 5015,   status: "done"},
+      {bib: 1, stage: 1, position: 999, time: NaN,    status: "dnf" },
+      {bib: 4, stage: 1, position: 999, time: NaN,    status: "dns" },
     ]);
     
   });

@@ -22,10 +22,24 @@ export class TimingRecord {
   get time()    {return this.#time;     }
 
   set bib(value)      {this.#bib      = Number(value);}
-  set position(value) {this.#position = Number(value);}
+  set position(value) {
+    const posvalue = Number(value);
+    if (!posvalue || posvalue.length == 0 || posvalue <= 0){
+      this.#position  = 999;
+    } else {
+      this.#position = posvalue;
+    }
+  }
   set stage(value)    {this.#stage    = Number(value);}
   set status(value)   {this.#status   = value;}
-  set time(value)     {this.#time     = typeof value === "string" ? this.#parseHMS(value) : value;}
+  set time(value)     {
+    const timevalue = typeof value == "string" ? this.#parseHMS(value) : value;
+    if (!timevalue || timevalue.length == 0 || timevalue < 0){
+      this.#time = NaN;
+    } else {
+      this.#time = timevalue;
+    }
+  }
 
   toObject(){return {bib: this.#bib, position:this.#position,stage:this.#stage,status:this.#status,time:this.#time};}
 
@@ -35,6 +49,12 @@ export class TimingRecord {
     if ("stage"     in data){this.stage    = data.stage;}
     if ("status"    in data){this.status   = data.status;}
     if ("time"      in data){this.time     = data.time}
+
+    if (isNaN(this.#time) || this.#position == 999){
+      this.#time      = NaN;
+      this.#position  = 999;
+      this.#status    = this.#status == "done" ? "unknown" : this.#status;
+    }
   }
 
    #parseHMS(input) {
