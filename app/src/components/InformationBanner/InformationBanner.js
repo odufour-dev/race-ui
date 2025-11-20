@@ -10,7 +10,7 @@ function InformationBanner({ dataModel }) {
   useEffect(() => {
     const racermanager = dataModel.Racers;
     setNbRacers(racermanager.length);
-    console.log('InformationBanner render with data model:', dataModel);
+    //console.log('InformationBanner render with data model:', dataModel);
   }, [ dataModel ]);
   
   return (
