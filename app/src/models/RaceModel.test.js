@@ -186,5 +186,40 @@ describe('RaceModel', () => {
     ]);
     
   });
+
+  it('getGeneralRanking - no registered racers', () => {
+
+    let sut = new RaceModel();
+
+    sut = sut.updateStageRanking(1, [
+      {bib: 2, position: 1,   time: 5010, status: "done"},
+    ]);
+
+    // General ranking after 1st stage (== stage ranking)
+    expect(sut.getGeneralRanking(1)).toMatchObject([
+      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done"},
+    ]);
+    
+  });
+
+  it('getStageRanking & getGeneralRanking - no registered racers', () => {
+
+    let sut = new RaceModel();
+
+    sut = sut.updateStageRanking(1, [
+      {bib: 2, position: 1,   time: 5010, status: "done"},
+    ]);
+
+    // Stage ranking after 1st stage (== stage ranking)
+    expect(sut.getStageRanking(1)).toMatchObject([
+      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done"},
+    ]);
+
+    // General ranking after 1st stage (== stage ranking)
+    expect(sut.getGeneralRanking(1)).toMatchObject([
+      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done"},
+    ]);
+    
+  });
   
 });
