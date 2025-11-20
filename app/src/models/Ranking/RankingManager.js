@@ -24,11 +24,12 @@ export class RankingManager {
 
   get General(){
 
+    const bibs  = this.#bibs;
     let ranking = this.#ranking;
     if (ranking.length > 0){
 
       const initval = [];
-      this.#bibs.map((b) => {
+      bibs.map((b) => {
         initval["x" + String(b)] = {bib: b, position: 0, time: 0, status: "unknown"};
       });
 
@@ -79,10 +80,11 @@ export class RankingManager {
   update(ranking){
 
     // Append bibs that appear in ranking to the list (if missing)
+    const bibs = this.#bibs;
     ranking.map((r) => {
-      if (r.bib && !this.#bibs.some((b) => b == r.bib)){this.#bibs.push(Number(r.bib))}
+      if (r.bib > 0 && !bibs.some((b) => b == r.bib)){bibs.push(Number(r.bib))}
     });
-    this.#bibs.sort((a,b) => a-b);
+    bibs.sort((a,b) => a-b);
 
     // Make sure that each ranking element is a TimingRecord
     ranking = ranking.map((r) => {
@@ -95,9 +97,7 @@ export class RankingManager {
       return rec;
     })
 
-    const data = this.clone();
-    data.#ranking = data.#ranking.filter((r) => r.stage != this.#stage).concat(ranking);
-    return data;
+    return new RankingManager(this.#ranking.filter((r) => r.stage != this.#stage).concat(ranking), bibs, this.#stage);
 
   }
 
