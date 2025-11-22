@@ -2,46 +2,41 @@ import { TimingRecord } from "./TimingRecord";
 
 export class RankingManager {
 
-  #bibs;
   #ranking;
   #stage;
 
-  constructor(ranking = [], bibs = [], stage = 1){
-    this.#bibs    = bibs;
+  constructor(ranking = [], stage = 1){
     this.#ranking = ranking;
     this.#stage   = stage;
   }
 
   clone(){
-    return new RankingManager(this.#ranking, this.#bibs, this.#stage);
+    return new RankingManager(this.#ranking, this.#stage);
   }
 
-  get Bibs()  {return this.#bibs;}
   get Stage() {return this.#stage;}
-
-  set Bibs(bibs)  {this.#bibs   = bibs.map((b) => Number(b));}
   set Stage(stage){this.#stage  = stage;}
 
   get General(){
 
-    const bibs  = this.#bibs;
     let ranking = this.#ranking;
     if (ranking.length > 0){
 
       const initval = [];
-      bibs.map((b) => {
-        initval["x" + String(b)] = {bib: b, position: 0, time: 0, status: "unknown"};
-      });
-
       ranking.sort((a,b) => a.stage - b.stage); // Sort by ascending stages - latest status is the most important
       ranking = ranking
                   .filter((r) => r.stage <= this.#stage)
                   .reduce((gen,r) => {
-                    gen["x" + String(r.bib)].position     += r.position;
-                    gen["x" + String(r.bib)].time         += r.time;
-                    gen["x" + String(r.bib)].stage        = r.stage;
-                    gen["x" + String(r.bib)].status       = r.status;
-                    gen["x" + String(r.bib)].lastposition = r.position;
+                    const id = "x" + String(r.bib);
+                    if (id in gen){
+                      gen[id].position     += r.position;
+                      gen[id].time         += r.time;
+                      gen[id].stage        = r.stage;
+                      gen[id].status       = r.status;
+                      gen[id].lastposition = r.position;
+                    } else {
+                      gen[id] = {bib: r.bib, position: r.position, time: r.time, stage: r.stage, status: r.status, lastposition: r.position};
+                    }                    
                     return gen;
                   },initval);
       ranking = Object.keys(ranking).map((k) => {
@@ -73,34 +68,22 @@ export class RankingManager {
       ranking.sort((a,b) => this.#sort(a,b));
     }
     
-    return this.#fillMissingBibs(ranking);
+    return ranking;
 
   }
 
   update(ranking){
 
-    // Append bibs that appear in ranking to the list (if missing)
-    const bibs = this.#bibs;
-    ranking.map((r) => {
-      if (r.bib > 0 && !bibs.some((b) => b == r.bib)){bibs.push(Number(r.bib))}
-    });
-    bibs.sort((a,b) => a-b);
-
     // Make sure that each ranking element is a TimingRecord
     ranking = ranking.map((r) => {
-      
       const rec = new TimingRecord();
       rec.update(r);
-      if (!("stage" in r)){
-        rec.stage = this.#stage;
-      }      
       return rec;
     })
-
-    return new RankingManager(this.#ranking.filter((r) => r.stage != this.#stage).concat(ranking), bibs, this.#stage);
+    return new RankingManager(this.#ranking.filter((r) => r.stage != this.#stage).concat(ranking), this.#stage);
 
   }
-
+/*
   #fillMissingBibs(ranking){
 
     if (this.#bibs.length > 0){
@@ -115,7 +98,7 @@ export class RankingManager {
     }
     return ranking;
   }
-
+*/
   #sort(a,b){
     // If final status is not done, consider that racer does not finish => go to the end
     // Sort non-finisher based on the last recorded stage (higher first)
