@@ -50,21 +50,18 @@ export class RaceModel {
   getStageRanking(stage){
 
     // Configure the ranking manager to get stage ranking
-    const racers = this.#racers.getAll();
-    const bibs = racers.map((r) => r.id);
-
     this.#ranking.Stage = stage > 0 ? stage : this.#race.nStages;
-    let ranking = this.#ranking.General;
+    let ranking = this.#ranking.Ranking.map((r) => r.toObject());
 
     // Append racers that are not in the ranking
     ranking = this.#fillMissingBibs(stage,ranking);
-    
+
     return ranking.map((rank) => {
-      const current = racers.filter((racer) => racer.id == rank.bib);
+      const current = this.#racers.getAll().filter((racer) => racer.id == rank.bib);
       if (current.length == 1){
-        return {...rank.toObject(),...current[0].toObject()};          
+        return {...rank,...current[0].toObject()};          
       } else {
-        return {...rank.toObject(),...this.#racers.getDefault().toObject()};
+        return {...rank,...this.#racers.getDefault().toObject()};
       }      
     });
 
@@ -73,22 +70,19 @@ export class RaceModel {
   getGeneralRanking(stage = 0){
 
     // Configure the ranking manager to get stage ranking
-    const racers = this.#racers.getAll();
-    const bibs = racers.map((r) => r.id);
-
     this.#ranking.Stage = stage > 0 ? stage : this.#race.nStages;
-    let ranking = this.#ranking.General;
+    let ranking = this.#ranking.General.map((g) => g.toObject());;
 
     // Append racers that are not in the ranking
     ranking = this.#fillMissingBibs(stage,ranking);
 
     // Assemble racers and ranking information
     return ranking.map((rank) => {
-      const current = racers.filter((racer) => racer.id == rank.bib);
+      const current = this.#racers.getAll().filter((racer) => racer.id == rank.bib);
       if (current.length == 1){
-        return {...rank.toObject(),...current[0].toObject()};          
+        return {...rank,...current[0].toObject()};          
       } else {
-        return {...rank.toObject(),...this.#racers.getDefault().toObject()};
+        return {...rank,...this.#racers.getDefault().toObject()};
       }      
     });
 
@@ -120,7 +114,7 @@ export class RaceModel {
       // Add missing bibs in the ranking with 'unknown' status
       bibs.map((b) => {
         if (!ranking.some((t) => t.bib == b)){
-          ranking.push({bib: b, stage: stage, position: null, time: null,status: status});
+          ranking.push({bib: b, stage: stage, position: null, time: null,status: "unknown"});
         }
       });
     }

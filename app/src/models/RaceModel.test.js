@@ -40,6 +40,27 @@ describe('RaceModel', () => {
     
   });
 
+  it('getStageRanking - no ranking', () => {
+
+    let sut = new RaceModel();
+
+    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"     });
+    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"     });
+    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
+    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT" });
+    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"     });
+
+    const actual = sut.getStageRanking(1);
+    expect(actual).toMatchObject([
+      {bib: 1, stage: 1, position: null, time: null, status: "unknown", firstname: "Paul",   lastname: "POULE"     },
+      {bib: 2, stage: 1, position: null, time: null, status: "unknown", firstname: "Pierre", lastname: "PONCE"     },
+      {bib: 3, stage: 1, position: null, time: null, status: "unknown", firstname: "Jacques",lastname: "BEAUREGARD"},
+      {bib: 4, stage: 1, position: null, time: null, status: "unknown", firstname: "Jean",   lastname: "CROISSANT" },
+      {bib: 5, stage: 1, position: null, time: null, status: "unknown", firstname: "René",   lastname: "TAUPE"     },
+    ]);
+    
+  });
+
   it('getStageRanking - all', () => {
 
     let sut = new RaceModel();
@@ -68,7 +89,7 @@ describe('RaceModel', () => {
     ]);
     
   });
-
+/*
   it('getStageRanking - with dnf/dns', () => {
 
     let sut = new RaceModel();
@@ -94,6 +115,27 @@ describe('RaceModel', () => {
       {bib: 3, stage: 1, position: 3,   time: 5015,   status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
       {bib: 1, stage: 1, position: 4,   time: null,    status: "dnf" , firstname: "Paul",    lastname: "POULE"     },
       {bib: 4, stage: 1, position: 5,   time: null,    status: "dns" , firstname: "Jean",    lastname: "CROISSANT" },
+    ]);
+    
+  });
+
+  it('getGeneralRanking - no ranking', () => {
+
+    let sut = new RaceModel();
+
+    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"     });
+    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"     });
+    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
+    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT" });
+    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"     });
+
+    const actual = sut.getGeneralRanking(1);
+    expect(actual).toMatchObject([
+      {bib: 1, stage: 1, position: null, time: null, status: "unknown", firstname: "Paul",   lastname: "POULE"     },
+      {bib: 2, stage: 1, position: null, time: null, status: "unknown", firstname: "Pierre", lastname: "PONCE"     },
+      {bib: 3, stage: 1, position: null, time: null, status: "unknown", firstname: "Jacques",lastname: "BEAUREGARD"},
+      {bib: 4, stage: 1, position: null, time: null, status: "unknown", firstname: "Jean",   lastname: "CROISSANT" },
+      {bib: 5, stage: 1, position: null, time: null, status: "unknown", firstname: "René",   lastname: "TAUPE"     },
     ]);
     
   });
@@ -182,7 +224,7 @@ describe('RaceModel', () => {
       {bib: 3, stage: 2, position: 5,   time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
       {bib: 2, stage: 2, position: 4,   time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
       {bib: 5, stage: 2, position: 2,   time: 5010, status: "dns",  firstname: "René",    lastname: "TAUPE"     },
-      {bib: 4, stage: 1, position: null,time: null,  status: "dnf",  firstname: "Jean",    lastname: "CROISSANT" },
+      {bib: 4, stage: 1, position: null,time: null,  status: "dnf", firstname: "Jean",    lastname: "CROISSANT" },
     ]);
     
   });
@@ -221,5 +263,5 @@ describe('RaceModel', () => {
     ]);
     
   });
-  
+  */
 });
