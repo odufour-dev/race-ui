@@ -83,22 +83,7 @@ export class RankingManager {
     return new RankingManager(this.#ranking.filter((r) => r.stage != this.#stage).concat(ranking), this.#stage);
 
   }
-/*
-  #fillMissingBibs(ranking){
 
-    if (this.#bibs.length > 0){
-      // Add missing bibs in the ranking with 'unknown' status
-      this.#bibs.map((b) => {
-        if (!ranking.some((t) => t.bib == b)){
-          const prevTiming = this.#ranking.filter((t) => t.bib == b && t.stage == this.#stage-1);
-          const status = this.#stage == 1 || (prevTiming.length > 0 && prevTiming[0].status == "done") ? "unknown" : "abs";
-          ranking.push(new TimingRecord(b,this.#stage,null,NaN,status));
-        }
-      });
-    }
-    return ranking;
-  }
-*/
   #sort(a,b){
     // If final status is not done, consider that racer does not finish => go to the end
     // Sort non-finisher based on the last recorded stage (higher first)
