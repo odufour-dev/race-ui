@@ -50,12 +50,15 @@ export class RaceModel {
   getStageRanking(stage){
 
     // Configure the ranking manager to get stage ranking
-    const racerbibs = this.#racers.getAll().map((r) => r.id);
-    this.#ranking.Bibs.concat(racerbibs);
-    this.#ranking.Stage = stage;
-    let ranking = this.#ranking.Ranking;
-
     const racers = this.#racers.getAll();
+    const bibs = racers.map((r) => r.id);
+
+    this.#ranking.Stage = stage > 0 ? stage : this.#race.nStages;
+    let ranking = this.#ranking.General;
+
+    // Append racers that are not in the ranking
+    ranking = this.#fillMissingBibs(stage,ranking);
+    
     return ranking.map((rank) => {
       const current = racers.filter((racer) => racer.id == rank.bib);
       if (current.length == 1){
@@ -70,12 +73,16 @@ export class RaceModel {
   getGeneralRanking(stage = 0){
 
     // Configure the ranking manager to get stage ranking
-    const racerbibs = this.#racers.getAll().map((r) => r.id);
-    this.#ranking.Bibs.concat(racerbibs);
+    const racers = this.#racers.getAll();
+    const bibs = racers.map((r) => r.id);
+
     this.#ranking.Stage = stage > 0 ? stage : this.#race.nStages;
     let ranking = this.#ranking.General;
 
-    const racers = this.#racers.getAll();
+    // Append racers that are not in the ranking
+    ranking = this.#fillMissingBibs(stage,ranking);
+
+    // Assemble racers and ranking information
     return ranking.map((rank) => {
       const current = racers.filter((racer) => racer.id == rank.bib);
       if (current.length == 1){
@@ -97,13 +104,29 @@ export class RaceModel {
 
   updateStageRanking(stage,ranking){
 
+    ranking = ranking.map((r) => "stage" in r ? r : {...r, stage: stage});
+    
     let data = this.clone();
-    data.#ranking.Bibs  = data.#racers.getAll().map((r) => r.id);
     data.#ranking.Stage = stage;
     data.#ranking = data.#ranking.update(ranking);
     return data;
+
   }
   
+  #fillMissingBibs(stage,ranking){
+
+    const bibs  = this.#racers.getAll().map((r) => r.id);
+    if (bibs.length > 0){
+      // Add missing bibs in the ranking with 'unknown' status
+      bibs.map((b) => {
+        if (!ranking.some((t) => t.bib == b)){
+          ranking.push({bib: b, stage: stage, position: null, time: null,status: status});
+        }
+      });
+    }
+    return ranking;
+  }
+
 };
 
 
