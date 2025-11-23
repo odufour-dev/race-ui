@@ -30,7 +30,7 @@ export class RankingManager {
                     const id = "x" + String(r.bib);
                     if (id in gen){
                       gen[id].position     += r.position;
-                      gen[id].time         += r.time;
+                      gen[id].time         += r.time ?? 0;
                       gen[id].stage        = r.stage;
                       gen[id].status       = r.status;
                       gen[id].lastposition = r.position;

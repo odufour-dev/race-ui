@@ -25,8 +25,8 @@ export class TimingRecord {
   set position(value) {
     const posvalue = Number(value);
     if (!posvalue || posvalue.length == 0 || posvalue <= 0){
-      this.#position  = null;
-      this.#updateStatus();
+      //this.#position  = null;
+      //this.#updateStatus();
     } else {
       this.#position = posvalue;
     }
@@ -36,8 +36,8 @@ export class TimingRecord {
   set time(value)     {
     const timevalue = typeof value == "string" ? this.#parseHMS(value) : value;
     if (!timevalue || timevalue.length == 0 || timevalue < 0){
-      this.#time = null;
-      this.#updateStatus();
+      //this.#time = null;
+      //this.#updateStatus();
     } else {
       this.#time = timevalue;
     }
@@ -51,7 +51,7 @@ export class TimingRecord {
     if ("stage"     in data){this.stage    = data.stage;    }
     if ("status"    in data){this.status   = data.status;   }
     if ("time"      in data){this.time     = data.time;     }
-    this.#updateStatus();
+    //this.#updateStatus();
   }
 
    #parseHMS(input) {

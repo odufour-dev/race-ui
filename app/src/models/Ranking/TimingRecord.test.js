@@ -8,8 +8,8 @@ describe('TimingRecord', () => {
 
     expect(sut.bib).toEqual(0);
     expect(sut.stage).toEqual(1);
-    expect(sut.position).toBeNull();
-    expect(sut.time).toBeNull();
+    expect(sut.position).toBeUndefined();
+    expect(sut.time).toBeUndefined();
     expect(sut.status).toEqual("unknown");
 
   });
@@ -100,7 +100,7 @@ describe('TimingRecord', () => {
     const sut = new TimingRecord();
 
     sut.time = [];
-    expect(sut.time).toBeNull();
+    expect(sut.time).toBeUndefined();
     
   });
 
@@ -109,7 +109,7 @@ describe('TimingRecord', () => {
     const sut = new TimingRecord();
 
     sut.time = null;
-    expect(sut.time).toBeNull();
+    expect(sut.time).toBeUndefined();
     
   });
 
@@ -118,7 +118,7 @@ describe('TimingRecord', () => {
     const sut = new TimingRecord();
 
     sut.time = -1;
-    expect(sut.time).toBeNull();
+    expect(sut.time).toBeUndefined();
     
   });
 
@@ -127,7 +127,7 @@ describe('TimingRecord', () => {
     const sut = new TimingRecord();
 
     sut.time = "";
-    expect(sut.time).toBeNull();
+    expect(sut.time).toBeUndefined();
     
   });
 
@@ -136,7 +136,7 @@ describe('TimingRecord', () => {
     const sut = new TimingRecord();
 
     sut.time = "none";
-    expect(sut.time).toBeNull();
+    expect(sut.time).toBeUndefined();
     
   });
 

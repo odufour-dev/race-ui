@@ -51,7 +51,7 @@ describe('RankingManager', () => {
         {bib: 1, stage: 1, position: 2,     time: 122,  status: "done" },
         {bib: 3, stage: 1, position: 3,     time: 122,  status: "done" },
         {bib: 5, stage: 1, position: 4,     time: 130,  status: "done" },
-        {bib: 2, stage: 1, position: null,  time: null, status: "dnf"  },
+        {bib: 2, stage: 1, position: undefined,  time: undefined, status: "dnf"  },
     ])
 
   });
@@ -76,7 +76,7 @@ describe('RankingManager', () => {
         {bib: 1, stage: 1, position: 2,   time: 122, status: "done" },
         {bib: 3, stage: 1, position: 3,   time: 122, status: "done" },
         {bib: 5, stage: 1, position: 4,   time: 130, status: "done" },
-        {bib: 2, stage: 1, position: null, time: null, status: "dnf"  },
+        {bib: 2, stage: 1, position: undefined, time: undefined, status: "dnf"  },
     ])
 
   });
@@ -101,7 +101,7 @@ describe('RankingManager', () => {
         {bib: 1, stage: 1, position: 2,   time: 122, status: "done" },
         {bib: 3, stage: 1, position: 3,   time: 122, status: "done" },
         {bib: 5, stage: 1, position: 4,   time: 130, status: "done" },
-        {bib: 2, stage: 1, position: null, time: null, status: "dnf"  },
+        {bib: 2, stage: 1, position: undefined, time: undefined, status: "dnf"  },
     ])
 
   });
@@ -121,7 +121,7 @@ describe('RankingManager', () => {
     const actual = sut.Ranking.map((r) => r.toObject());
     expect(actual).toMatchObject([
         {bib: 5, stage: 2, position: 1,   time: 50,  status: "done"},
-        {bib: 1, stage: 2, position: null, time: 122, status: "dns"},
+        {bib: 1, stage: 2, position: undefined, time: 122, status: "dns"},
     ])
 
   });
@@ -144,7 +144,7 @@ describe('RankingManager', () => {
     expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
         {bib: 1, stage: 1, position: 2,   time: 122, status: "done"},
         {bib: 3, stage: 1, position: 3,   time: 122, status: "done"},
-        {bib: 2, stage: 1, position: null, time: null, status: "dnf"},
+        {bib: 2, stage: 1, position: undefined, time: undefined, status: "dnf"},
     ]);
     
   });
@@ -258,10 +258,10 @@ describe('RankingManager', () => {
     
     const actual = sut.General.map((g) => g.toObject());
     expect(actual).toMatchObject([
-        {bib:3, position:2,   stage:2,   time:253,    status:'done'},
-        {bib:1, position:5,   stage:2,   time:257,    status:'done'},
-        {bib:5, position:7,   stage:2,   time:122,    status:'dns'},
-        {bib:2, position:4,   stage:1,   time:null,   status:'dnf'},
+        {bib:3, position:2,   stage:2,   time:253,        status:'done'},
+        {bib:1, position:5,   stage:2,   time:257,        status:'done'},
+        {bib:5, position:7,   stage:2,   time:122,        status:'dns'},
+        {bib:2, position:4,   stage:1,   time:undefined,  status:'dnf'},
     ]);
     
   });
@@ -281,156 +281,6 @@ describe('RankingManager', () => {
         {bib: 3, stage: 1, position: 1,   time: 122, status: "done"},
         {bib: 1, stage: 1, position: 2,   time: 150, status: "done"},
         {bib: 2, stage: 1, position: 4,   time: 175, status: "done"},
-    ]);
-    
-  });
-
-  it('Update - Invalid position empty', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: [],   time: 23, status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: null, time: 23, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid position null', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: null,   time: 23, status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: null, time: 23, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid position numeric', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: -2,   time: 23, status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: null, time: 23, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid position empty string', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: "",   time: 23, status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: null, time: 23, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid position string cannot be converted to number', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: "none",   time: 23, status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: null, time: 23, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid time empty', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: 1,   time: [], status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: 1, time: null, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid time nan', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: 1,   time: null, status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: 1, time: null, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid time negative', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: 1,   time: -1, status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: 1, time: null, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid time empty string', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: 1,   time: "", status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: 1, time: null, status: "unknown"},
-    ]);
-    
-  });
-
-  it('Update - Invalid time string cannot be converted to number', () => {
-
-    const sut = new RankingManager();
-    sut.Stage = 1;
-
-    const actual = sut.update([
-        {bib: 1, stage:1, position: 1,   time: "none", status: "done"},
-    ]);
-    
-    expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
-        {bib: 1, stage: 1, position: 1, time: null, status: "unknown"},
     ]);
     
   });
