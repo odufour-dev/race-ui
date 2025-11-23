@@ -51,7 +51,7 @@ describe('RankingManager', () => {
         {bib: 1, stage: 1, position: 2,     time: 122,  status: "done" },
         {bib: 3, stage: 1, position: 3,     time: 122,  status: "done" },
         {bib: 5, stage: 1, position: 4,     time: 130,  status: "done" },
-        {bib: 2, stage: 1, position: undefined,  time: undefined, status: "dnf"  },
+        {bib: 2, stage: 1, position: 0,     time: null, status: "dnf"  },
     ])
 
   });
@@ -76,7 +76,7 @@ describe('RankingManager', () => {
         {bib: 1, stage: 1, position: 2,   time: 122, status: "done" },
         {bib: 3, stage: 1, position: 3,   time: 122, status: "done" },
         {bib: 5, stage: 1, position: 4,   time: 130, status: "done" },
-        {bib: 2, stage: 1, position: undefined, time: undefined, status: "dnf"  },
+        {bib: 2, stage: 1, position: 0,   time: null,status: "dnf"  },
     ])
 
   });
@@ -101,7 +101,7 @@ describe('RankingManager', () => {
         {bib: 1, stage: 1, position: 2,   time: 122, status: "done" },
         {bib: 3, stage: 1, position: 3,   time: 122, status: "done" },
         {bib: 5, stage: 1, position: 4,   time: 130, status: "done" },
-        {bib: 2, stage: 1, position: undefined, time: undefined, status: "dnf"  },
+        {bib: 2, stage: 1, position: 0,   time: null,status: "dnf"  },
     ])
 
   });
@@ -121,7 +121,7 @@ describe('RankingManager', () => {
     const actual = sut.Ranking.map((r) => r.toObject());
     expect(actual).toMatchObject([
         {bib: 5, stage: 2, position: 1,   time: 50,  status: "done"},
-        {bib: 1, stage: 2, position: undefined, time: 122, status: "dns"},
+        {bib: 1, stage: 2, position: 0,   time: 122, status: "dns"},
     ])
 
   });
@@ -144,7 +144,7 @@ describe('RankingManager', () => {
     expect(actual.Ranking.map((r) => r.toObject())).toMatchObject([
         {bib: 1, stage: 1, position: 2,   time: 122, status: "done"},
         {bib: 3, stage: 1, position: 3,   time: 122, status: "done"},
-        {bib: 2, stage: 1, position: undefined, time: undefined, status: "dnf"},
+        {bib: 2, stage: 1, position: 0,   time: null,status: "dnf"},
     ]);
     
   });
@@ -258,10 +258,10 @@ describe('RankingManager', () => {
     
     const actual = sut.General.map((g) => g.toObject());
     expect(actual).toMatchObject([
-        {bib:3, position:2,   stage:2,   time:253,        status:'done'},
-        {bib:1, position:5,   stage:2,   time:257,        status:'done'},
-        {bib:5, position:7,   stage:2,   time:122,        status:'dns'},
-        {bib:2, position:4,   stage:1,   time:undefined,  status:'dnf'},
+        {bib:3, position:2,   stage:2,   time:253,   status:'done'},
+        {bib:1, position:5,   stage:2,   time:257,   status:'done'},
+        {bib:5, position:7,   stage:2,   time:122,   status:'dns'},
+        {bib:2, position:4,   stage:1,   time:null,  status:'dnf'},
     ]);
     
   });

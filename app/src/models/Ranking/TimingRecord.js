@@ -22,26 +22,10 @@ export class TimingRecord {
   get time()    {return this.#time;     }
 
   set bib(value)      {this.#bib      = Number(value);}
-  set position(value) {
-    const posvalue = Number(value);
-    if (!posvalue || posvalue.length == 0 || posvalue <= 0){
-      //this.#position  = null;
-      //this.#updateStatus();
-    } else {
-      this.#position = posvalue;
-    }
-  }
+  set position(value) {this.#position = Number(value);}
   set stage(value)    {this.#stage    = Number(value);}
   set status(value)   {this.#status   = value;}
-  set time(value)     {
-    const timevalue = typeof value == "string" ? this.#parseHMS(value) : value;
-    if (!timevalue || timevalue.length == 0 || timevalue < 0){
-      //this.#time = null;
-      //this.#updateStatus();
-    } else {
-      this.#time = timevalue;
-    }
-  }
+  set time(value)     {this.#time     = typeof value == "string" ? this.#parseHMS(value) : value;}
 
   toObject(){return {bib: this.#bib, position:this.#position,stage:this.#stage,status:this.#status,time:this.#time};}
 
