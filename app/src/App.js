@@ -21,8 +21,8 @@ function App() {
   const { t: translator } = useTranslation('translation');
   const time = new Time();
 
-  const [ raceModel, setRaceModel ]     = useState( new RaceModel() );
-  const [ nav, setNav ]                 = useState( new NavigationRegistry() );
+  const [ raceModel, setRaceModel ]     = useState( () => new RaceModel() );
+  const [ nav, setNav ]                 = useState( () => new NavigationRegistry() );
   const [selectedItem, setSelectedItem] = useState(nav.find('event.configuration'));
   const [sidebarOpen, setSidebarOpen]   = useState(false);
   const [isDesktop, setIsDesktop]       = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
