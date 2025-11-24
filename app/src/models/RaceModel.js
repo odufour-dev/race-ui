@@ -97,14 +97,10 @@ export class RaceModel {
   }
 
   updateStageRanking(stage,ranking){
-
     ranking = ranking.map((r) => "stage" in r ? r : {...r, stage: stage});
-    
-    let data = this.clone();
-    data.#ranking.Stage = stage;
-    data.#ranking = data.#ranking.update(ranking);
-    return data;
-
+    this.#ranking.Stage = stage;
+    ranking = this.#ranking.update(ranking);
+    return new RaceModel(this.#racers, this.#annex, this.#classifications, this.#race, ranking);
   }
   
   #fillMissingBibs(stage,ranking){

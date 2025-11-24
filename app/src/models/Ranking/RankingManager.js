@@ -80,7 +80,8 @@ export class RankingManager {
       rec.update(r);
       return rec;
     })
-    return new RankingManager(this.#ranking.filter((r) => r.stage != this.#stage).concat(ranking), this.#stage);
+    ranking = this.#ranking.filter((r) => r.stage != this.#stage).concat(ranking);
+    return new RankingManager(ranking, this.#stage);
 
   }
 
