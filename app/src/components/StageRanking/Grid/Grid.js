@@ -12,17 +12,21 @@ function Cell({ value, status, onChange }) {
   //
 
   useEffect(() => setState(status), [ status ]);
-  useEffect(() => onChange(value, state), [ state ]);
 
   const handleClick = () => {
-    setState((prev) => {
-        if (prev == "none"){return "none"}
-        else if (prev == "unknown"){return "dnf"}
-        else if (prev == "dnf"){return "dns"}
-        else {return "unknown"}
-    });
+        
+    if (state == "unknown") {
+        setState("dnf");
+        onChange(value, "dnf"); 
+      } else if (state == "dnf")  {
+        setState("dns");
+        onChange(value, "dns"); 
+      } else if (state == "dns") {
+        setState("unknown");
+        onChange(value, "unknown"); 
+      } 
   };
-
+    
   return (
     <div className={`cell status-${state}`} onClick={handleClick}>
       {(state !== "abs" && state !== "none") ? value : ""} 
@@ -63,6 +67,12 @@ export default function Grid({data = [], onChange}) {
   };
   const grid = useMemo(() => computeGrid(bibs), [bibs]);
 
+  const handleChange = (value,status) => {
+    const b = bibs.map((b) => b.bib === value ? {bib: value, status: status} : b);
+    setBibs(b);
+    onChange(b);
+  };
+
   return (
     <div className="grid">
       {grid.map((row, i) => (
@@ -72,7 +82,7 @@ export default function Grid({data = [], onChange}) {
               key={j} 
               value={r.bib} 
               status={r.status} 
-              onChange={(value,status) => onChange((bibs) => bibs.map((b) => b.bib === value ? {bib: value, status: status} : b))}
+              onChange={handleChange}
             />
           ))}
         </div>
