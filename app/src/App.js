@@ -3,13 +3,14 @@ import './App.css';
 import React, { useEffect, useState, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Sidebar from './components/Sidebar/Sidebar';
+import EventSettings      from './components/EventSettings/EventSettings';
+import ExcelReader        from './components/ExcelReader/ExcelReader';
+import GeneralRanking     from './components/GeneralRanking/GeneralRanking';
+import InformationBanner  from './components/InformationBanner/InformationBanner';
 import { NavigationItem, NavigationGroup, NavigationRegistry } from './navigationPanel/navigationPanel';
-import RegistrationTable from './components/RegistrationTable/RegistrationTable';
-import InformationBanner from './components/InformationBanner/InformationBanner';
-import ExcelReader from './components/ExcelReader/ExcelReader';
-import EventSettings from './components/EventSettings/EventSettings';
-import StageRanking from './components/StageRanking/StageRanking';
+import RegistrationTable  from './components/RegistrationTable/RegistrationTable';
+import Sidebar            from './components/Sidebar/Sidebar';
+import StageRanking       from './components/StageRanking/StageRanking';
 
 import { RaceModel } from './models/RaceModel';
 
@@ -20,25 +21,30 @@ function App() {
   const { t: translator } = useTranslation('translation');
   const time = new Time();
 
-  const [ raceModel, setRaceModel ]     = useState( new RaceModel() );
-  const [ nav, setNav ]                 = useState( new NavigationRegistry() );
+  const [ raceModel, setRaceModel ]     = useState( () => new RaceModel() );
+  const [ nav, setNav ]                 = useState( () => new NavigationRegistry() );
   const [selectedItem, setSelectedItem] = useState(nav.find('event.configuration'));
   const [sidebarOpen, setSidebarOpen]   = useState(false);
   const [isDesktop, setIsDesktop]       = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
+
+  useEffect(() => {
+      console.log('Stage #1 ranking:', raceModel.getStageRanking(1));
+      console.log('General #1 ranking:', raceModel.getGeneralRanking(1));
+    }, [ raceModel ]);
 
   // Create the navigation panel components
   const navEventConfiguration = new NavigationItem({ id: 'configuration', title: translator('navigation.configuration'), order: 5, component: (props) => (
     <EventSettings {...props} translator={translator} settings={raceModel.Race} annexRanking={raceModel.Annex} onApply={(settings) => setRaceModel(raceModel.updateRace(settings))} />
   ) });
-  const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 10, component: (props) => (
+  const navRacerRegistration = new NavigationItem({ id: 'registration', title: translator('navigation.registration'), order: 20, component: (props) => (
     <RegistrationTable {...props} dataModel={raceModel.Racers} classificationModel={raceModel.Classifications} setData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
   )});
-  const navRacerImport = new NavigationItem({ id: 'import', title: translator('navigation.import'), order: 20, component: (props) => (
+  const navRacerImport = new NavigationItem({ id: 'import', title: translator('navigation.import'), order: 10, component: (props) => (
     <ExcelReader {...props} dataModel={raceModel.Racers} updateData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
   )});
 
   const navEventGroup = new NavigationGroup({id: 'event', title: translator('navigation.event'), order: 0, items: [navEventConfiguration]});
-  const navRacersGroup = new NavigationGroup({id:'racers', title: translator('navigation.racers'), order: 1, items: [navRacerRegistration, navRacerImport]});  
+  const navRacersGroup = new NavigationGroup({id:'racers', title: translator('navigation.racers'), order: 1, items: [navRacerImport,navRacerRegistration]});  
 
   useEffect(() => {
 
@@ -61,7 +67,9 @@ function App() {
       } );
       navRaceGroup.add(navStageRanking);
       
-      const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: translator('navigation.general'), order: 3} );
+      const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: translator('navigation.general'), order: 3, component: 
+        (props) => (<GeneralRanking {...props} data={raceModel.getGeneralRanking(stage)} time={time} translator={translator} />)
+      } );
       navRaceGroup.add(navGeneralRanking);
 
       evtSettings.annexRankings.map((r,i) => {

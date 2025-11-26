@@ -8,8 +8,8 @@ describe('TimingRecord', () => {
 
     expect(sut.bib).toEqual(0);
     expect(sut.stage).toEqual(1);
-    expect(sut.position).toEqual(999);
-    expect(sut.time).toEqual(NaN);
+    expect(sut.position).toEqual(0);
+    expect(sut.time).toBeNull();
     expect(sut.status).toEqual("unknown");
 
   });
@@ -92,6 +92,51 @@ describe('TimingRecord', () => {
 
     sut.time = "01:00:54";
     expect(sut.time).toEqual(3654);
+    
+  });
+
+  it('[SET/GET] time - Empty', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = [];
+    expect(sut.time).toEqual([]);
+    
+  });
+
+  it('[SET/GET] time - null', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = null;
+    expect(sut.time).toBeNull();
+    
+  });
+
+  it('[SET/GET] time - negative value', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = -1;
+    expect(sut.time).toEqual(-1);
+    
+  });
+
+  it('[SET/GET] time - empty string', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = "";
+    expect(sut.time).toBeNull();
+    
+  });
+
+  it('[SET/GET] time - non numeric string', () => {
+
+    const sut = new TimingRecord();
+
+    sut.time = "none";
+    expect(sut.time).toBeNull();
     
   });
 

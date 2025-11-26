@@ -81,4 +81,17 @@ export class Racer {
 
   }
 
+  toObject(){
+    return {
+      age:      this.#age, 
+      category: this.#category,
+      id:       this.#id,
+      firstname:this.#firstname,
+      ffcid:    this.#ffcid,
+      lastname: this.#lastname,
+      sex:      this.#sex,
+      uciid:    this.#uciid
+    };
+  }
+
 }

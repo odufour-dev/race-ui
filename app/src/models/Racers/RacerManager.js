@@ -23,6 +23,10 @@ export class RacerManager {
     this.#racers = [];
   }
 
+  getDefault(){
+    return new Racer();
+  }
+
   getAll() {
     return this.#racers;
   }
