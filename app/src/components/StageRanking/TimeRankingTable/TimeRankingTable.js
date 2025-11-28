@@ -413,7 +413,7 @@ export default function TimeRankingTable({ data = [], time, onChange }) {
             <tr key={r.id} className={[idx===0 ? 'winner' : '', duplicateBibs.has(String(r.bib || '').trim()) ? 'duplicate' : ''].filter(Boolean).join(' ')}>
               
               <td className="rank-cell">{idx + 1}</td>
-              <td>
+              <td className="bib-cell">
                 <input
                   ref={el => setCellRef(r.id, 'bib', el)}
                   onKeyDown={e => handleKeyDown(e, r.id, 'bib', idx)}
@@ -422,7 +422,7 @@ export default function TimeRankingTable({ data = [], time, onChange }) {
                   onChange={e => onBibChange(r.id, e.target.value)}
                 />
               </td>
-              <td>
+              <td className="time-cell">
                 <input
                   ref={el => setCellRef(r.id, 'time', el)}
                   onKeyDown={e => handleKeyDown(e, r.id, 'time', idx)}
@@ -434,7 +434,7 @@ export default function TimeRankingTable({ data = [], time, onChange }) {
                   disabled={r.mode === 'delay' && idx !== 0}
                 />
               </td>
-              <td>
+              <td className="delay-cell">
                 <input
                   ref={el => setCellRef(r.id, 'delay', el)}
                   onKeyDown={e => handleKeyDown(e, r.id, 'delay', idx)}
