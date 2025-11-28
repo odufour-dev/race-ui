@@ -41,7 +41,7 @@ export default function Grid({data = [], onChange}) {
 
   useEffect(() => {setBibs(data)}, [ data ]);
 
-  computeGrid = (bibs) => {
+  const computeGrid = (bibs) => {
 
     const grd = [];
     const rows = bibs.length > 0 ? Math.ceil(bibs[bibs.length - 1].bib / 10) : 0;
