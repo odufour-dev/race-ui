@@ -8,6 +8,17 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
     // 
     //
     //
+    // From rows (table component values) to data (input values)
+    const computeData = (values) => {
+      // Exclude the last row which is an empty row
+      return values.slice(0,-1).map((v) => ({
+        position: Number(v.rank),
+        bib: Number(v.bib),
+        time: helpers.time.parseHMS(v.time)
+      }));
+    };
+
+    // From data (input values) to rows (table component values)
     const computeRows = (values) => {
         const r = [];
         // id : string based on bib - position
@@ -46,7 +57,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
 
     }
     const commitBib = (rowid,bibvalue) => {
-
+      onChange(computeData(rows));
     }
 
     const onTimeFocus = (rowid) => {
