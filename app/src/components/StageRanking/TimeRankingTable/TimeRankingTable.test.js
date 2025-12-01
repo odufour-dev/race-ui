@@ -104,4 +104,171 @@ describe('TimeRankingTable', () => {
 
     });
 
+    it("[BIB INPUT] 1st rows - onChange", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.change(bibs[0], { target: { value: "123" } });
+
+        expect(bibs[0]).toHaveValue("123");
+
+    });
+
+    it("[BIB INPUT] 1st rows - onFocus", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.focus(bibs[0]);
+
+        expect(bibs[0].selectionStart).toBe(0);
+        expect(bibs[0].selectionEnd).toBe(1);
+
+    });
+
+    it("[BIB INPUT] 1st rows - onBlur", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.blur(bibs[0], { target: { value: "123" } });
+
+    });
+
+    it("[BIB INPUT] 1st rows - Tab", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.keyDown(bibs[0], { key: "Tab", code: "Tab" });
+
+    });
+
+    it("[BIB INPUT] 1st rows - ArrowUp", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.keyDown(bibs[0], { key: "ArrowUp", code: "ArrowUp" });
+
+    });
+
+    it("[BIB INPUT] 1st rows - ArrowLeft", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.keyDown(bibs[0], { key: "ArrowLeft", code: "ArrowLeft" });
+
+    });
+
+    it("[BIB INPUT] 1st rows - ArrowRight", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.keyDown(bibs[0], { key: "ArrowRight", code: "ArrowRight" });
+
+    });
+
+    it("[BIB INPUT] 1st rows - ArrowDown", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.keyDown(bibs[0], { key: "ArrowDown", code: "ArrowDown" });
+
+    });
+
+    it("[BIB INPUT] 1st rows - Enter", () => {
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        fireEvent.keyDown(bibs[0], { key: "Enter", code: "Enter" });
+
+    });
+
 });

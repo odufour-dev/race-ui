@@ -8,7 +8,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
     // 
     //
     //
-    computeRows = () => {
+    const computeRows = (values) => {
         const r = [];
         // id : string based on bib - position
         // class (array of strings) : winner (1st row), duplicate
@@ -17,9 +17,9 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
         // time : string with format HH:MM:SS
         // delay : string with format MM:SS
         let last = {rank:0,time:"",delay:""};
-        data.map((d) => {
+        values.map((d) => {
             const t = helpers.time.formatHMS(d.time);
-            const l = helpers.time.formatMS(d.time - data[0].time);
+            const l = helpers.time.formatMS(d.time - values[0].time);
             const c = [];
             if (d.position == 1){c.push("winner")}
             r.push({id: "id-" + d.bib + "_" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
@@ -28,7 +28,8 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
         r.push({id: "", class: [], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
         return r;
     }
-    const rows = useMemo(() => computeRows(data), [data]);
+    //const rows = useMemo(() => computeRows(data), [data]);
+    const [ rows, setRows ] = useState(() => computeRows(data));
 
     //
     //
@@ -37,10 +38,11 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
 
     };
 
-    const onBibFocus = (rowid) => {
-
+    const onBibFocus = (evt, rowid) => {
+      evt.target.select();
     }
-    const onBibChange = (rowid) => {
+    const onBibChange = (evt, rowid) => {
+      setRows(prev => prev.map(r => r.id === rowid ? { ...r, bib: evt.target.value } : r));
 
     }
     const commitBib = (rowid,bibvalue) => {
@@ -89,10 +91,10 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       <table className="ranking-table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Bib</th>
-            <th>Time</th>
-            <th>Delay</th>
+            <th>helpers.translator("rank")</th>
+            <th>helpers.translator("bib")</th>
+            <th>helpers.translator("time")</th>
+            <th>helpers.translator("delay")</th>
             <th></th>
           </tr>
         </thead>
@@ -106,9 +108,9 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
                   onKeyDown={e => handleKeyDown(e, r.id, 'bib', idx)}
                   className="bib-input"
                   value={r.bib >= 0 ? r.bib : ""}
-                  onFocus={() => onBibFocus(r.id)}
-                  onChange={e => onBibChange(r.id, e.target.value)}
-                  onBlur={e => commitBib(r.id)}
+                  onFocus={ e => onBibFocus(e, r.id)}
+                  onChange={e => onBibChange(e, r.id)}
+                  onBlur={  e => commitBib(e, r.id)}
                 />
               </td>
               <td className="time-cell">
