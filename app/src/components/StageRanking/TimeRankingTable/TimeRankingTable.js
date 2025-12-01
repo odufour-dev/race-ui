@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import './TimeRankingTable.css';
 
-export default function TimeRankingTable({ data = [], time, onChange }) {
+export default function TimeRankingTable({ data = [], helpers, onChange }) {
 
     const [ editMode, setEditMode ] = useState( "delay" );
 
@@ -18,8 +18,8 @@ export default function TimeRankingTable({ data = [], time, onChange }) {
         // delay : string with format MM:SS
         let last = {rank:0,time:"",delay:""};
         data.map((d) => {
-            const t = time.formatHMS(d.time);
-            const l = time.formatMS(d.time - data[0].time);
+            const t = helpers.time.formatHMS(d.time);
+            const l = helpers.time.formatMS(d.time - data[0].time);
             const c = [];
             if (d.position == 1){c.push("winner")}
             r.push({id: "id-" + d.bib + "_" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});

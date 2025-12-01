@@ -8,8 +8,8 @@ describe('TimeRankingTable', () => {
     it('Constructor - default', () => {
         
         const changeMock = jest.fn();
-        const timefcn = new Time();
-        const { container } = render(<TimeRankingTable data={[]} time={timefcn} onChange={changeMock} />);
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={[]} helpers={helpers} onChange={changeMock} />);
 
         const ranks = container.querySelectorAll('.rank-cell');
         expect(ranks).toHaveLength(1);
@@ -28,38 +28,80 @@ describe('TimeRankingTable', () => {
         expect(delay[0].textContent).toBe('');
 
     });
-/*
+
     it('Constructor - input data', () => {
 
-        const changeMock = jest.fn();
-        const timefcn = new Time();
-
         const data = [
-            {id: 4, time: 124},
+            {bib: 4, time: 124, position: 1},
         ];
         
-        const { container } = render(<TimeRankingTable data={data} time={timefcn} onChange={changeMock} />);
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
 
         const ranks = container.querySelectorAll('.rank-cell');
         expect(ranks).toHaveLength(2);
         expect(ranks[0].textContent).toBe('1');
         expect(ranks[1].textContent).toBe('2');
 
-        const bibs = container.querySelectorAll('.bib-cell');
+        const bibs = container.querySelectorAll('.bib-input');
         expect(bibs).toHaveLength(2);
-        expect(bibs[0].textContent).toBe('4');
-        expect(bibs[1].textContent).toBe('');
+        expect(bibs[0]).toHaveValue('4');
+        expect(bibs[1]).toHaveValue('');
 
-        const time = container.querySelectorAll('.time-cell');
+        const time = container.querySelectorAll('.time-input');
         expect(time).toHaveLength(2);
-        expect(time[0].textContent).toBe('');
-        expect(time[1].textContent).toBe('00:02:04');
+        expect(time[0]).toHaveValue('00:02:04');
+        expect(time[1]).toHaveValue('00:02:04');
 
-        const delay = container.querySelectorAll('.delay-cell');
+        const delay = container.querySelectorAll('.delay-input');
         expect(delay).toHaveLength(2);
-        expect(delay[0].textContent).toBe('00:00:00');
-        expect(delay[1].textContent).toBe('');
+        expect(delay[0]).toHaveValue('00:00');
+        expect(delay[1]).toHaveValue('00:00');
 
     });
-*/
+
+    it('Constructor - multiple rows', () => {
+
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const helpers = {time: new Time(), translator: jest.fn()};
+        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+
+        const ranks = container.querySelectorAll('.rank-cell');
+        expect(ranks).toHaveLength(4);
+        expect(ranks[0].textContent).toBe('1');
+        expect(ranks[1].textContent).toBe('2');
+        expect(ranks[2].textContent).toBe('3');
+        expect(ranks[3].textContent).toBe('4');
+
+        const bibs = container.querySelectorAll('.bib-input');
+        expect(bibs).toHaveLength(4);
+        expect(bibs[0]).toHaveValue('4');
+        expect(bibs[1]).toHaveValue('1');
+        expect(bibs[2]).toHaveValue('2');
+        expect(bibs[3]).toHaveValue('');
+
+        const time = container.querySelectorAll('.time-input');
+        expect(time).toHaveLength(4);
+        expect(time[0]).toHaveValue('00:02:04');
+        expect(time[1]).toHaveValue('00:02:30');
+        expect(time[2]).toHaveValue('00:02:44');
+        expect(time[3]).toHaveValue('00:02:44');
+
+        const delay = container.querySelectorAll('.delay-input');
+        expect(delay).toHaveLength(4);
+        expect(delay[0]).toHaveValue('00:00');
+        expect(delay[1]).toHaveValue('00:26');
+        expect(delay[2]).toHaveValue('00:40');
+        expect(delay[3]).toHaveValue('00:40');
+
+    });
+
 });
