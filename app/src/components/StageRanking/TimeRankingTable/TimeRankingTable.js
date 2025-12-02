@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import './TimeRankingTable.css';
 
 export default function TimeRankingTable({ data = [], helpers, onChange }) {
@@ -51,13 +51,64 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
         return r;
     }
 
+
     const [ editMode, setEditMode ] = useState( "delay" );
     const [ rows, setRows ]         = useState(() => computeRows(data));
+    const refMaps = useRef([]);
+
+    const refs = useMemo(() => {
+      refMaps.current = Array.from({ length: rows.length }, () => (
+        [React.createRef(),React.createRef(),React.createRef()]
+      ));
+      return refMaps;
+    }, [ rows ]);
 
     //
     //
     //
-    const handleKeyDown = (e, rowid, col, row) => {
+    const handleTab = (e, row,col) => {
+      
+      e.preventDefault();
+
+      const availableCols = (row == 0 || editMode == "time") ? [0,1] : [0,2];
+      const nextIdx = availableCols.find(v => v == col) + 1;
+
+      if (nextIdx < availableCols.length){
+        refs.current[row][availableCols[nextIdx]].current.focus();
+      } else if (refs.current.length > row+1) {
+        refs.current[row+1][0].current.focus();
+      }
+
+    }
+    const handleEnter = (e, row,col) => {
+      e.preventDefault();
+      console.log("ENTER",row,col)
+    }
+    const handleArrowUp = (e, row,col) => {
+      e.preventDefault();
+      console.log("UP",row,col)
+    }
+    const handleArrowDown = (e, row,col) => {
+      e.preventDefault();
+      console.log("DOWN",row,col)
+    }
+    const handleArrowLeft = (e, row,col) => {
+      e.preventDefault();
+      console.log("LEFT",row,col)
+    }
+    const handleArrowRight = (e, row,col) => {
+      e.preventDefault();
+      console.log("RIGHT",row,col)
+    }
+
+    const handleKeyDown = (e, row, col) => {
+
+      if      (e.key == "Tab"       )   {handleTab       (e,row,col);} 
+      else if (e.key == "Enter"     )   {handleEnter     (e,row,col);} 
+      else if (e.key == "ArrowRight")   {handleArrowRight(e,row,col);} 
+      else if (e.key == "ArrowLeft" )   {handleArrowLeft (e,row,col);} 
+      else if (e.key == "ArrowUp"   )   {handleArrowUp   (e,row,col);} 
+      else if (e.key == "ArrowDown" )   {handleArrowDown (e,row,col);}
 
     };
 
@@ -119,7 +170,8 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
               <td className="rank-cell">{r.rank}</td>
               <td className="bib-cell">
                 <input
-                  onKeyDown={e => handleKeyDown(e, r.id, 'bib', idx)}
+                  ref={refs.current[idx][0]}
+                  onKeyDown={e => handleKeyDown(e, idx, 0)}
                   className="bib-input"
                   value={r.bib >= 0 ? r.bib : ""}
                   onFocus={ e => onCellFocus(e)}
@@ -129,7 +181,8 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
               </td>
               <td className="time-cell">
                 <input
-                  onKeyDown={e => handleKeyDown(e, r.id, 'time', idx)}
+                  ref={refs.current[idx][1]}
+                  onKeyDown={e => handleKeyDown(e, idx, 1)}
                   className="time-input"
                   placeholder="00:00:00"
                   value={r.time}
@@ -141,7 +194,8 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
               </td>
               <td className="delay-cell">
                 <input
-                  onKeyDown={e => handleKeyDown(e, r.id, 'delay', idx)}
+                  ref={refs.current[idx][2]}
+                  onKeyDown={e => handleKeyDown(e, idx, 2)}
                   className="delay-input"
                   placeholder="00:00"
                   value={r.delay}
