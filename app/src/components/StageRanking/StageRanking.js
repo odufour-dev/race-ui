@@ -7,6 +7,8 @@ import { use } from 'i18next';
 
 export default function StageRanking({ data = [], time, onChange }) {
 
+    const helpers = {time: time, translator: (str) => {}}
+
     const [ timeranking, setTimeRanking ]   = useState( [] );
     const [ bibsstatus, setBibStatus ]      = useState( [] );
 
@@ -52,7 +54,7 @@ export default function StageRanking({ data = [], time, onChange }) {
     return (
         <div>
             <Grid data={bibsstatus} onChange={setBibStatus} />
-            <TimeRankingTable data={timeranking} time={time} onChange={setTimeRanking}/>
+            <TimeRankingTable data={timeranking} helpers={helpers} onChange={setTimeRanking}/>
         </div>
     );
 }

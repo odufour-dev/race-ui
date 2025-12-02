@@ -2,20 +2,31 @@ import React, { useEffect, useState, useMemo } from 'react';
 import './TimeRankingTable.css';
 
 export default function TimeRankingTable({ data = [], helpers, onChange }) {
-
-    const [ editMode, setEditMode ] = useState( "delay" );
-
+    
     // 
     //
     //
     // From rows (table component values) to data (input values)
     const computeData = (values) => {
-      // Exclude the last row which is an empty row
-      return values.slice(0,-1).map((v) => ({
-        position: Number(v.rank),
-        bib: Number(v.bib),
-        time: helpers.time.parseHMS(v.time)
-      }));
+
+      let referencetime = 0;
+      return values.map((v, idx) => {
+
+        let time = helpers.time.parseHMS(v.time);
+        if (idx == 0){
+          referencetime = time;
+        } else if (editMode == "delay"){
+          time = helpers.time.parseMS(v.delay) + referencetime;
+        }
+
+        return {
+          position: Number(v.rank),
+          bib:      Number(v.bib),
+          time:     time
+        }
+
+      }).filter(v => v.position > 0 && v.bib > 0 && v.time >= 0);
+
     };
 
     // From data (input values) to rows (table component values)
@@ -39,8 +50,9 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
         r.push({id: "", class: [], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
         return r;
     }
-    //const rows = useMemo(() => computeRows(data), [data]);
-    const [ rows, setRows ] = useState(() => computeRows(data));
+
+    const [ editMode, setEditMode ] = useState( "delay" );
+    const [ rows, setRows ]         = useState(() => computeRows(data));
 
     //
     //
@@ -49,35 +61,26 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
 
     };
 
-    const onBibFocus = (evt, rowid) => {
+    const commitRow = () => {
+      const data = computeData(rows);
+      setRows(computeRows(data));
+      onChange(data);
+    }
+
+    const onCellFocus = (evt) => {
       evt.target.select();
     }
+    
     const onBibChange = (evt, rowid) => {
       setRows(prev => prev.map(r => r.id === rowid ? { ...r, bib: evt.target.value } : r));
-
-    }
-    const commitBib = (rowid,bibvalue) => {
-      onChange(computeData(rows));
     }
 
-    const onTimeFocus = (rowid) => {
-
-    }
-    const onTimeChange = (rowid) => {
-
-    }
-    const commitTime = (rowid,bibvalue) => {
-
+    const onTimeChange = (evt,rowid) => {
+      setRows(prev => prev.map(r => r.id === rowid ? { ...r, time: evt.target.value } : r));
     }
 
-    const onDelayFocus = (rowid) => {
-
-    }
-    const onDelayChange = (rowid) => {
-
-    }
-    const commitDelay = (rowid,bibvalue) => {
-
+    const onDelayChange = (evt,rowid) => {
+      setRows(prev => prev.map(r => r.id === rowid ? { ...r, delay: evt.target.value } : r));
     }
 
     const insertRowAt = (idx) => {
@@ -119,19 +122,20 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
                   onKeyDown={e => handleKeyDown(e, r.id, 'bib', idx)}
                   className="bib-input"
                   value={r.bib >= 0 ? r.bib : ""}
-                  onFocus={ e => onBibFocus(e, r.id)}
+                  onFocus={ e => onCellFocus(e)}
                   onChange={e => onBibChange(e, r.id)}
-                  onBlur={  e => commitBib(e, r.id)}
+                  onBlur={() => commitRow()}
                 />
               </td>
               <td className="time-cell">
                 <input
                   onKeyDown={e => handleKeyDown(e, r.id, 'time', idx)}
                   className="time-input"
+                  placeholder="00:00:00"
                   value={r.time}
-                  onFocus={() => onTimeFocus(r.id)}
-                  onChange={e => onTimeChange(r.id, e.target.value)}
-                  onBlur={()  => commitTime(r.id)}
+                  onFocus={ e => onCellFocus(e)}
+                  onChange={e => onTimeChange(e, r.id)}
+                  onBlur={() => commitRow()}
                   disabled={idx !== 0 && editMode != 'time'}
                 />
               </td>
@@ -139,10 +143,11 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
                 <input
                   onKeyDown={e => handleKeyDown(e, r.id, 'delay', idx)}
                   className="delay-input"
+                  placeholder="00:00"
                   value={r.delay}
-                  onFocus={() => onDelayFocus(r.id)}
-                  onChange={e => onDelayChange(r.id, e.target.value)}
-                  onBlur={() => commitDelay(r.id)}
+                  onFocus={ e => onCellFocus(e)}
+                  onChange={e => onDelayChange(e, r.id)}
+                  onBlur={() => commitRow()}
                   disabled={idx == 0 || editMode != 'delay'}
                 />
               </td>
