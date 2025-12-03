@@ -93,9 +93,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       const nextRow = row + 1;
       const nextCol = 0;
 
-      if (nextRow >= refs.current.length){
-
-      }
+      refs.current[row][col].current.blur(); // Force cell validation
       setFocusTarget({ row: nextRow, col: nextCol });
 
     }
