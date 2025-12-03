@@ -99,19 +99,31 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
     }
     const handleArrowUp = (e, row,col) => {
       e.preventDefault();
-      console.log("UP",row,col)
+      const nextRow = row > 0 ? row - 1 : 0;
+      const nextCol = nextRow == 0 && col > 0 ? 1 : col;
+      setFocusTarget({ row: nextRow, col: nextCol });
     }
     const handleArrowDown = (e, row,col) => {
       e.preventDefault();
-      console.log("DOWN",row,col)
+      const nextRow = row < (rows.length - 1) ? row + 1 : rows.length - 1;
+      const nextCol = row == 0 && col > 0 && editMode == "delay" ? 2 : col;
+      setFocusTarget({ row: nextRow, col: nextCol });
     }
     const handleArrowLeft = (e, row,col) => {
       e.preventDefault();
-      console.log("LEFT",row,col)
+      const availableCols = (row == 0 || editMode == "time") ? [0,1] : [0,2];
+      const nextIdx = availableCols.findIndex(v => v == col) - 1;
+      const nextRow = row;
+      const nextCol = nextIdx >= 0 ? availableCols[nextIdx] :  availableCols[0];
+      setFocusTarget({ row: nextRow, col: nextCol });
     }
     const handleArrowRight = (e, row,col) => {
       e.preventDefault();
-      console.log("RIGHT",row,col)
+      const availableCols = (row == 0 || editMode == "time") ? [0,1] : [0,2];
+      const nextIdx = availableCols.findIndex(v => v == col) + 1;
+      const nextRow = row;
+      const nextCol = nextIdx < availableCols.length ? availableCols[nextIdx] :  availableCols[availableCols.length-1];
+      setFocusTarget({ row: nextRow, col: nextCol });
     }
 
     const handleKeyDown = (e, row, col) => {
