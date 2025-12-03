@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './TimeRankingTable.css';
 
 export default function TimeRankingTable({ data = [], helpers, onChange }) {
@@ -7,7 +7,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
     //
     //
     // From rows (table component values) to data (input values)
-    const computeData = (values) => {
+    const computeData = (values, editMode) => {
 
       let referencetime = 0;
       return values.map((v, idx) => {
@@ -44,7 +44,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
             const l = helpers.time.formatMS(d.time - values[0].time);
             const c = [];
             if (d.position == 1){c.push("winner")}
-            r.push({id: "id-" + d.bib + "_" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
+            r.push({id: "id-" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
             last = {rank: d.position, time: t, delay: l};
         })
         r.push({id: "", class: [], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
@@ -54,14 +54,21 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
 
     const [ editMode, setEditMode ] = useState( "delay" );
     const [ rows, setRows ]         = useState(() => computeRows(data));
-    const refMaps = useRef([]);
+    const [ focusTarget, setFocusTarget ] = useState( {row:0, col:0} );
+    
+    const refs = useRef(
+      rows.map(() => [React.createRef(), React.createRef(), React.createRef()])
+    );
 
-    const refs = useMemo(() => {
-      refMaps.current = Array.from({ length: rows.length }, () => (
-        [React.createRef(),React.createRef(),React.createRef()]
-      ));
-      return refMaps;
-    }, [ rows ]);
+    useEffect(() => {
+      if (focusTarget) {
+        const { row, col } = focusTarget;
+        const cellRef = refs.current[row]?.[col];
+        if (cellRef?.current) {
+          cellRef.current.focus();
+        }
+      }
+    }, [ focusTarget, rows ]);
 
     //
     //
@@ -71,18 +78,26 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       e.preventDefault();
 
       const availableCols = (row == 0 || editMode == "time") ? [0,1] : [0,2];
-      const nextIdx = availableCols.find(v => v == col) + 1;
+      const nextIdx = availableCols.findIndex(v => v == col) + 1;
 
-      if (nextIdx < availableCols.length){
-        refs.current[row][availableCols[nextIdx]].current.focus();
-      } else if (refs.current.length > row+1) {
-        refs.current[row+1][0].current.focus();
-      }
+      const nextRow = nextIdx >= availableCols.length && refs.current.length > row+1 ? row + 1 : row;
+      const nextCol = nextIdx < availableCols.length ? availableCols[nextIdx] : 0;
+      
+      setFocusTarget({ row: nextRow, col: nextCol });
 
     }
     const handleEnter = (e, row,col) => {
+
       e.preventDefault();
-      console.log("ENTER",row,col)
+      
+      const nextRow = row + 1;
+      const nextCol = 0;
+
+      if (nextRow >= refs.current.length){
+
+      }
+      setFocusTarget({ row: nextRow, col: nextCol });
+
     }
     const handleArrowUp = (e, row,col) => {
       e.preventDefault();
@@ -112,14 +127,21 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
 
     };
 
+    const timeoutRef = useRef(null);
     const commitRow = () => {
-      const data = computeData(rows);
-      setRows(computeRows(data));
-      onChange(data);
-    }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        const data = computeData(rows, editMode);
+        setRows(computeRows(data));
+        onChange(data);
+      }, 300);
+    };
 
-    const onCellFocus = (evt) => {
+    const onCellFocus = (evt,row,col) => {
       evt.target.select();
+      setFocusTarget({row: row,col: col})
     }
     
     const onBibChange = (evt, rowid) => {
@@ -156,15 +178,19 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       <table className="ranking-table">
         <thead>
           <tr>
-            <th>helpers.translator("rank")</th>
-            <th>helpers.translator("bib")</th>
-            <th>helpers.translator("time")</th>
-            <th>helpers.translator("delay")</th>
+            <th>{helpers.translator("rank")}</th>
+            <th>{helpers.translator("bib")}</th>
+            <th>{helpers.translator("time")}</th>
+            <th>{helpers.translator("delay")}</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((r, idx) => (
+          {rows.map((r, idx) => {
+            if (!refs.current[idx]) {
+              refs.current[idx] = [React.createRef(), React.createRef(), React.createRef()];
+            }
+            return (
             <tr key={r.id} className={r.class.join(' ')}>
               
               <td className="rank-cell">{r.rank}</td>
@@ -174,7 +200,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
                   onKeyDown={e => handleKeyDown(e, idx, 0)}
                   className="bib-input"
                   value={r.bib >= 0 ? r.bib : ""}
-                  onFocus={ e => onCellFocus(e)}
+                  onFocus={ e => onCellFocus(e,idx,0)}
                   onChange={e => onBibChange(e, r.id)}
                   onBlur={() => commitRow()}
                 />
@@ -186,7 +212,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
                   className="time-input"
                   placeholder="00:00:00"
                   value={r.time}
-                  onFocus={ e => onCellFocus(e)}
+                  onFocus={ e => onCellFocus(e,idx,1)}
                   onChange={e => onTimeChange(e, r.id)}
                   onBlur={() => commitRow()}
                   disabled={idx !== 0 && editMode != 'time'}
@@ -199,7 +225,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
                   className="delay-input"
                   placeholder="00:00"
                   value={r.delay}
-                  onFocus={ e => onCellFocus(e)}
+                  onFocus={ e => onCellFocus(e,idx,2)}
                   onChange={e => onDelayChange(e, r.id)}
                   onBlur={() => commitRow()}
                   disabled={idx == 0 || editMode != 'delay'}
@@ -210,7 +236,7 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
                 <button title={`Delete row ${idx + 1}`} className="delete" onClick={() => deleteRowAt(idx)}>-</button>
               </td>
             </tr>
-          ))}
+          )})}
         </tbody>
       </table>
     </div>
