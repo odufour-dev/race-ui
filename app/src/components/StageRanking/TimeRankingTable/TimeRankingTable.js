@@ -31,24 +31,35 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
 
     // From data (input values) to rows (table component values)
     const computeRows = (values) => {
-        const r = [];
-        // id : string based on bib - position
-        // class (array of strings) : winner (1st row), duplicate
-        // rank (numeric)
-        // bib (numeric) : -1 for invalid value
-        // time : string with format HH:MM:SS
-        // delay : string with format MM:SS
-        let last = {rank:0,time:"",delay:""};
-        values.map((d) => {
-            const t = helpers.time.formatHMS(d.time);
-            const l = helpers.time.formatMS(d.time - values[0].time);
-            const c = [];
-            if (d.position == 1){c.push("winner")}
-            r.push({id: "id-" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
-            last = {rank: d.position, time: t, delay: l};
-        })
-        r.push({id: "", class: [], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
-        return r;
+      
+      // Detect duplicated bibs
+      const countbibs = values.reduce((acc,item) => {
+        const id = "bib-" + item.bib;
+        acc["bib-" + item.bib] = id in acc ? acc["bib-" + item.bib] + 1 : 1;
+        return acc;
+      }, {})
+      const duplicates = [];
+      Object.keys(countbibs).map((v,i) => countbibs[v] > 1 ? duplicates.push({bib: v.replace("bib-",""), occ: countbibs[v]}) : null)
+
+      const r = [];
+      // id : string based on bib - position
+      // class (array of strings) : winner (1st row), duplicate
+      // rank (numeric)
+      // bib (numeric) : -1 for invalid value
+      // time : string with format HH:MM:SS
+      // delay : string with format MM:SS
+      let last = {rank:0,time:"",delay:""};
+      values.map((d) => {
+          const t = helpers.time.formatHMS(d.time);
+          const l = helpers.time.formatMS(d.time - values[0].time);
+          const c = [];
+          if (d.position == 1){c.push("winner")}
+          if (duplicates.some((dup) => dup.bib == d.bib)){c.push("duplicate")}
+          r.push({id: "id-" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
+          last = {rank: d.position, time: t, delay: l};
+      })
+      r.push({id: "", class: [], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
+      return r;
     }
 
 
