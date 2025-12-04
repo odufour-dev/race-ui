@@ -1,9 +1,15 @@
 # Build Stage
 FROM node:18-alpine AS build
+
 WORKDIR /app
+
 COPY app/package*.json ./
 RUN npm install
 COPY app/. .
+
+ARG COMMIT_SHA
+RUN echo $COMMIT_SHA > git_commit.txt
+
 RUN npm run build
 
 # Development Stage
