@@ -8,7 +8,7 @@ RUN npm install
 COPY app/. .
 
 ARG COMMIT_SHA
-RUN echo $COMMIT_SHA > git_commit.txt
+RUN echo $COMMIT_SHA > /app/public/git_commit.txt
 
 RUN npm run build
 
