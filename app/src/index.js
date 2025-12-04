@@ -21,6 +21,9 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
 
-const fs = require("fs");
-const versionfile = "/app/git_commit.txt";
-fs.readFile(filePath, "utf8", (err,data) => console.log("Application version: ", data));
+fetch('/git_commit.txt')
+  .then(response => response.text())
+  .then(data => {
+    document.title = data;
+    console.log(data);
+  })
