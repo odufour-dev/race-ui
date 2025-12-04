@@ -20,3 +20,10 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+fetch('/git_commit.txt')
+  .then(response => response.text())
+  .then(data => {
+    document.title = data;
+    console.log(data);
+  })
