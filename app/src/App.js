@@ -13,6 +13,7 @@ import Sidebar            from './components/Sidebar/Sidebar';
 import StageRanking       from './components/StageRanking/StageRanking';
 
 import { RaceModel } from './models/RaceModel';
+import { Metadata  } from './models/Metadata/Metadata';
 
 import { Time } from "./tools/Time/Time";
 
@@ -27,6 +28,17 @@ function App() {
   const [sidebarOpen, setSidebarOpen]   = useState(false);
   const [isDesktop, setIsDesktop]       = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
 
+  const [appName, setAppName] = useState("");
+
+  useEffect(() => {
+    const metadata = new Metadata();
+    metadata.initialize().then(() => {
+      const name = metadata.fullName;
+      setAppName(name);
+      console.log(metadata.fullName);
+    });
+  }, []);
+  
   useEffect(() => {
       console.log('Stage #1 ranking:', raceModel.getStageRanking(1));
       console.log('General #1 ranking:', raceModel.getGeneralRanking(1));
@@ -120,7 +132,9 @@ function App() {
             <div style={{padding: '1rem', color: '#334155'}}>Select a view from the left navigation.</div>
           )}
         </main>
+        
       </div>
+      <footer>{appName}</footer>
     </div>
   );
 }
