@@ -28,4 +28,4 @@ jobs:
           docker tag $IMAGE_NAME:$COMMIT_SHA $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$COMMIT_SHA
           docker push $IMAGE_NAME:latest
-          curl https://api.render.com/deploy/${DEPLOYMENT_SERVER}?key=${DEPLOYMENT_KEY}
+          curl https://api.render.com/deploy/${{ secrets.DEPLOYMENT_SERVER }}?key=${{ secrets.DEPLOYMENT_KEY }}
