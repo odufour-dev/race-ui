@@ -24,7 +24,8 @@ jobs:
           IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/race-management
           COMMIT_SHA=${GITHUB_SHA}
           BRANCH_NAME=${GITHUB_REF_NAME}
-          docker build --build-arg GIT_COMMIT_SHA=$GIT_COMMIT_SHA --build-arg GIT_BRANCH_NAME=$BRANCH_NAME --target production -t $IMAGE_NAME:$COMMIT_SHA .
+          docker build --build-arg COMMIT_SHA=$COMMIT_SHA --build-arg BRANCH_NAME=$BRANCH_NAME --target production -t $IMAGE_NAME:$COMMIT_SHA .
           docker tag $IMAGE_NAME:$COMMIT_SHA $IMAGE_NAME:latest
           docker push $IMAGE_NAME:$COMMIT_SHA
           docker push $IMAGE_NAME:latest
+          curl https://api.render.com/deploy/${DEPLOYMENT_SERVER}?key=${DEPLOYMENT_KEY}
