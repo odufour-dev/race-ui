@@ -13,6 +13,8 @@ RUN echo $COMMIT_SHA > /app/public/metadata/commit.txt
 ARG BRANCH_NAME
 RUN echo $BRANCH_NAME > /app/public/metadata/branch.txt
 
+RUN date "+%Y/%m/%d" > /app/public/metadata/date.txt
+
 RUN npm run build
 
 # Development Stage
