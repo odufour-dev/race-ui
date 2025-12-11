@@ -52,13 +52,13 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       values.map((d) => {
           const t = helpers.time.formatHMS(d.time);
           const l = helpers.time.formatMS(d.time - values[0].time);
-          const c = [];
+          const c = ["rank-row"];
           if (d.position == 1){c.push("winner")}
           if (duplicates.some((dup) => dup.bib == d.bib)){c.push("duplicate")}
           r.push({id: "id-" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
           last = {rank: d.position, time: t, delay: l};
       })
-      r.push({id: "", class: [], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
+      r.push({id: "", class: ["rank-row"], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
       return r;
     }
 
