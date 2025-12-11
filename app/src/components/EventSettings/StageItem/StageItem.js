@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./StageItem.css"
 
-export function StageItem({ translator, data, onApply, onRemove }) {
+export function StageItem({ helper, data, onApply, onRemove }) {
   
   const [ item, setItem ] = useState( data );
 
@@ -12,10 +12,10 @@ export function StageItem({ translator, data, onApply, onRemove }) {
     <div className="stage-item">
       <div className="stage-header">
         <div className="stage-h-left">
-            <span>{translator("event.settings.stage.stage")} #{ item.id }</span>
+            <span>{helper.translator("event.settings.stage.stage")} #{ item.id }</span>
           <input
             className="stage-title"
-            placeholder={translator('event.settings.stage.name')}
+            placeholder={helper.translator('event.settings.stage.name')}
             value={item.name ?? ''}
             onChange={e => setItem( item.update({name: e.target.value }))}
           />
@@ -24,7 +24,7 @@ export function StageItem({ translator, data, onApply, onRemove }) {
             type="date"
             value={item.date ?? 0}
             onChange={e => setItem( item.update({date: e.target.value }))}
-            title={translator('event.settings.stage.date')}
+            title={helper.translator('event.settings.stage.date')}
           />
           <input
             className="stage-distance"
@@ -32,12 +32,12 @@ export function StageItem({ translator, data, onApply, onRemove }) {
             min="0"
             value={item.distance ?? 0}
             onChange={e => setItem( item.update({distance: e.target.value }))}
-            title={translator('event.settings.stage.distance')}
+            title={helper.translator('event.settings.stage.distance')}
           /><span>km</span>
         </div>
 
         <div className="stage-h-right">          
-          <button type="button" className="btn small danger" onClick={() => onRemove && onRemove(item.id)}>{translator('event.settings.stage.remove')}</button>
+          <button type="button" className="btn small danger" onClick={() => onRemove && onRemove(item.id)}>{helper.translator('event.settings.stage.remove')}</button>
         </div>
       </div>
 

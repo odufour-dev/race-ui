@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './TimeRankingTable.css';
 
-export default function TimeRankingTable({ data = [], helpers, onChange }) {
+export default function TimeRankingTable({ data = [], helper, onChange }) {
     
     // 
     //
@@ -12,11 +12,11 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       let referencetime = 0;
       return values.map((v, idx) => {
 
-        let time = helpers.time.parseHMS(v.time);
+        let time = helper.time.parseHMS(v.time);
         if (idx == 0){
           referencetime = time;
         } else if (editMode == "delay"){
-          time = helpers.time.parseMS(v.delay) + referencetime;
+          time = helper.time.parseMS(v.delay) + referencetime;
         }
 
         return {
@@ -50,8 +50,8 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       // delay : string with format MM:SS
       let last = {rank:0,time:"",delay:""};
       values.map((d) => {
-          const t = helpers.time.formatHMS(d.time);
-          const l = helpers.time.formatMS(d.time - values[0].time);
+          const t = helper.time.formatHMS(d.time);
+          const l = helper.time.formatMS(d.time - values[0].time);
           const c = ["rank-row"];
           if (d.position == 1){c.push("winner")}
           if (duplicates.some((dup) => dup.bib == d.bib)){c.push("duplicate")}
@@ -199,10 +199,10 @@ export default function TimeRankingTable({ data = [], helpers, onChange }) {
       <table className="ranking-table">
         <thead>
           <tr>
-            <th>{helpers.translator("rank")}</th>
-            <th>{helpers.translator("bib")}</th>
-            <th>{helpers.translator("time")}</th>
-            <th>{helpers.translator("delay")}</th>
+            <th>{helper.translator("rank")}</th>
+            <th>{helper.translator("bib")}</th>
+            <th>{helper.translator("time")}</th>
+            <th>{helper.translator("delay")}</th>
             <th></th>
           </tr>
         </thead>

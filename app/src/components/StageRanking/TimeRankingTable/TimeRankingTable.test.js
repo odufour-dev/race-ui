@@ -1,15 +1,16 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import TimeRankingTable from './TimeRankingTable';
 
-import { Time } from '../../../tools/Time/Time'
+import { Helper } from '../../../tools/Helper'
 
 describe('TimeRankingTable', () => {
 
     it('Constructor - default', () => {
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={[]} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={[]} helper={helper} onChange={changeMock} />);
 
         const ranks = container.querySelectorAll('.rank-cell');
         expect(ranks).toHaveLength(1);
@@ -36,8 +37,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const ranks = container.querySelectorAll('.rank-cell');
         expect(ranks).toHaveLength(2);
@@ -71,8 +73,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const ranks = container.querySelectorAll('.rank-cell');
         expect(ranks).toHaveLength(4);
@@ -113,8 +116,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -133,8 +137,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -154,8 +159,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -172,8 +178,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -190,8 +197,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -208,8 +216,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -226,8 +235,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -244,8 +254,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 
@@ -262,8 +273,9 @@ describe('TimeRankingTable', () => {
         ];
         
         const changeMock = jest.fn();
-        const helpers = {time: new Time(), translator: jest.fn()};
-        const { container } = render(<TimeRankingTable data={data} helpers={helpers} onChange={changeMock} />);
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
 
         const bibs = container.querySelectorAll('.bib-input');
 

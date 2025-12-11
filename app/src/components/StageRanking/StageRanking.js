@@ -3,20 +3,21 @@ import TimeRankingTable from './TimeRankingTable/TimeRankingTable';
 import Grid from './Grid/Grid';
 
 import './StageRanking.css';
-import { use } from 'i18next';
 
-export default function StageRanking({ data = [], time, onChange }) {
+export default function StageRanking({ data = [], helper, onChange }) {
 
-    const helpers = {time: time, translator: (str) => {}}
+    const computeBibStatus = (data) => {
+        const bibs = data.map(item => ({bib: Number(item.bib), status: item.status}));
+        bibs.sort((a,b) => a.bib - b.bib);
+        return bibs;
+    }
 
     const [ timeranking, setTimeRanking ]   = useState( [] );
-    const [ bibsstatus, setBibStatus ]      = useState( [] );
+    const [ bibsstatus, setBibStatus ]      = useState( computeBibStatus(data) );
 
     useEffect(() => {
         
-        const bibs = data.map(item => ({bib: Number(item.bib), status: item.status}));
-        bibs.sort((a,b) => a - b);
-        setBibStatus(bibs);
+        setBibStatus(computeBibStatus(data));
 
         const ranking = data.filter(item => item.status == "done");
         ranking.sort((a,b) => a.position - b.position);
@@ -40,7 +41,7 @@ export default function StageRanking({ data = [], time, onChange }) {
                 b.status = "done";
             } else if (b.status === "done") { // Reset status if the bib was removed from the timeranking
                 b.status = "unknown";
-            }console.log(b);
+            }
             return b;
         }));
 
@@ -54,7 +55,7 @@ export default function StageRanking({ data = [], time, onChange }) {
     return (
         <div>
             <Grid data={bibsstatus} onChange={setBibStatus} />
-            <TimeRankingTable data={timeranking} helpers={helpers} onChange={setTimeRanking}/>
+            <TimeRankingTable data={timeranking} helper={helper} onChange={setTimeRanking}/>
         </div>
     );
 }

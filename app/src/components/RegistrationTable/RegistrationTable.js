@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import './RegistrationTable.css';
 import DropdownEditor from './DropdownEditor';
 import TextEditor from './TextEditor';
 import ActionPanel from './ActionPanel';
 
-function RegistrationTable({ dataModel, classificationModel, setData }) {
+function RegistrationTable({ helper, dataModel, classificationModel, setData }) {
 
-  const { t: translator } = useTranslation('RegistrationTable');
   const [editingCell, setEditingCell] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
@@ -15,16 +13,16 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
   const [filteredData, setFilteredData] = useState([]);
 
   const columnDefs = useMemo(() => [
-    { accessorKey: 'id',        header: translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
-    { accessorKey: 'lastName',  header: translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'medium' },
-    { accessorKey: 'firstName', header: translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
-    { accessorKey: 'sex',       header: translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Sex, size: 'small' },
-    { accessorKey: 'club',      header: translator('columns.club'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'large' },
-    { accessorKey: 'category',  header: translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Category, size: 'small' },
-    { accessorKey: 'age',       header: translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age, size: 'small' },
-    { accessorKey: 'ffcID',     header: translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
-    { accessorKey: 'uciID',     header: translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
-  ], [translator, classificationModel]);
+    { accessorKey: 'id',        header: helper.translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'lastName',  header: helper.translator('columns.name'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'medium' },
+    { accessorKey: 'firstName', header: helper.translator('columns.firstName'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'sex',       header: helper.translator('columns.sex'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Sex, size: 'small' },
+    { accessorKey: 'club',      header: helper.translator('columns.club'),     enableSorting: true,  enableEditing: true, allowedValues: null, size: 'large' },
+    { accessorKey: 'category',  header: helper.translator('columns.category'), enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Category, size: 'small' },
+    { accessorKey: 'age',       header: helper.translator('columns.age'),      enableSorting: true,  enableEditing: true, allowedValues: classificationModel.Age, size: 'small' },
+    { accessorKey: 'ffcID',     header: helper.translator('columns.licenseId'),enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
+    { accessorKey: 'uciID',     header: helper.translator('columns.uciId'),    enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' }
+  ], [ classificationModel]);
 
   const next = (rowIndex, columnIndex) => {
     return {
@@ -154,7 +152,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
       <div className="table-bg">
         <div className="table-container">
           <h3 className="text-3xl font-bold text-blue-700 mb-8 text-center">
-            {translator('registration.title')}
+            {helper.translator('registration.title')}
           </h3>
           {/* Section pour le filtrage global and actions */}
           <div className="actions-panel">
@@ -163,7 +161,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                 <input
                   type="text"
                   className="filter-input"
-                  placeholder={translator('registration.filter')}
+                  placeholder={helper.translator('registration.filter')}
                   value={globalFilter ?? ''}
                   onChange={e => setGlobalFilter(e.target.value)}
                 />
@@ -224,7 +222,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                       </th>
                     );
                   })}
-                  <th className="px-4 py-3 text-left font-semibold text-blue-900">{translator('columns.actions')}</th>
+                  <th className="px-4 py-3 text-left font-semibold text-blue-900">{helper.translator('columns.actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -266,7 +264,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
               <tfoot>
                 <tr>
                   <td colSpan={columns.length + 1} className="px-4 py-3 text-center text-blue-700 text-base bg-blue-50">
-                    {translator('registration.usersCount', { count: filteredData.length })}
+                    {helper.translator('registration.usersCount', { count: filteredData.length })}
                   </td>
                 </tr>
                 <tr>
@@ -277,7 +275,7 @@ function RegistrationTable({ dataModel, classificationModel, setData }) {
                       setEditValue('');
                     }}>
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                      {translator('registration.addUser')}
+                      {helper.translator('registration.addUser')}
                     </button>
                   </td>
                 </tr>
