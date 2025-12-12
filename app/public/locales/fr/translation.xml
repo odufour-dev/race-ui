@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <translation>
+  <title>Gestion des courses</title>
+  <upload_file>Importer un fichier Excel</upload_file>
+  <header_row>Ligne d'en-tête</header_row>
+  <import_data>Importer les données</import_data>
+  <nb_racer>Nombre de coureurs</nb_racer>
+  <columns>
+    <skip>Ignore</skip>
+    <name>Nom</name>
+    <firstName>Prénom</firstName>
+    <club>Club</club>
+    <category>Catégorie</category>
+    <serie>Série</serie>
+    <licenseId>Numéro de licence</licenseId>
+    <uciId>UCI ID</uciId>
+    <actions>Actions</actions>
+  </columns>
+  <mapping>
+    <skip>Ignore</skip>
+    <id>ID</id>
+    <lastName>Nom</lastName>
+    <firstName>Prénom</firstName>
+    <sex>Sexe</sex>
+    <age>Age</age>
+    <club>Club</club>
+    <category>Catégorie</category>
+    <subcategory>Série</subcategory>
+    <ffcID>Licence</ffcID>
+    <uciID>UCI ID</uciID>
+    <actions>Actions</actions>
+  </mapping>
   <navigation>
     <event>Evénement</event>
     <racers>Coureurs</racers>
@@ -68,4 +98,23 @@
       </filter>
     </settings>
   </event>
+  <registration>
+    <title>Tableau des inscriptions</title>
+    <filter>Filtrer tout...</filter>
+    <addUser>Ajouter utilisateur</addUser>
+    <usersCount>Nombre d'utilisateurs : {{count}}</usersCount>
+  </registration>
+  <columns>
+    <bib>Dossard</bib>
+    <name>Nom</name>
+    <firstName>Prénom</firstName>
+    <club>Club</club>
+    <sex>Sex</sex>
+    <age>Age</age>
+    <category>Catégorie</category>
+    <serie>Série</serie>
+    <licenseId>Numéro de licence</licenseId>
+    <uciId>ID UCI</uciId>
+    <actions>Actions</actions>
+  </columns>
 </translation>
