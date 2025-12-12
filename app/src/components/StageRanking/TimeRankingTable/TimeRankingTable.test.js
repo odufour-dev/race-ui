@@ -107,6 +107,50 @@ describe('TimeRankingTable', () => {
 
     });
 
+    it('Constructor - multiple rows -extra information', () => {
+
+
+        const data = [
+            {bib: 3, category: "Access",firstname: "René",      lastname: "TAUPE",      position: 1,    time: 120,  status: "done"},
+            {bib: 1, category: "Open",  firstname: "Paul",      lastname: "POULE",      position: 2,    time: 125,  status: "done"},
+            {bib: 5, category: "Access",firstname: "Jean",      lastname: "CROISSANT",  position: 3,    time: 180,  status: "done"},
+        ];
+        
+        const changeMock = jest.fn();
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
+
+        const ranks = container.querySelectorAll('.rank-cell');
+        expect(ranks).toHaveLength(4);
+        expect(ranks[0].textContent).toBe('1');
+        expect(ranks[1].textContent).toBe('2');
+        expect(ranks[2].textContent).toBe('3');
+        expect(ranks[3].textContent).toBe('4');
+
+        const bibs = container.querySelectorAll('.bib-input');
+        expect(bibs).toHaveLength(4);
+        expect(bibs[0]).toHaveValue('3');
+        expect(bibs[1]).toHaveValue('1');
+        expect(bibs[2]).toHaveValue('5');
+        expect(bibs[3]).toHaveValue('');
+
+        const time = container.querySelectorAll('.time-input');
+        expect(time).toHaveLength(4);
+        expect(time[0]).toHaveValue('00:02:00');
+        expect(time[1]).toHaveValue('00:02:05');
+        expect(time[2]).toHaveValue('00:03:00');
+        expect(time[3]).toHaveValue('00:03:00');
+
+        const delay = container.querySelectorAll('.delay-input');
+        expect(delay).toHaveLength(4);
+        expect(delay[0]).toHaveValue('00:00');
+        expect(delay[1]).toHaveValue('00:05');
+        expect(delay[2]).toHaveValue('01:00');
+        expect(delay[3]).toHaveValue('01:00');
+
+    });
+
     it("[BIB INPUT] 1st rows - onChange", () => {
 
         const data = [
