@@ -1,9 +1,11 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
 import TimeRankingTable from './TimeRankingTable';
 
 import { Helper } from '../../../tools/Helper'
 
-describe('TimeRankingTable', () => {
+describe('TimeRankingTable - Unit tests', () => {
 
     it('Constructor - default', () => {
         
@@ -151,7 +153,43 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - onChange", () => {
+});
+
+describe('TimeRankingTable - User interactions', () => {
+
+    it("type", () => {
+
+        jest.useFakeTimers();
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        act(() => {
+            userEvent.type(bibs[0],'123');
+            fireEvent.keyDown(bibs[0], { key: "Tab", code: "Tab" });            
+        })        
+        act(() => jest.advanceTimersByTime(1000));
+
+        expect(bibs[0]).toHaveValue("123");
+        expect(changeMock).toHaveBeenCalledTimes(1);
+
+    });
+
+});
+
+describe('TimeRankingTable - Input interfactions', () => {
+
+    it("1st rows - onChange", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -172,7 +210,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - onFocus", () => {
+    it("1st rows - onFocus", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -194,7 +232,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - onBlur", () => {
+    it("1st rows - onBlur", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -213,7 +251,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - Tab", () => {
+    it("1st rows - Tab", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -232,7 +270,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - ArrowUp", () => {
+    it("1st rows - ArrowUp", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -251,7 +289,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - ArrowLeft", () => {
+    it("1st rows - ArrowLeft", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -270,7 +308,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - ArrowRight", () => {
+    it("1st rows - ArrowRight", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -289,7 +327,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - ArrowDown", () => {
+    it("1st rows - ArrowDown", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
@@ -308,7 +346,7 @@ describe('TimeRankingTable', () => {
 
     });
 
-    it("[BIB INPUT] 1st rows - Enter", () => {
+    it("1st rows - Enter", () => {
 
         const data = [
             {bib: 4, time: 124, position: 1},
