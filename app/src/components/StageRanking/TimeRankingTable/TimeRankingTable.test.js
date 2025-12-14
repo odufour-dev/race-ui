@@ -157,7 +157,7 @@ describe('TimeRankingTable - Unit tests', () => {
 
 describe('TimeRankingTable - User interactions', () => {
 
-    it("type", () => {
+    it("type + Tab", () => {
 
         jest.useFakeTimers();
 
@@ -177,6 +177,34 @@ describe('TimeRankingTable - User interactions', () => {
         act(() => {
             userEvent.type(bibs[0],'123');
             fireEvent.keyDown(bibs[0], { key: "Tab", code: "Tab" });            
+        })        
+        act(() => jest.advanceTimersByTime(1000));
+
+        expect(bibs[0]).toHaveValue("123");
+        expect(changeMock).toHaveBeenCalledTimes(1);
+
+    });
+
+    it("type + Enter", () => {
+
+        jest.useFakeTimers();
+
+        const data = [
+            {bib: 4, time: 124, position: 1},
+            {bib: 1, time: 150, position: 2},
+            {bib: 2, time: 164, position: 3},
+        ];
+        
+        const changeMock = jest.fn();
+        const translatorMock = jest.fn();
+        const helper = new Helper(translatorMock);
+        const { container } = render(<TimeRankingTable data={data} helper={helper} onChange={changeMock} />);
+
+        const bibs = container.querySelectorAll('.bib-input');
+
+        act(() => {
+            userEvent.type(bibs[0],'123');
+            fireEvent.keyDown(bibs[0], { key: "Enter", code: "Enter" });            
         })        
         act(() => jest.advanceTimersByTime(1000));
 
