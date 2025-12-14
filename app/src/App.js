@@ -1,6 +1,6 @@
 import './App.css';
 
-import React, { useEffect, useState, startTransition } from 'react';
+import React, { useEffect, useState, useCallback, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import EventSettings      from './components/EventSettings/EventSettings';
@@ -29,6 +29,13 @@ function App() {
   const [isDesktop, setIsDesktop]       = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
 
   const [appName, setAppName] = useState("");
+
+  const handleStageChange = useCallback(
+  (stage, data) => {
+    setRaceModel(raceModel.updateStageRanking(stage, data));
+  },
+  [raceModel]
+);
 
   useEffect(() => {
     const metadata = new Metadata();
@@ -75,7 +82,7 @@ function App() {
       navRaceGroup.add(navConfigRanking);
 
       const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: helper.translator('navigation.ranking'), order: 2, component: 
-        (props) => (<StageRanking {...props} data={raceModel.getStageRanking(stage)} helper={helper} onChange={(data)=>setRaceModel(raceModel.updateStageRanking(stage,data))}/>)
+        (props) => (<StageRanking {...props} data={raceModel.getStageRanking(stage)} helper={helper} onChange={(data) => handleStageChange(stage, data)}/>)
       } );
       navRaceGroup.add(navStageRanking);
       
