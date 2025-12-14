@@ -12,17 +12,18 @@ export default function StageRanking({ data = [], helper, onChange }) {
         return bibs;
     }
 
-    const [ timeranking, setTimeRanking ]   = useState( [] );
-    const [ bibsstatus, setBibStatus ]      = useState( computeBibStatus(data) );
-
-    useEffect(() => {
-        
-        setBibStatus(computeBibStatus(data));
-
+    const computeTimeRanking = (data) => {
         const ranking = data.filter(item => item.status == "done");
         ranking.sort((a,b) => a.position - b.position);
-        setTimeRanking(ranking);
+        return ranking;
+    };
 
+    const [ timeranking, setTimeRanking ]   = useState( computeTimeRanking(data) );
+    const [ bibsstatus, setBibStatus ]      = useState( computeBibStatus(data) );
+
+    useEffect(() => {        
+        setBibStatus(computeBibStatus(data));
+        setTimeRanking(computeTimeRanking(data));
     }, [ data ]);
 
     // Update the Grid status when TimeRanking is updated
