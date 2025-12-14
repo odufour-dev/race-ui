@@ -49,8 +49,17 @@ export default function StageRanking({ data = [], helper, onChange }) {
     }, [ timeranking ]);
 
     useEffect(() => {
-        //console.log(timeranking,bibsstatus)
-        //onChange(timeranking.map((tr) => {return {bib: Number(tr.bib), position: tr.position, time: tr.time, status: "done"};}));
+
+        const ranking = data.map((d) => {
+            const tr = timeranking.find((t) => t.bib == d.bib);
+            const bs = bibsstatus.find((b) => b.bib == d.bib);
+            d.position = tr ? tr.position : null;
+            d.time     = tr ? tr.time : null;
+            d.status   = bs ? bs.status : "unknown";
+            return d;
+        })
+        onChange(ranking)
+        
     }, [ timeranking, bibsstatus ]);
 
     return (
