@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './GeneralRanking.css';
+
 export default function GeneralRanking({ data = [], helper }) {
 
   const ranked = (data || []).filter(d => d.status === 'done').slice().sort((a,b) => {
@@ -12,7 +14,10 @@ export default function GeneralRanking({ data = [], helper }) {
 
   return (
     <div className="general-ranking">
-      <table className="general-table">
+      <div className="ranking-section">
+        <h3 className="section-title ranked-title">Final Ranking</h3>
+        <div className="section-card">
+          <table className="general-table">
         <thead>
           <tr>
             <th>Pos</th>
@@ -45,9 +50,14 @@ export default function GeneralRanking({ data = [], helper }) {
             </tr>
           ))}
         </tbody>
-      </table>
+          </table>
+        </div>
+      </div>
 
-      <table className="unranked-table">
+      <div className="unranked-section">
+        <h3 className="section-title unranked-title">Unranked Racers</h3>
+        <div className="section-card">
+          <table className="unranked-table">
         <thead>
           <tr>
             <th>Bib</th>
@@ -80,7 +90,9 @@ export default function GeneralRanking({ data = [], helper }) {
             </tr>
           ))}
         </tbody>
-      </table>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }
