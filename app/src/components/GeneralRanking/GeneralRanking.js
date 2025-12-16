@@ -1,37 +1,86 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import './GeneralRanking.css';
+export default function GeneralRanking({ data = [], helper }) {
 
-export default function GeneralRanking({ data = [], time, translator }) {
+  const ranked = (data || []).filter(d => d.status === 'done').slice().sort((a,b) => {
+    const ta = Number(a.time || 0);
+    const tb = Number(b.time || 0);
+    return ta - tb;
+  });
 
-    const [ columns, setColumns ]   = useState( ["bib", "time", "firstname", "lastname", "club", "category", "age", "ffcid", "uciid" ] );
-    const [ ranking, setRanking ]   = useState( data );
+  const unranked = (data || []).filter(d => d.status !== 'done');
 
-    /*
-    useEffect(() => {
-        let ranking = data.map((d) => columns.map((c) => c in d ? d[c] : ""));console.debug(ranking)
-        ranking = ranking.map(r => ({...r, time: r.time != "" ? time.formatHMS(r.time) : "" }));
-        setRanking(ranking);
-    }, [ columns, data ]);
-*/
-    return (
-        <div className="general-ranking-table">
-            <table className="general-table">
-                <thead>
-                    <tr>
-                        <th>{translator("column.position")}</th>
-                        {columns.map(col => (<th key={col}>{translator("column." + col)}</th>))}
-                    </tr>
-                </thead>
-                <tbody>
-                {ranking.map(row => (
-                    <tr key={"position-" + row.position}>
-                        <td>{row.position}</td>
-                        {Object.keys(row).map((d) => (<td>{row[d]}</td>))}
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        </div>
-    );
+  return (
+    <div className="general-ranking">
+      <table className="general-table">
+        <thead>
+          <tr>
+            <th>Pos</th>
+            <th>Bib</th>
+            <th>Time</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Sex</th>
+            <th>Club</th>
+            <th>Category</th>
+            <th>Age</th>
+            <th>FFCid</th>
+            <th>UCIid</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ranked.map((r, idx) => (
+            <tr key={String(r.bib) + '-' + idx}>
+              <td className="rank">{idx + 1}</td>
+              <td className="bib">{String(r.bib)}</td>
+              <td className="time">{helper && helper.time ? helper.time.formatHMS(r.time) : String(r.time || '')}</td>
+              <td className="firstname">{r.firstname || ''}</td>
+              <td className="lastname">{r.lastname || ''}</td>
+              <td className="sex">{r.sex || ''}</td>
+              <td className="club">{r.club || ''}</td>
+              <td className="category">{r.category || ''}</td>
+              <td className="age">{r.age != null ? String(r.age) : ''}</td>
+              <td className="ffcid">{r.ffcid || ''}</td>
+              <td className="uciid">{r.uciid || ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <table className="unranked-table">
+        <thead>
+          <tr>
+            <th>Bib</th>
+            <th>Status</th>
+            <th>Stage</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Sex</th>
+            <th>Club</th>
+            <th>Category</th>
+            <th>Age</th>
+            <th>FFCid</th>
+            <th>UCIid</th>
+          </tr>
+        </thead>
+        <tbody>
+          {unranked.map((r, idx) => (
+            <tr key={String(r.bib) + '-u-' + idx}>
+              <td className="bib">{String(r.bib)}</td>
+              <td className="status">{r.status || ''}</td>
+              <td className="stage">{r.stage != null ? String(r.stage) : ''}</td>
+              <td className="firstname">{r.firstname || ''}</td>
+              <td className="lastname">{r.lastname || ''}</td>
+              <td className="sex">{r.sex || ''}</td>
+              <td className="club">{r.club || ''}</td>
+              <td className="category">{r.category || ''}</td>
+              <td className="age">{r.age != null ? String(r.age) : ''}</td>
+              <td className="ffcid">{r.ffcid || ''}</td>
+              <td className="uciid">{r.uciid || ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
