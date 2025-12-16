@@ -89,7 +89,7 @@ describe('RaceModel', () => {
     ]);
     
   });
-/*
+
   it('getStageRanking - with dnf/dns', () => {
 
     let sut = new RaceModel();
@@ -215,7 +215,7 @@ describe('RaceModel', () => {
       {bib: 5, stage: 1, position: 2,   time: 5010, status: "done", firstname: "René",    lastname: "TAUPE"     },
       {bib: 3, stage: 1, position: 3,   time: 5010, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
       {bib: 1, stage: 1, position: 4,   time: 5010, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: null,time: null,  status: "dnf",  firstname: "Jean",    lastname: "CROISSANT" },
+      {bib: 4, stage: 1, position: 0,   time: null,  status: "dnf",  firstname: "Jean",    lastname: "CROISSANT" },
     ]);
 
     // General ranking after 2nd stage
@@ -224,7 +224,7 @@ describe('RaceModel', () => {
       {bib: 3, stage: 2, position: 5,   time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
       {bib: 2, stage: 2, position: 4,   time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
       {bib: 5, stage: 2, position: 2,   time: 5010, status: "dns",  firstname: "René",    lastname: "TAUPE"     },
-      {bib: 4, stage: 1, position: null,time: null,  status: "dnf", firstname: "Jean",    lastname: "CROISSANT" },
+      {bib: 4, stage: 1, position: 0,   time: null, status: "dnf", firstname: "Jean",    lastname: "CROISSANT" },
     ]);
     
   });
@@ -263,5 +263,5 @@ describe('RaceModel', () => {
     ]);
     
   });
-  */
+  
 });
