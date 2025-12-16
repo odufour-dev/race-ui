@@ -21,11 +21,9 @@ export default function StageRanking({ data = [], helper, onChange }) {
     const [ timeranking, setTimeRanking ]   = useState( computeTimeRanking(data) );
     const [ bibsstatus, setBibStatus ]      = useState( computeBibStatus(data) );
 
-    // Update the Grid status when TimeRanking is updated
-    //  Bib set in TimeRanking shall be set as "done" in the Grid
-    useEffect(() => {
+    const updateBibStatus = (data) => {
 
-        const bibOcc = timeranking.reduce((acc, item) => {
+        const bibOcc = data.reduce((acc, item) => {
                 acc[item.bib] = (acc[item.bib] || 0) + 1;
             return acc;
         }, {});
@@ -41,7 +39,7 @@ export default function StageRanking({ data = [], helper, onChange }) {
             return b;
         }));
 
-    }, [ timeranking ]);
+    }
 
     const updateRanking = (timeranking,bibsstatus) => {
 
@@ -62,8 +60,9 @@ export default function StageRanking({ data = [], helper, onChange }) {
         updateRanking(timeranking, newBibsStatus);
     };
 
-    const handleTimeRankingChange = (newTimeRanking) => {
+    const handleTimeRankingChange = (newTimeRanking) => {        
         setTimeRanking(newTimeRanking);
+        updateBibStatus(newTimeRanking);
         updateRanking(newTimeRanking, bibsstatus);
     };
 
