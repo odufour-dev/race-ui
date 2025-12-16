@@ -321,7 +321,7 @@ describe('Stage Ranking - Use cases', () => {
     });
 
 });
-/*
+
 describe('Stage Ranking - Returned data', () => {
 
     it('Duplicate bibs in Time Ranking', async () => {
@@ -407,4 +407,3 @@ describe('Stage Ranking - Returned data', () => {
     });
     
 });
-*/

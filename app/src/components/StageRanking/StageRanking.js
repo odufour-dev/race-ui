@@ -21,11 +21,6 @@ export default function StageRanking({ data = [], helper, onChange }) {
     const [ timeranking, setTimeRanking ]   = useState( computeTimeRanking(data) );
     const [ bibsstatus, setBibStatus ]      = useState( computeBibStatus(data) );
 
-    useEffect(() => {        
-        setBibStatus(computeBibStatus(data));
-        setTimeRanking(computeTimeRanking(data));
-    }, [ data ]);
-
     // Update the Grid status when TimeRanking is updated
     //  Bib set in TimeRanking shall be set as "done" in the Grid
     useEffect(() => {
@@ -48,7 +43,7 @@ export default function StageRanking({ data = [], helper, onChange }) {
 
     }, [ timeranking ]);
 
-    useEffect(() => {
+    const updateRanking = (timeranking,bibsstatus) => {
 
         const ranking = data.map((d) => {
             const tr = timeranking.find((t) => t.bib == d.bib);
@@ -58,28 +53,24 @@ export default function StageRanking({ data = [], helper, onChange }) {
             d.status   = bs ? bs.status : "unknown";
             return d;
         })
-        //onChange(ranking)
-        
-    }, [ timeranking, bibsstatus ]);
-
-    useEffect(() => {
-        return () => {
-            const ranking = data.map((d) => {
-            const tr = timeranking.find((t) => t.bib == d.bib);
-            const bs = bibsstatus.find((b) => b.bib == d.bib);
-            d.position = tr ? tr.position : null;
-            d.time     = tr ? tr.time : null;
-            d.status   = bs ? bs.status : "unknown";
-            return d;
-        })
         onChange(ranking)
-        };
-    }, []);
+        
+    };
+
+    const handleBibStatusChange = (newBibsStatus) => {
+        setBibStatus(newBibsStatus);
+        updateRanking(timeranking, newBibsStatus);
+    };
+
+    const handleTimeRankingChange = (newTimeRanking) => {
+        setTimeRanking(newTimeRanking);
+        updateRanking(newTimeRanking, bibsstatus);
+    };
 
     return (
         <div>
-            <Grid data={bibsstatus} onChange={setBibStatus} />
-            <TimeRankingTable data={timeranking} helper={helper} onChange={setTimeRanking}/>
+            <Grid data={bibsstatus} onChange={handleBibStatusChange} />
+            <TimeRankingTable data={timeranking} helper={helper} onChange={handleTimeRankingChange}/>
         </div>
     );
 }
