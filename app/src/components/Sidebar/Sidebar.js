@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import './Sidebar.css';
 
-function Sidebar({ nav, selectedId, onSelect, translator }) {
+function Sidebar({ nav, helper, selectedId, onSelect }) {
 
   const [query, setQuery] = useState('');
   const [openGroups, setOpenGroups] = useState(() => new Set(nav.groups.map(g => g.group)));
@@ -54,7 +54,7 @@ function Sidebar({ nav, selectedId, onSelect, translator }) {
       <div className="sidebar-search">
         <input
           type="search"
-          placeholder={translator('search.placeholder') + " ..."}
+          placeholder={helper.translator('search.placeholder') + " ..."}
           value={query}
           onChange={e => setQuery(e.target.value)}
           aria-label="Search navigation"

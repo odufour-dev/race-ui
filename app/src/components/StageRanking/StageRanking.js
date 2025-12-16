@@ -3,32 +3,27 @@ import TimeRankingTable from './TimeRankingTable/TimeRankingTable';
 import Grid from './Grid/Grid';
 
 import './StageRanking.css';
-import { use } from 'i18next';
 
-export default function StageRanking({ data = [], time, onChange }) {
+export default function StageRanking({ data = [], helper, onChange }) {
 
-    const helpers = {time: time, translator: (str) => {}}
-
-    const [ timeranking, setTimeRanking ]   = useState( [] );
-    const [ bibsstatus, setBibStatus ]      = useState( [] );
-
-    useEffect(() => {
-        
+    const computeBibStatus = (data) => {
         const bibs = data.map(item => ({bib: Number(item.bib), status: item.status}));
-        bibs.sort((a,b) => a - b);
-        setBibStatus(bibs);
+        bibs.sort((a,b) => a.bib - b.bib);
+        return bibs;
+    }
 
+    const computeTimeRanking = (data) => {
         const ranking = data.filter(item => item.status == "done");
         ranking.sort((a,b) => a.position - b.position);
-        setTimeRanking(ranking);
+        return ranking;
+    };
 
-    }, [ data ]);
+    const [ timeranking, setTimeRanking ]   = useState( computeTimeRanking(data) );
+    const [ bibsstatus, setBibStatus ]      = useState( computeBibStatus(data) );
 
-    // Update the Grid status when TimeRanking is updated
-    //  Bib set in TimeRanking shall be set as "done" in the Grid
-    useEffect(() => {
+    const updateBibStatus = (data) => {
 
-        const bibOcc = timeranking.reduce((acc, item) => {
+        const bibOcc = data.reduce((acc, item) => {
                 acc[item.bib] = (acc[item.bib] || 0) + 1;
             return acc;
         }, {});
@@ -40,21 +35,41 @@ export default function StageRanking({ data = [], time, onChange }) {
                 b.status = "done";
             } else if (b.status === "done") { // Reset status if the bib was removed from the timeranking
                 b.status = "unknown";
-            }console.log(b);
+            }
             return b;
         }));
 
-    }, [ timeranking ]);
+    }
 
-    useEffect(() => {
-        //console.log(timeranking,bibsstatus)
-        //onChange(timeranking.map((tr) => {return {bib: Number(tr.bib), position: tr.position, time: tr.time, status: "done"};}));
-    }, [ timeranking, bibsstatus ]);
+    const updateRanking = (timeranking,bibsstatus) => {
+
+        const ranking = data.map((d) => {
+            const tr = timeranking.find((t) => t.bib == d.bib);
+            const bs = bibsstatus.find((b) => b.bib == d.bib);
+            d.position = tr ? tr.position : null;
+            d.time     = tr ? tr.time : null;
+            d.status   = bs ? bs.status : "unknown";
+            return d;
+        })
+        onChange(ranking)
+        
+    };
+
+    const handleBibStatusChange = (newBibsStatus) => {
+        setBibStatus(newBibsStatus);
+        updateRanking(timeranking, newBibsStatus);
+    };
+
+    const handleTimeRankingChange = (newTimeRanking) => {        
+        setTimeRanking(newTimeRanking);
+        updateBibStatus(newTimeRanking);
+        updateRanking(newTimeRanking, bibsstatus);
+    };
 
     return (
         <div>
-            <Grid data={bibsstatus} onChange={setBibStatus} />
-            <TimeRankingTable data={timeranking} helpers={helpers} onChange={setTimeRanking}/>
+            <Grid data={bibsstatus} onChange={handleBibStatusChange} />
+            <TimeRankingTable data={timeranking} helper={helper} onChange={handleTimeRankingChange}/>
         </div>
     );
 }

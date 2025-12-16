@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./PointsItem.css"
 
-export function PointsItem( {translator, data, onApply, onRemove} ) {
+export function PointsItem( {helper, data, onApply, onRemove} ) {
 
     const [ item, setItem ] = useState( data );
 
@@ -14,24 +14,24 @@ export function PointsItem( {translator, data, onApply, onRemove} ) {
                 <div className="points-h-left">
                     <input
                         className="points-title"
-                        placeholder={translator('event.settings.points.title')}
+                        placeholder={helper.translator('event.settings.points.title')}
                         value={item.title ?? ''}
                         onChange={e => setItem( item.update({title: e.target.value }))}
                     />
-                    <span>{ translator( 'event.settings.points.priority' ) }</span>
+                    <span>{ helper.translator( 'event.settings.points.priority' ) }</span>
                     <input
                         className="points-priority"
                         type="number"
                         min="0"
                         value={item.priority ?? 0}
                         onChange={e => setItem( item.update({priority: e.target.value }))}
-                        title={translator('event.settings.points.priority')}
+                        title={helper.translator('event.settings.points.priority')}
                     />
                 </div>
 
                 <div className="points-h-right">
-                    <span>{ translator('event.settings.points.name') }</span>
-                    <button type="button" className="btn small danger" onClick={() => onRemove && onRemove(item.id)}>{translator('event.settings.points.remove')}</button>
+                    <span>{ helper.translator('event.settings.points.name') }</span>
+                    <button type="button" className="btn small danger" onClick={() => onRemove && onRemove(item.id)}>{helper.translator('event.settings.points.remove')}</button>
                 </div>
             </div>
 
