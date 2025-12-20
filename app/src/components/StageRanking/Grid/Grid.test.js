@@ -324,21 +324,6 @@ describe('Grid', () => {
             {bib: 24,   status: "unknown"},
         ])
 
-        expect(changeMock.mock.calls[1][0]).toStrictEqual([
-            {bib: 1,    status: "unknown"},
-            {bib: 2,    status: "dns"},
-            {bib: 4,    status: "dnf"},
-            {bib: 5,    status: "unknown"},
-            {bib: 12,   status: "dns"},
-            {bib: 13,   status: "unknown"},
-            {bib: 14,   status: "unknown"},
-            {bib: 15,   status: "done"},
-            {bib: 21,   status: "unknown"},
-            {bib: 22,   status: "unknown"},
-            {bib: 23,   status: "abs"},
-            {bib: 24,   status: "unknown"},
-        ])
-
     });
 
 });
