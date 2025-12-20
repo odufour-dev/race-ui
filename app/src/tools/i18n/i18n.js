@@ -20,9 +20,9 @@ i18n
     backend: backendOptions,
     lng: 'en',
     fallbackLng: 'en',
-    ns: ['RegistrationTable'],
-    defaultNS: 'RegistrationTable',
-    debug: true,
+    ns: ['translation'],
+    defaultNS: 'translation',
+    debug: false,
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
