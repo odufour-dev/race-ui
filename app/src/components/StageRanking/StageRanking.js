@@ -107,57 +107,20 @@ export default function StageRanking({ data = [], helper, onChange }) {
     const [timeRanking, setTimeRanking] = useState(() => computeTimeRanking(data));
     const [bibsStatus, setBibsStatus] = useState(() => computeBibStatus(data));
 
-    
-
-    //
-    // --- SYNC AVEC data ---
-    //
-    // Si data change réellement (par ex. retour serveur avec statuts mis à jour),
-    // on recalcule les états à partir de cette "source de vérité".
-    // Cependant, on préserve les statuts manuels (dns, dnf) qui ont été définis localement.
-    useEffect(() => {
-        const incomingBibs = computeBibStatus(data);
-        
-        setBibsStatus(prevBibs => {
-            // Merge incoming data with existing state, preserving manual statuses (dns, dnf)
-            return incomingBibs.map(inBib => {
-                const existingBib = prevBibs.find(b => b.bib === inBib.bib);
-                // If the bib had a manual status (dns or dnf), keep it
-                if (existingBib && (existingBib.status === 'dns' || existingBib.status === 'dnf')) {
-                    return existingBib;
-                }
-                // Otherwise use the incoming status
-                return inBib;
-            });
-        });
-
-        const tr = computeTimeRanking(data);
-        setTimeRanking(tr);
-    }, [data, computeBibStatus, computeTimeRanking]);
-
     //
     // --- HANDLERS ---
     //
 
     // Changement manuel des statuts (grid)
     const handleBibStatusChange = (newBibsStatus) => {
-        // On veille à normaliser les bibs au cas où
-        const normalized = newBibsStatus.map(b => ({
-            ...b,
-            bib: Number(b.bib),
-        }));
-
-        setBibsStatus(normalized);
-
-        const updated = computeRankingOutput(data, timeRanking, normalized);
+        setBibsStatus(newBibsStatus);
+        const updated = computeRankingOutput(data, timeRanking, newBibsStatus);
         onChange(updated);
     };
 
     // Changement du classement (table)
     const handleTimeRankingChange = (newTimeRanking) => {
-
         setTimeRanking(newTimeRanking);
-
         setBibsStatus(prev => {
             const updatedBibs = computeUpdatedBibStatus(prev, newTimeRanking);
             const updatedRanking = computeRankingOutput(data, newTimeRanking, updatedBibs);
