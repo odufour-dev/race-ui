@@ -22,6 +22,8 @@ start-dev:
 stop-dev:
 	docker stop ui-dev
 
+# To run a specific test file, use:
+# docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -e CI=true -w /app dufui-dev npm test -- <relative-path-to-test-file>
 test:
 	docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -e CI=true -w /app $(IMAGE)-dev npm test -- --watchAll=false
 
