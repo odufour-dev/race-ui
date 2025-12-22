@@ -14,7 +14,7 @@ describe('General Ranking - Unit tests', () => {
         const { container } = render(<GeneralRanking data={[]} helper={helper} />);
 
         expect(container.querySelectorAll('table.general-table').length).toBe(1);
-        expect(container.querySelectorAll('table.general-table thead tr th').length).toBe(11); // 1 position + 10 columns (bib, time, firstname, lastname, sex, club, category, age, ffcid, uciid)
+        expect(container.querySelectorAll('table.general-table thead tr th').length).toBe(15); // 1 position + 14 columns (bib, time, delay, firstname, lastname, sex, club, category, age, ffcid, uciid, millisecs, cumposition, lastposition)
         expect(container.querySelectorAll('table.general-table tbody tr').length).toBe(0); // no data
 
     });
@@ -34,7 +34,7 @@ describe('General Ranking - Unit tests', () => {
         const { container } = render(<GeneralRanking data={data} helper={helper} />);
 
         expect(container.querySelectorAll('table.general-table').length).toBe(1);
-        expect(container.querySelectorAll('table.general-table thead tr th').length).toBe(11); // 1 position + 10 columns (bib, time, firstname, lastname, sex, club, category, age, ffcid, uciid)
+        expect(container.querySelectorAll('table.general-table thead tr th').length).toBe(15); // 1 position + 14 columns (bib, time, delay, firstname, lastname, sex, club, category, age, ffcid, uciid, millisecs, cumposition, lastposition)
         
         const rankrows = container.querySelectorAll('table.general-table tbody tr');
         expect(rankrows.length).toBe(3); // 3 ranked racers
@@ -75,10 +75,10 @@ describe('General Ranking - Unit tests', () => {
         expect(rankrows[2].querySelectorAll('td.ffcid'      )[0].textContent).toBe("L3"         );
         expect(rankrows[2].querySelectorAll('td.uciid'      )[0].textContent).toBe("U3"         ); 
         
-        expect(container.querySelectorAll('table.unranked-table').length).toBe(1);
-        expect(container.querySelectorAll('table.unranked-table thead tr th').length).toBe(11); // 11 columns (bib, status, stage, firstname, lastname, sex, club, category, age, ffcid, uciid)
+        expect(container.querySelectorAll('table.withdrawal-table').length).toBe(1);
+        expect(container.querySelectorAll('table.withdrawal-table thead tr th').length).toBe(11); // 11 columns (bib, status, stage, firstname, lastname, sex, club, category, age, ffcid, uciid)
         
-        const unrankrows = container.querySelectorAll('table.unranked-table tbody tr');
+        const unrankrows = container.querySelectorAll('table.withdrawal-table tbody tr');
         expect(unrankrows.length).toBe(2); // 2 ranked racers
 
         expect(unrankrows[0].querySelectorAll('td.bib'        )[0].textContent).toBe("5"          );
