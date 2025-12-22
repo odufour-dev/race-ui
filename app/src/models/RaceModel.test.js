@@ -199,11 +199,11 @@ describe('RaceModel', () => {
 
     // General ranking after 2nd stage
     expect(sut.getGeneralRanking(2)).toMatchObject([
-      {bib: 1, stage: 2, position: 5, time: 6244, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 3, stage: 2, position: 5, time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 2, stage: 2, position: 4, time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 4, stage: 2, position: 9, time: 6250, status: "done", firstname: "Jean",    lastname: "CROISSANT" },
-      {bib: 5, stage: 2, position: 7, time: 6510, status: "done", firstname: "René",    lastname: "TAUPE"     },
+      {bib: 1, stage: 2, position: 1, time: 6244, status: "done", firstname: "Paul",    lastname: "POULE"     },
+      {bib: 3, stage: 2, position: 2, time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
+      {bib: 2, stage: 2, position: 3, time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
+      {bib: 4, stage: 2, position: 4, time: 6250, status: "done", firstname: "Jean",    lastname: "CROISSANT" },
+      {bib: 5, stage: 2, position: 5, time: 6510, status: "done", firstname: "René",    lastname: "TAUPE"     },
     ]);
     
   });
@@ -243,10 +243,10 @@ describe('RaceModel', () => {
 
     // General ranking after 2nd stage
     expect(sut.getGeneralRanking(2)).toMatchObject([
-      {bib: 1, stage: 2, position: 5,   time: 6244, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 3, stage: 2, position: 5,   time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 2, stage: 2, position: 4,   time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 2, position: 2,   time: 5010, status: "dns",  firstname: "René",    lastname: "TAUPE"     },
+      {bib: 1, stage: 2, position: 1,   time: 6244, status: "done", firstname: "Paul",    lastname: "POULE"     },
+      {bib: 3, stage: 2, position: 2,   time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
+      {bib: 2, stage: 2, position: 3,   time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
+      {bib: 5, stage: 2, position: 0,   time: 5010, status: "dns",  firstname: "René",    lastname: "TAUPE"     },
       {bib: 4, stage: 1, position: 0,   time: null, status: "dnf",  firstname: "Jean",    lastname: "CROISSANT" },
     ]);
     
@@ -284,7 +284,7 @@ describe('RaceModel', () => {
 
     // General ranking after 2nd stage
     expect(sut.getGeneralRanking(2)).toMatchObject([
-      {bib: 3, stage: 2, position: 2,   time: 6249, status: "done",   firstname: "Jacques", lastname: "BEAUREGARD"},
+      {bib: 3, stage: 2, position: 1,   time: 6249, status: "done",   firstname: "Jacques", lastname: "BEAUREGARD"},
       {bib: 2, stage: 1, position: 0,   time: null, status: "abs",    firstname: "Pierre",  lastname: "PONCE"     },
       {bib: 5, stage: 1, position: 0,   time: null, status: "unknown",firstname: "René",    lastname: "TAUPE"     },
       {bib: 1, stage: 1, position: 0,   time: null, status: "dnf",    firstname: "Paul",    lastname: "POULE"     },
