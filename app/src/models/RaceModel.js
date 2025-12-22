@@ -87,8 +87,6 @@ export class RaceModel {
     let ranking = this.#ranking.General.map((g) => g.toObject());;
 
     // Append racers that are not in the ranking
-    //ranking = this.#fillMissingBibs(stage,ranking);
-
      if (stage > 1){
       this.#ranking.Stage = stage - 1;
       const previousGeneral = this.#ranking.General.map((r) => r.toObject());
