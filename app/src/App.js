@@ -37,6 +37,35 @@ function App() {
   [raceModel]
 );
 
+  const createStageComponent = useCallback(
+    (stage) => {
+      return (props) => (
+        <StageRanking
+          {...props}
+          stage={stage}
+          data={raceModel.getStageRanking(stage)}
+          helper={helper}
+          onChange={(data) => handleStageChange(stage, data)}
+        />
+      );
+    },
+    [raceModel, handleStageChange, helper]
+  );
+
+  const createGeneralComponent = useCallback(
+    (stage) => {
+      return (props) => (
+        <GeneralRanking
+          {...props}
+          stage={stage}
+          data={raceModel.getGeneralRanking(stage)}
+          helper={helper}
+        />
+      );
+    },
+    [raceModel, handleStageChange, helper]
+  );
+
   useEffect(() => {
     const metadata = new Metadata();
     metadata.initialize().then(() => {
@@ -81,14 +110,10 @@ function App() {
       const navConfigRanking = new NavigationItem({id: "config_" + stage, title: helper.translator('navigation.configuration'), order: 1} );
       navRaceGroup.add(navConfigRanking);
 
-      const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: helper.translator('navigation.ranking'), order: 2, component: 
-        (props) => (<StageRanking {...props} data={raceModel.getStageRanking(stage)} helper={helper} onChange={(data) => handleStageChange(stage, data)}/>)
-      } );
+      const navStageRanking = new NavigationItem({id: "ranking_" + stage, title: helper.translator('navigation.ranking'), order: 2, component: createStageComponent(stage)} );
       navRaceGroup.add(navStageRanking);
       
-      const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: helper.translator('navigation.general'), order: 3, component: 
-        (props) => (<GeneralRanking {...props} data={raceModel.getGeneralRanking(stage)} helper={helper} />)
-      } );
+      const navGeneralRanking = new NavigationItem({id: "general_" + stage, title: helper.translator('navigation.general'), order: 3, component: createGeneralComponent(stage)});
       navRaceGroup.add(navGeneralRanking);
 
       evtSettings.annexRankings.map((r,i) => {

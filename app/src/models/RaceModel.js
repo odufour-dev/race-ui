@@ -92,6 +92,14 @@ export class RaceModel {
      if (stage > 1){
       this.#ranking.Stage = stage - 1;
       const previousGeneral = this.#ranking.General.map((r) => r.toObject());
+      ranking = ranking.map((r) => {
+        const prev = previousGeneral.filter((pr) => pr.bib == r.bib);
+        if (prev.length == 1 && prev[0].status != "done"){
+          return prev[0];
+        } else {
+          return r;
+        }
+      });
      }
 
     // Assemble racers and ranking information
