@@ -27,7 +27,7 @@ log-dev:
 
 # To run a specific test file, use:
 # docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -e CI=true -w /app dufui-dev npm test -- <relative-path-to-test-file>
-test:
+test-front:
 	docker run --rm --name=ui-test -v "$(PWD)/frontend:/app/frontend" -v /app/frontend/node_modules -w /app/frontend -e CI=true $(IMAGE)-dev npm test -- --watchAll=false
 
 #
