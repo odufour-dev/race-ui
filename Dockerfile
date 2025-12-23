@@ -26,6 +26,7 @@ COPY --from=backend-builder /app/backend ./backend
 COPY --from=frontend-builder /app/frontend ./frontend
 RUN npm install -g concurrently
 EXPOSE 3000 5000
+ENV ESLINT_NO_DEV_ERRORS=true
 CMD ["concurrently", "npm --prefix backend run dev", "cd frontend && npm start"]
 
 # --- STAGE 4: PRODUCTION AVEC REVERSE PROXY ---

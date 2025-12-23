@@ -142,6 +142,57 @@ app.get('/api/v1/:competition/results', (req, res) => {
   }
 });
 
+// POST /api/v1/:competition/race-info/sync
+app.post('/api/v1/:competition/race-info/sync', (req, res) => {
+  const { competition } = req.params;
+  const { config } = req.body; // L'objet envoyé par raceManager.toObject()
+
+  if (!config) {
+    return res.status(400).json({ error: "Données de configuration manquantes." });
+  }
+
+  try {
+    const db = getDB(competition);
+    
+    // On met à jour l'unique ligne de configuration
+    const statement = db.prepare(`
+      INSERT OR REPLACE INTO race_info (id, config) 
+      VALUES (1, ?)
+    `);
+    
+    statement.run(JSON.stringify(config));
+
+    res.json({ message: "Configuration de la course mise à jour." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/v1/:competition/rankings/sync
+app.post('/api/v1/:competition/rankings/sync', (req, res) => {
+  const { competition } = req.params;
+  const { stage_id, type, data } = req.body;
+
+  if (stage_id === undefined || !type || !data) {
+    return res.status(400).json({ error: "Données de classement incomplètes." });
+  }
+
+  try {
+    const db = getDB(competition);
+    
+    const statement = db.prepare(`
+      INSERT OR REPLACE INTO rankings (stage_id, type, data) 
+      VALUES (?, ?, ?)
+    `);
+    
+    statement.run(stage_id, type, JSON.stringify(data));
+
+    res.json({ message: `Classement ${type} de l'étape ${stage_id} synchronisé.` });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // --- ACCÈS AU FRONT-END (Fichiers Statiques) ---
 
 // 1. On définit le chemin vers le dossier de build du frontend
