@@ -19,21 +19,116 @@ if (!fs.existsSync(DB_FOLDER)) {
 function getDB(competitionName) {
   const safeName = competitionName.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
   const dbPath = path.join(DB_FOLDER, `${safeName}.db`);
-  const db = new Database(dbPath);
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS results (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      player_name TEXT,
-      score INTEGER,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-  return db;
+  
+  if (!fs.existsSync(dbPath)) {
+    throw new Error("Compétition introuvable.");
+  }
+  
+  return new Database(dbPath);
 }
 
 // --- ROUTES API v1 ---
+app.post('/api/v1/competitions', (req, res) => {
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ error: "Le nom de la compétition est requis." });
+  }
+
+  const safeName = name.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
+  const dbPath = path.join(DB_FOLDER, `${safeName}.db`);
+
+  if (fs.existsSync(dbPath)) {
+    return res.status(409).json({ error: "Cette compétition existe déjà." });
+  }
+
+  try {
+    const db = new Database(dbPath);
+
+    // --- LECTURE ET EXÉCUTION DU FICHIER SQL ---
+    const schemaPath = path.join(__dirname, '..', 'schema.sql');
+    const schema = fs.readFileSync(schemaPath, 'utf8');
+    
+    // On exécute tout le contenu du fichier SQL
+    db.exec(schema);
+    
+    res.status(201).json({ 
+      message: "Compétition créée avec succès",
+      id: safeName 
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Erreur lors de l'initialisation : " + error.message });
+  }
+});
+
 app.get('/api/v1/version', (req, res) => {
   res.json({ version: '1.0.0', status: 'ok' });
+});
+
+app.get('/api/v1/competitions', (req, res) => {
+  try {
+    const files = fs.readdirSync(DB_FOLDER);
+    const competitions = files
+      .filter(file => file.endsWith('.db'))
+      .map(file => ({
+        id: file.replace('.db', ''),
+        name: file.replace('.db', '') // Nom brut
+      }));
+    res.json(competitions);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET /api/v1/:competition/all
+app.get('/api/v1/:competition/all', (req, res) => {
+  try {
+    const { competition } = req.params;
+    const db = getDB(competition);
+
+    // On récupère tout en 3 requêtes simples
+    const racers = db.prepare('SELECT data FROM racers').all().map(r => JSON.parse(r.data));
+    const info = db.prepare('SELECT config FROM race_info WHERE id = 1').get();
+    const rankings = db.prepare('SELECT * FROM rankings').all().map(r => ({
+      ...r,
+      data: JSON.parse(r.data)
+    }));
+
+    res.json({
+      racers,
+      race: info ? JSON.parse(info.config) : {},
+      rankings
+    });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+});
+
+// Exemple pour synchroniser les coureurs (RacerManager)
+app.post('/api/v1/:competition/racers/sync', (req, res) => {
+  const { competition } = req.params;
+  const { racers } = req.body; // Array d'objets [{id: 1, name: '...'}, ...]
+  const db = getDB(competition);
+
+  try {
+    const syncTransaction = db.transaction((data) => {
+      // 1. On vide la table existante
+      db.prepare('DELETE FROM racers').run();
+      
+      // 2. On prépare l'insertion
+      const insert = db.prepare('INSERT INTO racers (id, data) VALUES (?, ?)');
+      
+      // 3. On remplit avec les nouvelles données
+      for (const racer of data) {
+        insert.run(racer.id, JSON.stringify(racer));
+      }
+    });
+
+    syncTransaction(racers);
+    res.json({ message: "Racers synchronized successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get('/api/v1/:competition/results', (req, res) => {
