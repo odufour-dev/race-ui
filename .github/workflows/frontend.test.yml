@@ -1,0 +1,51 @@
+name: CI Pipeline (Lint & Tests)
+
+on:
+  push:
+    branches: [ "main", "devel", "feature/*", "bugfix/*" ]
+  pull_request:
+    branches: [ "main", "devel" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    strategy:
+      matrix:
+        node-version: [20.x] # Généralement, on ne lante le Lint que sur une version pour éviter les doublons
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: ./frontend/package-lock.json
+        
+    - name: Install dependencies
+      run: npm install
+
+    # --- ÉTAPE LINT ---
+    - name: Run ESLint
+      # On utilise --max-warnings 0 pour que la CI échoue en cas d'erreur de style
+      run: npm run lint -- --max-warnings 0
+
+    # --- ÉTAPE TESTS ---
+    - name: Run the tests
+      # Ajout de --watchAll=false pour s'assurer que Jest ne reste pas en attente
+      # On génère un rapport de couverture LCOW et JSON
+      run: npm test -- --ci --coverage --watchAll=false --coverageReporters=text --coverageReporters=lcov --coverageDirectory=./coverage
+
+    # --- ÉTAPE GÉNÉRATION DE RAPPORTS ---
+    - name: Upload Test Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always() # On envoie le rapport même si les tests échouent
+      with:
+        name: test-coverage-report-${{ matrix.node-version }}
+        path: ./frontend/coverage/lcov-report/
+        retention-days: 7
