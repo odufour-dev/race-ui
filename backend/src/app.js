@@ -1,22 +1,60 @@
-const express = require('express');
-const cors = require('cors');
-const { FRONTEND_BUILD_PATH } = require('./config/paths');
-const competitionRoutes = require('./routes/routes');
-const fs = require('fs');
-const path = require('path');
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+import Paths from './config/paths.js';
+import DatabaseService from './database/services.js';
+import Router from './routes/routes.js';
 
-// Routes API
-app.use('/api/v1', competitionRoutes);
+export class App {
 
-// Statique & Catch-all React
-app.use(express.static(FRONTEND_BUILD_PATH));
-app.get('*', (req, res) => {
-  const indexPath = path.join(FRONTEND_BUILD_PATH, 'index.html');
-  fs.existsSync(indexPath) ? res.sendFile(indexPath) : res.status(404).send("Build missing");
-});
+    #app
+    #cors
+    #express
+    #fs
+    #path
+    #port
 
-module.exports = app;
+    #dbservice
+    #paths
+    #router
+
+    constructor(express, cors, fs, path, dirname, port = 5000, paths = null, router = null, dbservice = null) {
+        
+        this.#app           = express.instance;
+        this.#cors          = cors;      
+        this.#express       = express;
+        this.#fs            = fs;
+        this.#path          = path;
+        this.#port          = port;
+
+        this.#paths     = paths ? paths : new Paths(path, fs, dirname);
+        this.#dbservice = dbservice ? dbservice : new DatabaseService(fs, this.#paths);
+        this.#router    = router ? router : new Router(this.#express.router, this.#dbservice, this.#paths, fs);
+
+    }
+
+    initialize(){
+
+        this.#app.use(this.#cors);
+        this.#app.use(this.#express.json);
+        
+        this.#paths.initialize();
+        this.#router.initialize();
+
+        // Routes API
+        const routes = this.#router.routes;
+        this.#app.use('/api/v1', routes);
+
+        // Statique & Catch-all React
+        this.#app.use(this.#express.static(this.#paths.frontendBuildPath));
+        this.#app.get('*', (req, res) => {
+            const indexPath = this.#path.join(this.#paths.frontendBuildPath, 'index.html');
+            this.#fs.existsSync(indexPath) ? res.sendFile(indexPath) : res.status(404).send("Build missing");
+        });
+    }
+
+    listen(){
+        this.#app.listen(this.#port, () => {
+            console.log(`🚀 Serveur démarré sur le port ${this.#port}`);
+        });
+    }
+
+}
