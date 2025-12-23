@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./app
+        working-directory: ./frontend
 
     strategy:
       matrix:
@@ -30,7 +30,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: ./app/package-lock.json
+        cache-dependency-path: ./frontend/package-lock.json
         
     - name: Install dependencies
       run: npm install
