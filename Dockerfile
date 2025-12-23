@@ -28,24 +28,44 @@ RUN npm install -g concurrently
 EXPOSE 3000 5000
 CMD ["concurrently", "npm --prefix backend run dev", "cd frontend && npm start"]
 
-# --- STAGE 4: PRODUCTION (L'approche serveur classique) ---
-# On utilise une image Node pour faire tourner le backend
+# --- STAGE 4: PRODUCTION AVEC REVERSE PROXY ---
 FROM node:18-alpine AS production
 WORKDIR /app
 
-# 1. On récupère le backend et on installe uniquement les dépendances de prod
+# 1. Installation de Nginx et PM2
+RUN apk add --no-cache nginx && \
+    npm install -g pm2
+
+# 2. Récupération du Backend
 COPY --from=backend-builder /app/backend ./backend
 WORKDIR /app/backend
 RUN npm prune --production
 
-# 2. On récupère le build du frontend (pour qu'il soit accessible au besoin)
-COPY --from=frontend-builder /app/frontend/build /app/frontend/build
+# 3. Récupération du Frontend Build
+COPY --from=frontend-builder /app/frontend/build /usr/share/nginx/html
 
-# 3. Installation d'un gestionnaire de processus (PM2) pour la stabilité
-RUN npm install -g pm2
+# 4. Configuration de Nginx en Reverse Proxy
+# On crée un fichier de configuration pour rediriger /api vers Node
+RUN echo 'server { \
+    listen 80; \
+    location /api/ { \
+        proxy_pass http://localhost:5000; \
+        proxy_http_version 1.1; \
+        proxy_set_header Upgrade $http_upgrade; \
+        proxy_set_header Connection "upgrade"; \
+        proxy_set_header Host $host; \
+        proxy_cache_bypass $http_upgrade; \
+    } \
+    location / { \
+        root /usr/share/nginx/html; \
+        index index.html; \
+        try_files $uri $uri/ /index.html; \
+    } \
+}' > /etc/nginx/http.d/default.conf
 
-# Le backend tournera sur le port 5000
-EXPOSE 5000
+# 5. Exposition du port web standard
+EXPOSE 80
 
-# Lancement du backend
-CMD ["pm2-runtime", "src/index.js"]
+# 6. Lancement simultané de Node (via PM2) et Nginx
+# On utilise --no-daemon pour que le conteneur ne se coupe pas
+CMD ["sh", "-c", "pm2 start src/index.js --name backend && nginx -g 'daemon off;'"]

@@ -22,6 +22,9 @@ start-dev:
 stop-dev:
 	docker stop app-dev
 
+log-dev:
+	docker logs -f app-dev
+
 # To run a specific test file, use:
 # docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -e CI=true -w /app dufui-dev npm test -- <relative-path-to-test-file>
 test:
@@ -34,7 +37,10 @@ build-prod:
 	docker build -t $(IMAGE) --target production .
 
 start-prod: build-prod
-	docker run --rm --name=ui-prod -p 80:80 -d $(IMAGE)
+	docker run --rm --name=app-prod -p 80:80 -d $(IMAGE)
 
 stop-prod:
-	docker stop ui-prod
+	docker stop app-prod
+
+log-prod:
+	docker logs -f app-prod
