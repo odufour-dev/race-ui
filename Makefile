@@ -17,7 +17,7 @@ build-dev:
 	docker build -t $(IMAGE)-dev --target development .
 
 start-dev:
-	docker run --rm --name=ui-dev -d -p 3000:3000 -v $(PWD)/$(SOURCES):/app -w /app $(IMAGE)-dev
+	docker run --name ui-dev -d -p 3000:3000 -v "$(PWD)/frontend:/app/frontend" -v /app/frontend/node_modules --env CHOKIDAR_USEPOLLING=true $(IMAGE)-dev
 
 stop-dev:
 	docker stop ui-dev
