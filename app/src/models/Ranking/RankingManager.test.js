@@ -205,12 +205,12 @@ describe('RankingManager', () => {
 
     const sut = new RankingManager(ranking, stage);
     
-    const actual = sut.General.map((g) => g.toObject());
+    const actual = sut.General;
     expect(actual).toMatchObject([
-        {bib:3, position:2, stage:2,   time:253,    status:'done'},
-        {bib:1, position:5, stage:2,   time:257,    status:'done'},
-        {bib:5, position:7, stage:2,   time:258,    status:'done'},
-        {bib:2, position:6, stage:2,   time:259,    status:'done'},
+        {bib:3, position:1, stage:2,   time:253,    status:'done', cumposition:2, lastposition:1},
+        {bib:1, position:2, stage:2,   time:257,    status:'done', cumposition:5, lastposition:3},
+        {bib:5, position:3, stage:2,   time:258,    status:'done', cumposition:7, lastposition:4},
+        {bib:2, position:4, stage:2,   time:259,    status:'done', cumposition:6, lastposition:2},
     ]);
     
   });
@@ -231,12 +231,12 @@ describe('RankingManager', () => {
 
     const sut = new RankingManager(ranking, stage);
     
-    const actual = sut.General.map((g) => g.toObject());
+    const actual = sut.General;
     expect(actual).toMatchObject([
-        {bib:3, position:1, stage:1,   time:120,    status:'done'},
-        {bib:1, position:2, stage:1,   time:122,    status:'done'},
-        {bib:5, position:3, stage:1,   time:122,    status:'done'},
-        {bib:2, position:4, stage:1,   time:125,    status:'done'},
+        {bib:3, position:1, stage:1,   time:120,    status:'done', cumposition:1, lastposition:1},
+        {bib:1, position:2, stage:1,   time:122,    status:'done', cumposition:2, lastposition:2},
+        {bib:5, position:3, stage:1,   time:122,    status:'done', cumposition:3, lastposition:3},
+        {bib:2, position:4, stage:1,   time:125,    status:'done', cumposition:4, lastposition:4},
     ]);
     
   });
@@ -256,12 +256,12 @@ describe('RankingManager', () => {
 
     const sut = new RankingManager(ranking, stage);
     
-    const actual = sut.General.map((g) => g.toObject());
+    const actual = sut.General;
     expect(actual).toMatchObject([
-        {bib:3, position:2,   stage:2,   time:253,   status:'done'},
-        {bib:1, position:5,   stage:2,   time:257,   status:'done'},
-        {bib:5, position:7,   stage:2,   time:122,   status:'dns'},
-        {bib:2, position:4,   stage:1,   time:null,  status:'dnf'},
+        {bib:3, position:1,   stage:2,   time:253,   status:'done',cumposition:2, lastposition:1},
+        {bib:1, position:2,   stage:2,   time:257,   status:'done',cumposition:5, lastposition:3},
+        {bib:5, position:0,   stage:2,   time:122,   status:'dns'},
+        {bib:2, position:0,   stage:1,   time:null,  status:'dnf'},
     ]);
     
   });

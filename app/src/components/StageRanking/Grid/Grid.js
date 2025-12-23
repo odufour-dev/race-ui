@@ -37,9 +37,9 @@ function Cell({ value, status, onChange }) {
 // Composant Grille
 export default function Grid({data = [], onChange}) {
 
-  const [ bibs, setBibs ] = useState( () => data );
-
-  useEffect(() => {setBibs(data)}, [ data ]);
+  // Use the `data` prop as the single source of truth for bib statuses.
+  // This avoids synchronization issues between local state and parent state.
+  const bibs = data || [];
 
   const computeGrid = (bibs) => {
 
@@ -67,9 +67,15 @@ export default function Grid({data = [], onChange}) {
   };
   const grid = useMemo(() => computeGrid(bibs), [bibs]);
 
-  const handleChange = (value,status) => {
-    const b = bibs.map((b) => b.bib === value ? {bib: value, status: status} : b);
-    setBibs(b);
+  const handleChange = (value, status) => {
+    // Build a new array reflecting the updated status for the given bib
+    const b = (data || []).map(item => {
+      if (item.bib == value) {
+        return { ...item, status: status };
+      } else {
+        return item;
+      }
+    });
     onChange(b);
   };
 

@@ -55,7 +55,20 @@ export class RaceModel {
 
     // Append racers that are not in the ranking
     ranking = this.#fillMissingBibs(stage,ranking);
-
+    // For stages after the 1st one, use the previous general ranking to mark missing racers (dnf,dns,abs,unknown) as abs
+    if (stage > 1){
+      this.#ranking.Stage = stage - 1;
+      const previousGeneral = this.#ranking.General;
+      ranking = ranking.map((r) => {
+        const prev = previousGeneral.filter((pr) => pr.bib == r.bib);
+        if (prev.length != 1 || prev[0].status != "done"){
+          return {...r, status: "abs"};
+        } else {
+          return r;
+        }
+      });
+    }
+    // Assemble racers and ranking information
     return ranking.map((rank) => {
       const current = this.#racers.getAll().filter((racer) => racer.id == rank.bib);
       if (current.length == 1){
@@ -71,10 +84,21 @@ export class RaceModel {
 
     // Configure the ranking manager to get stage ranking
     this.#ranking.Stage = stage > 0 ? stage : this.#race.nStages;
-    let ranking = this.#ranking.General.map((g) => g.toObject());;
+    let ranking = this.#ranking.General;
 
     // Append racers that are not in the ranking
-    ranking = this.#fillMissingBibs(stage,ranking);
+     if (stage > 1){
+      this.#ranking.Stage = stage - 1;
+      const previousGeneral = this.#ranking.General;
+      ranking = ranking.map((r) => {
+        const prev = previousGeneral.filter((pr) => pr.bib == r.bib);
+        if (prev.length == 1 && prev[0].status != "done"){
+          return {...prev[0], position: 0};
+        } else {
+          return r;
+        }
+      });
+     }
 
     // Assemble racers and ranking information
     return ranking.map((rank) => {

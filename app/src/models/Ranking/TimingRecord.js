@@ -6,36 +6,40 @@ export class TimingRecord {
   #position
   #time
   #status
+  #millisecs
 
-  constructor(bib = 0, stage = 1, position = null, time = null, status = "unknown") {
+  constructor(bib = 0, stage = 1, position = null, time = null, status = "unknown", millisecs = null){
     this.bib       = bib;
     this.stage     = stage;
     this.position  = position;
     this.time      = time;
     this.status    = status;
+    this.millisecs = millisecs;
   }
 
-  get bib()     {return this.#bib;      }
-  get position(){return this.#position; }
-  get stage()   {return this.#stage;    }
-  get status()  {return this.#status;   }
-  get time()    {return this.#time;     }
+  get bib()             {return this.#bib;        }
+  get position()        {return this.#position;   }
+  get stage()           {return this.#stage;      }
+  get status()          {return this.#status;     }
+  get time()            {return this.#time;       }
+  get millisecs()       {return this.#millisecs;  }
 
-  set bib(value)      {this.#bib      = Number(value);}
-  set position(value) {this.#position = Number(value);}
-  set stage(value)    {this.#stage    = Number(value);}
-  set status(value)   {this.#status   = value;}
-  set time(value)     {this.#time     = typeof value == "string" ? this.#parseHMS(value) : value;}
+  set bib(value)        {this.#bib        = Number(value);}
+  set position(value)   {this.#position   = Number(value);}
+  set stage(value)      {this.#stage      = Number(value);}
+  set status(value)     {this.#status     = value;}
+  set time(value)       {this.#time       = typeof value == "string" ? this.#parseHMS(value) : value;}
+  set millisecs(value)  {this.#millisecs  = Number(value);}
 
-  toObject(){return {bib: this.#bib, position:this.#position,stage:this.#stage,status:this.#status,time:this.#time};}
+  toObject(){return {bib: this.#bib, position:this.#position,stage:this.#stage,status:this.#status,time:this.#time,millisecs:this.#millisecs};}
 
   update(data){
-    if ("bib"       in data){this.bib      = data.bib;      }
-    if ("position"  in data){this.position = data.position; }
-    if ("stage"     in data){this.stage    = data.stage;    }
-    if ("status"    in data){this.status   = data.status;   }
-    if ("time"      in data){this.time     = data.time;     }
-    //this.#updateStatus();
+    if ("bib"       in data){this.bib        = data.bib;       }
+    if ("position"  in data){this.position   = data.position;  }
+    if ("stage"     in data){this.stage      = data.stage;     }
+    if ("status"    in data){this.status     = data.status;    }
+    if ("time"      in data){this.time       = data.time;      }
+    if ("millisecs" in data){this.millisecs  = data.millisecs; }
   }
 
    #parseHMS(input) {
@@ -62,12 +66,6 @@ export class TimingRecord {
           return Math.floor(h * 3600 + m * 60 + sec);
       }
       return null;
-  }
-
-  #updateStatus(){
-    if (!this.#time || !this.#position){
-      this.#status = this.#status == "done" ? "unknown" : this.#status;
-    }
   }
 
 }

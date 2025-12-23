@@ -28,14 +28,16 @@ export class RankingManager {
                   .filter((r) => r.stage <= this.#stage)
                   .reduce((gen,r) => {
                     const id = "x" + String(r.bib);
+                    const millisecs = r.millisecs != null ? r.millisecs : 0;
                     if (id in gen){
-                      gen[id].position     += r.position;
+                      gen[id].cumposition  += r.position;
                       gen[id].time         += r.time ?? 0;
                       gen[id].stage        = r.stage;
                       gen[id].status       = r.status;
                       gen[id].lastposition = r.position;
+                      gen[id].millisecs    += millisecs;                      
                     } else {
-                      gen[id] = {bib: r.bib, position: r.position, time: r.time, stage: r.stage, status: r.status, lastposition: r.position};
+                      gen[id] = {bib: r.bib, cumposition: r.position, time: r.time, stage: r.stage, status: r.status, lastposition: r.position, millisecs: millisecs};
                     }                    
                     return gen;
                   },initval);
@@ -43,14 +45,20 @@ export class RankingManager {
         return {
           bib:          ranking[k].bib, 
           stage:        ranking[k].stage, 
-          position:     ranking[k].position,
+          cumposition:  ranking[k].cumposition,
           lastposition: ranking[k].lastposition, 
           time:         ranking[k].time, 
           status:       ranking[k].status
         }
       });
       ranking.sort((a,b) => this.#sort(a,b));
-      ranking = ranking.map((r) => new TimingRecord(r.bib,r.stage,r.position,r.time,r.status));
+      ranking = ranking.map((r,idx) => {
+        if (r.status === 'done'){
+          return {...r, position: idx + 1};
+        } else {
+          return {...r, position: 0};
+        }
+      });
 
     }
     return ranking;
@@ -93,10 +101,12 @@ export class RankingManager {
     else if (a.stage != b.stage){return b.stage - a.stage;}
     // Finishers (status == done)
     //  1. Compare the time (if different)
-    //  2. Compare the cumulated positions
-    //  3. Compare the last position
+    //  2. Compare the milliseconds (if different)
+    //  3. Compare the cumulated positions
+    //  4. Compare the last position
     else if (a.time != b.time){return a.time - b.time;}
-    else if (a.position != b.position){return a.position - b.position;}
+    else if (a.millisecs != b.millisecs){return a.millisecs - b.millisecs;}
+    else if (a.cumposition != b.cumposition){return a.cumposition - b.cumposition;}
     else {return a.lastposition - b.lastposition;}
   }
 
