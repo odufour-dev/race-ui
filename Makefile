@@ -17,10 +17,10 @@ build-dev:
 	docker build -t $(IMAGE)-dev --target development .
 
 start-dev:
-	docker run --name ui-dev -d -p 3000:3000 -v "$(PWD)/frontend:/app/frontend" -v /app/frontend/node_modules --env CHOKIDAR_USEPOLLING=true $(IMAGE)-dev
+	docker run --name app-dev --rm -d -p 3000:3000 -p 5000:5000 -v "$(PWD)/frontend:/app/frontend" -v "$(PWD)/backend:/app/backend" -v "$(PWD)/data/db:/app/backend/db" -v /app/frontend/node_modules -v /app/backend/node_modules --env CHOKIDAR_USEPOLLING=true $(IMAGE)-dev
 
 stop-dev:
-	docker stop ui-dev
+	docker stop app-dev
 
 # To run a specific test file, use:
 # docker run --rm --name=ui-test -v $(PWD)/$(SOURCES):/app -e CI=true -w /app dufui-dev npm test -- <relative-path-to-test-file>
