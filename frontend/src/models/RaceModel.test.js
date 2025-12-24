@@ -4,7 +4,6 @@ import { RaceModel } from "./RaceModel"
 import { Classification } from './References/Classification';
 import { RaceManager }    from './Race/RaceManager';
 import { RacerManager }   from './Racers/RacerManager'; 
-import { TimingRecord }   from './Ranking/TimingRecord'; 
 
 describe('RaceModel', () => {
 
@@ -19,8 +18,6 @@ describe('RaceModel', () => {
   });
 
   it('updateRacerManager', () => {
-
-    const racers = new RacerManager();
 
     const sut = new RaceModel();
 

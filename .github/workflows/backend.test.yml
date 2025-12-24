@@ -1,0 +1,48 @@
+name: Backend CI (Lint & Tests)
+
+on:
+  push:
+    branches: [ "main", "devel", "feature/*", "bugfix/*" ]
+  pull_request:
+    branches: [ "main", "devel" ]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+        cache-dependency-path: ./backend/package-lock.json
+
+    - name: Install dependencies
+      # On installe les outils de build car better-sqlite3 est un module natif
+      run: |
+        sudo apt-get install -y build-essential python3
+        npm install
+
+    - name: Run ESLint
+      # Vérifie la qualité du code et les erreurs potentielles
+      run: npm run lint
+
+    - name: Run Backend Tests
+      # On génère la couverture de tests
+      # Note: Assurez-vous d'utiliser un flag --ci pour vos outils de test (Jest/Mocha)
+      run: npm test -- --coverage
+
+    - name: Upload Backend Coverage
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: backend-coverage-report
+        path: ./backend/coverage/
+        retention-days: 7

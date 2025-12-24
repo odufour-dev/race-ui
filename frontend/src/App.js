@@ -22,13 +22,32 @@ function App() {
   const { t: translator } = useTranslation('translation');
   const helper = new Helper(translator);
 
-  const [ raceModel, setRaceModel ]     = useState( () => new RaceModel() );
   const [ nav, setNav ]                 = useState( () => new NavigationRegistry() );
   const [selectedItem, setSelectedItem] = useState(nav.find('event.configuration'));
   const [sidebarOpen, setSidebarOpen]   = useState(false);
   const [isDesktop, setIsDesktop]       = useState(typeof window !== 'undefined' ? window.innerWidth >= 769 : true);
 
   const [appName, setAppName] = useState("");
+
+  const [ raceModel, setRaceModel ]     = useState( () => new RaceModel() );
+
+  /* TODO : Enable loading from backend
+  const [ raceModel, setRaceModel ]     = useState( (null );
+  const connector = useMemo(() => new RaceConnector(competitionId), [competitionId]);
+
+  // Chargement initial
+  useEffect(() => {
+    connector.fetchFullModel().then(setModel);
+  }, [connector]);
+
+  const debouncedSync = useMemo(
+    () => debounce((manager) => {
+      console.log("Sauvegarde automatique vers le backend...");
+      connector.syncRacers(manager).catch(console.error);
+    }, 1000),
+    [connector]
+  );
+  */
 
   const handleStageChange = useCallback(
   (stage, data) => {
