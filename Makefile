@@ -30,6 +30,15 @@ log-dev:
 test-front:
 	docker run --rm --name=ui-test -v "$(PWD)/frontend:/app/frontend" -v /app/frontend/node_modules -w /app/frontend -e CI=true $(IMAGE)-dev npm test -- --watchAll=false
 
+lint-front:
+	docker run --rm --name=ui-test -v "$(PWD)/frontend:/app/frontend" -v /app/frontend/node_modules -w /app/frontend -e CI=true $(IMAGE)-dev npm run lint
+
+test-back:
+	docker run --rm --name=ui-test -v "$(PWD)/backend:/app/backend" -v /app/backend/node_modules -w /app/backend -e CI=true $(IMAGE)-dev npm test -- --watchAll=false
+
+lint-back:
+	docker run --rm --name=ui-test -v "$(PWD)/backend:/app/backend" -v /app/backend/node_modules -w /app/backend -e CI=true $(IMAGE)-dev npm run lint
+
 #
 # Production environment
 #

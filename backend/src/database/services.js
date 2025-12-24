@@ -42,7 +42,7 @@ export default class DatabaseService {
     const db = this.#connector.getDatabase(name);
     const schema = this.#fs.readFileSync(this.#paths.schemaPath, 'utf8');
     db.exec(schema);
-    return safeName;
+    return this.#paths.getSafeDatabaseName(name);
 
   }
 
@@ -50,7 +50,7 @@ export default class DatabaseService {
 
     if (!this.#connector.isDatabaseExists(competition)) throw new Error("NOT_EXIST_ERROR");
 
-    const db = this.#connector.getDatabase(name);
+    const db = this.#connector.getDatabase(competition);
     const syncTransaction = db.transaction((data) => {
       db.prepare('DELETE FROM racers').run();
       const insert = db.prepare('INSERT INTO racers (id, data) VALUES (?, ?)');
@@ -59,4 +59,4 @@ export default class DatabaseService {
     syncTransaction(racers);
   }
 
-};
+}
