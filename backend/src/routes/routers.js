@@ -29,7 +29,7 @@ export class APIRouter {
     }
 
     getCompetitions(req, res){
-        try {console.log("GET /competitions");
+        try {
             const competitions = this.#database.listCompetitions();
             res.json(competitions);
         } catch (error) {
@@ -69,10 +69,12 @@ export class StaticRouter {
     }
 
     register(){
-        this.#tools.express.registerStatic(this.#filepaths,(req, res) => {
-            const indexPath = this.#tools.files.joinAbsolutePath(this.#filepaths, 'index.html');
-            this.#tools.files.exists(indexPath) ? res.sendFile(indexPath) : res.status(404).send("Build missing");
-        });
+        this.#tools.express.registerStatic(this.#filepaths,(req,res) => this.sendFile(req,res));
+    }
+
+    sendFile(req,res){
+        const indexPath = this.#tools.files.joinAbsolutePath(this.#filepaths, 'index.html');
+        this.#tools.files.exists(indexPath) ? res.sendFile(indexPath) : res.status(404).send("Build missing");
     }
     
 }
