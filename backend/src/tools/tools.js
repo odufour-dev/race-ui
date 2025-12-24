@@ -1,7 +1,7 @@
 
 import {createConnector}    from "./connector.js";
 import {createExpress}      from "./express.js";
-import {createFilesFromURL} from "./files.js";
+import {createFilesFromFolder} from "./files.js";
 
 export default class Tools {
 
@@ -9,8 +9,8 @@ export default class Tools {
     #express
     #files
 
-    constructor(url) {
-        this.#files         = createFilesFromURL(url);
+    constructor(rootfolder) {
+        this.#files         = createFilesFromFolder(rootfolder);
         this.#express       = createExpress();
         this.#connector     = createConnector(this.#files);
     }

@@ -11,13 +11,13 @@ export class Express {
         this.#app.use(express.json());
     }
 
-    get router() {
-        return express.Router();
-    }
+    get instance(){return this.#app;}
+    get router() {return express.Router();}
 
     listen(port){
 
         // DEBUG : List the registered routes
+        /*
         this.#app._router.stack.forEach((middleware) => {
         if (middleware.route) { // Routes enregistrées directement sur l'app
             console.log(`${Object.keys(middleware.route.methods).join(', ').toUpperCase()} ${middleware.route.path}`);
@@ -31,6 +31,7 @@ export class Express {
             });
         }
         });
+        */
         // END DEBUG
         // Start the server
         this.#app.listen(port, () => {

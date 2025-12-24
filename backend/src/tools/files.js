@@ -1,9 +1,6 @@
 import fs                   from 'fs';
 import path                 from 'path';
 
-import { fileURLToPath }    from 'url';
-import { dirname }          from 'path';
-
 export class Files {
 
     #fs
@@ -48,11 +45,11 @@ export class Files {
     }
 
     readAbsoluteFile(filePath, encoding='utf8') {
+        filePath = this.#path.join(this.#rootfolder,filePath);
         return this.#fs.readFileSync(filePath, encoding);
     }
 
     readFile(filePath, encoding='utf8') {
-        filePath = this.#path.join(this.#rootfolder,filePath);
         return this.#fs.readFileSync(filePath, encoding);
     }
 
@@ -62,6 +59,6 @@ export class Files {
 
 }
 
-export function createFilesFromURL(url){
-    return new Files(path,fs,dirname(fileURLToPath(url)));
+export function createFilesFromFolder(rootfolder){
+    return new Files(path,fs,rootfolder);
 }
