@@ -18,6 +18,11 @@ export const createApp = (rootfolder,dbfolder,apiprefix,port,schemapath,frontend
     staticrouter.register();
 
     // Listen at port 
-    return tools.express.listen(port);
+    const server = tools.express.listen(port);
+
+    return {
+        httpServer: server,
+        dbConnector: tools.connector
+    }
 
 }

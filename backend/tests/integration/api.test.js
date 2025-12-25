@@ -12,10 +12,11 @@ import { create } from 'domain';
 describe('End-to-end tests', () => {   
   
   let httpServer;
+  let dbConnector;
+  let masterdb;
   let __dirname;
   let TEST_DB_DIR;
   
-  // Create temporary folder for tests
   beforeAll(() => {
 
     const mockLogger = {
@@ -27,8 +28,16 @@ describe('End-to-end tests', () => {
     TEST_DB_DIR = path.join(__dirname, 'test_db');
     if (!fs.existsSync(TEST_DB_DIR)) fs.mkdirSync(TEST_DB_DIR, {recursive: true});
 
-    httpServer = createApp(__dirname,"test_db","/api/v1",5000,"../src/schema.sql","../../frontend/build",mockLogger);
+    // Start the server
+    const app = createApp(__dirname,"test_db","/api/v1",5000,"../src/schema.sql","../../frontend/build",mockLogger);
+    httpServer = app.httpServer;
+    dbConnector = app.dbConnector;
 
+  });
+
+  beforeEach(() => {
+    masterdb = dbConnector.getDatabase("master"); 
+    masterdb.prepare('DELETE FROM competitions').run();
   });
 
   // Delete files and folder after tests
@@ -46,10 +55,6 @@ describe('End-to-end tests', () => {
 
   test('List competitions - EMPTY', async () => {
 
-    // [ SETUP ]
-    const compId = 'tour_de_france_2026';
-    const masterDbPath = path.join(TEST_DB_DIR, `master.db`);
-
     // [ EXERCISE ]
     const response = await request(httpServer)
       .get('/api/v1/competitions');
@@ -58,9 +63,34 @@ describe('End-to-end tests', () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual([]);
 
-    const masterdb = new Database(masterDbPath);
     const competitions = masterdb.prepare('SELECT * FROM competitions').all();
     expect(competitions).toEqual([]);
+
+  });
+
+  test('List competitions', async () => {
+
+    // [ SETUP ]
+    const competitions = [{id:"paris_nice_2026", name:"Paris-Nice 2026"},{id:"tour_auvergne_rhone_alpes_2026",name:"Tour Auvergne-Rhone-Alpes 2026"},{id:"tour_de_france_2026",name:"Tour de France 2026"}];
+    const masterTransaction = masterdb.transaction((data) => {
+      const insert = masterdb.prepare('INSERT INTO competitions (id, name) VALUES (?, ?)');
+      data.map((d) => insert.run(d.id, d.name));
+    });
+    masterTransaction(competitions);
+
+    // [ EXERCISE ]
+    const response = await request(httpServer)
+      .get('/api/v1/competitions');
+
+    // [ VERIFY ]
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining(competitions[0]),
+      expect.objectContaining(competitions[1]),
+      expect.objectContaining(competitions[2])
+    ])
+  );   
 
   });
 
@@ -68,7 +98,6 @@ describe('End-to-end tests', () => {
 
     // [ SETUP ]
     const compId = 'tour_de_france_2026';
-    const masterDbPath = path.join(TEST_DB_DIR, `master.db`);
     const dbPath = path.join(TEST_DB_DIR, `${compId}.db`);
 
     // [ EXERCISE ]
@@ -80,7 +109,6 @@ describe('End-to-end tests', () => {
     expect(response.status).toBe(201);
     expect(response.body.id).toBe(compId);
 
-    const masterdb = new Database(masterDbPath);
     const competitions = masterdb.prepare('SELECT * FROM competitions').all();
     const createdComp = competitions.find(c => c.id === compId);
     expect(createdComp).toBeDefined();
@@ -88,12 +116,13 @@ describe('End-to-end tests', () => {
 
     const exists = fs.existsSync(dbPath);
     expect(exists).toBe(true);
-
+    
     const compdb = new Database(dbPath);
     const metadata = compdb.prepare('SELECT * FROM metadata').all();
     const metadataVal = metadata.find(c => c.id === compId);
     expect(metadataVal).toBeDefined();
     expect(metadataVal.name).toBe('Tour de France 2026');
+    compdb.close();
 
   });
 
