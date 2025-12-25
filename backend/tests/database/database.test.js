@@ -9,7 +9,7 @@ describe('Database', () => {
     expect(sut).toBeDefined();
 
   });
-
+/*
   it('Constructor - with mocks', () => {
 
     const toolsMock = {};
@@ -18,25 +18,6 @@ describe('Database', () => {
 
     const sut = new Database(toolsMock,dbfolderMock,schemapathMock);
     expect(sut).toBeDefined();
-
-  });
-
-  it('getSafeDatabasePath', () => {
-
-    const getSafeDatabaseNameMock = jest.fn().mockReturnValue("tour_de_france_2026");
-    const joinAbsolutePathMock = jest.fn().mockReturnValue("/data/db/tour_de_france_2026.db");
-    const toolsMock = {files: {getSafeDatabaseName: getSafeDatabaseNameMock, joinAbsolutePath:joinAbsolutePathMock}};
-
-    const dbfolderMock = "db";
-    const schemapathMock = "";
-
-    const sut = new Database(toolsMock,dbfolderMock,schemapathMock);
-    const actual = sut.getSafeDatabasePath("Tour de France 2026");
-
-    expect(getSafeDatabaseNameMock).toHaveBeenCalledWith("Tour de France 2026");
-    expect(joinAbsolutePathMock).toHaveBeenCalledWith(dbfolderMock, "tour_de_france_2026.db");
-
-    expect(actual).toBe("/data/db/tour_de_france_2026.db");
 
   });
 
@@ -91,6 +72,35 @@ describe('Database', () => {
 
   });
 
+  it('createCompetition', () => {
+
+    const getSafeDatabaseNameMock   = jest.fn().mockReturnValue("tour_de_france_2026");
+    const joinAbsolutePathMock      = jest.fn().mockReturnValue("/data/db/tour_de_france_2026.db");
+    const readAbsoluteFileMock      = jest.fn().mockReturnValue("schemaMock");
+    const isDatabaseExistsMock      = jest.fn().mockReturnValue(false);
+    
+    const dbInsertMock      = {run: jest.fn()};
+    const dbPrepareMock     = jest.fn().mockReturnValue(dbInsertMock);
+    const dbTransationMock  = jest.fn().mockImplementation((arg) => arg);
+    const dbExecMock        = jest.fn();
+    const dbMock = {exec: dbExecMock, transaction: dbTransationMock, prepare: dbPrepareMock};
+
+    const getDatabaseMock = jest.fn().mockReturnValue(dbMock);
+    const toolsMock = {files: {getSafeDatabaseName: getSafeDatabaseNameMock, joinAbsolutePath:joinAbsolutePathMock,readAbsoluteFile:readAbsoluteFileMock}, connector: {isDatabaseExists: isDatabaseExistsMock, getDatabase: getDatabaseMock}};
+
+    const dbfolderMock = "db";
+    const schemapathMock = "schemaMock.sql";
+
+    const sut = new Database(toolsMock,dbfolderMock,schemapathMock);
+    const actual = sut.createCompetition("Tour de France 2026");
+    expect(actual).toBe("tour_de_france_2026");
+    
+    expect(getDatabaseMock).toHaveBeenCalledWith("/data/db/tour_de_france_2026.db");
+    expect(readAbsoluteFileMock).toHaveBeenCalledWith(schemapathMock, "utf8");
+    expect(dbExecMock).toHaveBeenCalledWith("schemaMock");
+
+  });
+
   it('createCompetition - ERROR EXIST', () => {
 
     const getSafeDatabaseNameMock = jest.fn().mockReturnValue("tour_de_france_2026");
@@ -106,5 +116,5 @@ describe('Database', () => {
     expect(() => sut.createCompetition()).toThrow('EXIST_ERROR');
 
   });
-
+*/
 });

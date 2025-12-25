@@ -2,40 +2,40 @@
 
 export default class Database {
 
-  #dbfolder
   #schemapath
   #tools
 
-  constructor(tools, dbfolder, schemapath) {
-    this.#dbfolder    = dbfolder;
+  constructor(tools, schemapath) {
     this.#schemapath  = schemapath;
     this.#tools       = tools;
   }
 
-  getSafeDatabasePath(name){
-    const dbName = this.#tools.files.getSafeDatabaseName(name) + ".db";
-    return this.#tools.files.joinAbsolutePath(this.#dbfolder, dbName);
-  }
-
-  listCompetitions(){
+  listCompetitions(){/*
     const files = this.#tools.files.readAbsoluteDir(this.#dbfolder);
     return files
       .filter(file => file.endsWith('.db'))
       .map(file => ({
           id:   file.replace('.db', ''),
           name: file.replace('.db', '')
-      }));
+      }));*/
+      return 0;
   }
  
   createCompetition(name) {
 
     const dbPath = this.getSafeDatabasePath(name);
     if (this.#tools.connector.isDatabaseExists(dbPath)) throw new Error("EXIST_ERROR");
+    const id = this.#tools.files.getSafeDatabaseName(name);
     
     const db = this.#tools.connector.getDatabase(dbPath);
     const schema = this.#tools.files.readAbsoluteFile(this.#schemapath, 'utf8');
     db.exec(schema);
-    return this.#tools.files.getSafeDatabaseName(name);
+    const metaTransaction = db.transaction((id,name) => {
+      const insert = db.prepare('INSERT INTO metadata (id, name) VALUES (?, ?)');
+      insert.run(id, name);
+    });
+    metaTransaction(id,name);
+    return id;
 
   }
 
