@@ -44,7 +44,11 @@ export class Files {
 
     readAbsoluteFile(filePath, encoding='utf8') {
         filePath = this.#path.join(this.#rootfolder,filePath);
-        return this.#fs.readFileSync(filePath, encoding);
+        try {
+            return this.#fs.readFileSync(filePath, encoding);
+        } catch (e) {
+            throw Error("FILE_NOT_FOUND : " + e.message);
+        }
     }
 
     readFile(filePath, encoding='utf8') {

@@ -26,8 +26,8 @@ describe('End-to-end tests', () => {
     __dirname = dirname(dirname(fileURLToPath(import.meta.url)));
     TEST_DB_DIR = path.join(__dirname, 'test_db');
     if (!fs.existsSync(TEST_DB_DIR)) fs.mkdirSync(TEST_DB_DIR, {recursive: true});
-    
-    httpServer = createApp(__dirname,"test_db","/api/v1",5000,"../../src/schema.sql","../../../../frontend/build",mockLogger);
+
+    httpServer = createApp(__dirname,"test_db","/api/v1",5000,"../src/schema.sql","../../frontend/build",mockLogger);
 
   });
 
@@ -45,7 +45,7 @@ describe('End-to-end tests', () => {
   });
 
   test('Create a dedicated database for a competition', async () => {
-return; // FIXME
+
     // [ SETUP ]
     const compId = 'tour_de_france_2026';
     const masterDbPath = path.join(TEST_DB_DIR, `master.db`);
@@ -59,7 +59,7 @@ return; // FIXME
     // [ VERIFY ]
     expect(response.status).toBe(201);
     expect(response.body.id).toBe(compId);
-console.log(fs.existsSync(masterDbPath) ? "OK" : "KO");
+
     const masterdb = new Database(masterDbPath);
     console.log(masterdb.prepare('SELECT * FROM competitions').all());
 /*

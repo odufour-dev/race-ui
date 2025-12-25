@@ -1,7 +1,7 @@
 -- Database initial structure
 CREATE TABLE IF NOT EXISTS metadata (
     id TEXT PRIMARY KEY,
-    name TEXT, 
+    name TEXT
 );
 
 CREATE TABLE IF NOT EXISTS racers (

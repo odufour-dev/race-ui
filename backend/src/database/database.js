@@ -41,12 +41,17 @@ export default class Database {
     if (this.#tools.connector.isDatabaseExists(dbPath)) throw new Error("EXIST_ERROR");
     
     const id = this.#tools.connector.getSafeDatabaseName(name);    
-    const db = this.#tools.connector.getDatabase(dbPath);
+    const db = this.#tools.connector.getDatabase(name);
 
     // Create the database from schema.sql
-    const schema = this.#tools.files.readAbsoluteFile(this.#schemapath, 'utf8');
-    db.exec(schema);
-
+    try {
+      const schema = this.#tools.files.readAbsoluteFile(this.#schemapath, 'utf8');
+      db.exec(schema);
+    } catch (e) {
+      this.#tools.logger.error("SQL EXEC ERROR:", e);
+      throw new Error("CANNOT_INITIALIZE_DB : " + e.message);
+    }
+    
     // Add meta-data into the base
     const metaTransaction = db.transaction((id,name) => {
       const insert = db.prepare('INSERT INTO metadata (id, name) VALUES (?, ?)');
@@ -70,7 +75,7 @@ export default class Database {
     const dbPath = this.#tools.connector.getSafeDatabasePath(competition);
     if (!this.#tools.connector.isDatabaseExists(dbPath)) throw new Error("NOT_EXIST_ERROR");
 
-    const db = this.#tools.connector.getDatabase(dbPath);
+    const db = this.#tools.connector.getDatabase(competition);
     const syncTransaction = db.transaction((data) => {
       db.prepare('DELETE FROM racers').run();
       const insert = db.prepare('INSERT INTO racers (id, data) VALUES (?, ?)');
