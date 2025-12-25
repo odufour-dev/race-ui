@@ -44,27 +44,45 @@ describe('End-to-end tests', () => {
   });
 
   test('Create a dedicated database for a competition', async () => {
-/*
+
     // [ SETUP ]
     const compId = 'tour_de_france_2026';
     const dbPath = path.join(TEST_DB_DIR, `${compId}.db`);
 
     // [ EXERCISE ]
-    const response = await request(app)
+    const response = await request(httpServer)
       .post('/api/v1/competitions')
       .send({ name: 'Tour de France 2026' });
 
-    expect(response.status).toBe(201);
-
     // [ VERIFY ]
-    expect(fs.existsSync(dbPath)).toBe(true);
+    expect(response.status).toBe(201);
+    expect(response.body.id).toBe(compId);
+/*
+    // Vérifier que la compétition existe dans la base Master
+    const competitions = tools.database.listCompetitions();
+    const createdComp = competitions.find(c => c.id === compId);
 
-    const db = new Database(dbPath);
-    const config = db.prepare('SELECT * FROM settings WHERE key = ?').get('name');
-    
-    expect(config.value).toBe('Tour de France 2026');
-    db.close();
+    expect(createdComp).toBeDefined();
+    expect(createdComp.name).toBe('Tour de France 2026');
 */
   });
+/*
+  test('Should return 409 if competition already exists', async () => {
+      
+    // [ SETUP ]
+    const name = 'Tour de France 2026';
+      
+    // [ EXERCISE ]
+    // 1st call
+    await request(httpServer).post('/api/v1/competitions').send({ name });
+    
+    // 2nd call
+    const response = await request(httpServer).post('/api/v1/competitions').send({ name });
 
+    // [ VERIFY ]
+    expect(response.status).toBe(409);
+    expect(response.body.error).toBe('EXIST_ERROR');
+
+  });
+*/
 });

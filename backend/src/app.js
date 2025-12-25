@@ -11,6 +11,8 @@ export const createApp = (rootfolder,dbfolder,apiprefix,port,schemapath,frontend
     const apirouter     = new APIRouter(tools, database, apiprefix);
     const staticrouter  = new StaticRouter(tools, frontendbuildpath);
 
+    database.initialize();
+    
     // Register API routes
     apirouter.register();
     staticrouter.register();

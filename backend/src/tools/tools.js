@@ -8,23 +8,18 @@ export default class Tools {
     #connector
     #express
     #files
+    #logger
 
     constructor(rootfolder,dbfolder,logger) {
         this.#files         = createFilesFromFolder(rootfolder,logger);
         this.#connector     = createConnectorFromFolder(this.#files,dbfolder,logger);
         this.#express       = createExpressFromConnector(this.#connector,logger);
+        this.#logger        = logger;
     }
 
-    get connector() {
-        return this.#connector;
-    }
-
-    get express() {
-        return this.#express;
-    }
-
-    get files() {
-        return this.#files;
-    }    
+    get connector() {return this.#connector;}
+    get express()   {return this.#express;  }
+    get files()     {return this.#files;    }
+    get logger()    {return this.#logger;    }
 
 }

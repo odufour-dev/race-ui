@@ -12,6 +12,7 @@ export class Connector {
         this.#files         = files;
         this.#rootfolder    = rootfolder;
         this.#connections   = new Map();
+        this.#logger        = logger;        
     }
 
     closeAll() {
@@ -27,7 +28,7 @@ export class Connector {
 
     closeDatabase(name) {
 
-        const safeName = this.#files.getSafeDatabaseName(name);
+        const safeName = this.getSafeDatabaseName(name);
         if (this.#connections.has(safeName)) {
             const db = this.#connections.get(safeName);
             db.close();
@@ -39,7 +40,7 @@ export class Connector {
     
     getDatabase(name) {
 
-        name = this.#files.getSafeDatabaseName(name);
+        name = this.getSafeDatabaseName(name);
         if (this.isDatabaseExists(name)) {
             return this.#connections.get(name);
         }
@@ -59,7 +60,7 @@ export class Connector {
     }
 
     getSafeDatabasePath(name){
-        const dbName = this.#files.getSafeDatabaseName(name) + ".db";
+        const dbName = this.getSafeDatabaseName(name) + ".db";
         return this.#files.joinAbsolutePath(this.#rootfolder, dbName);
     }
 

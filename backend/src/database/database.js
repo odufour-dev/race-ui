@@ -2,46 +2,72 @@
 
 export default class Database {
 
+  #masterdb
+  #mastername
   #schemapath
   #tools
 
-  constructor(tools, schemapath) {
+  constructor(tools, schemapath, mastername = "master") {
     this.#schemapath  = schemapath;
     this.#tools       = tools;
+    this.#mastername  = mastername;
   }
 
-  listCompetitions(){/*
-    const files = this.#tools.files.readAbsoluteDir(this.#dbfolder);
-    return files
-      .filter(file => file.endsWith('.db'))
-      .map(file => ({
-          id:   file.replace('.db', ''),
-          name: file.replace('.db', '')
-      }));*/
-      return 0;
+  initialize(){
+    const dbPath    = this.#tools.connector.getSafeDatabasePath(this.#mastername);
+    this.#masterdb  = this.#tools.connector.getDatabase(dbPath);
+
+    const initSchema = this.#masterdb.transaction(() => {
+      this.#masterdb.exec(`
+        CREATE TABLE IF NOT EXISTS competitions (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+    });
+    initSchema();
+    this.#tools.logger.log(`Master database initialized (${this.#mastername})`);
+
+  }
+
+  listCompetitions() {
+    return this.#masterdb.prepare('SELECT * FROM competitions').all();
   }
  
   createCompetition(name) {
 
-    const dbPath = this.getSafeDatabasePath(name);
+    const dbPath = this.#tools.connector.getSafeDatabasePath(name);
     if (this.#tools.connector.isDatabaseExists(dbPath)) throw new Error("EXIST_ERROR");
-    const id = this.#tools.files.getSafeDatabaseName(name);
     
+    const id = this.#tools.connector.getSafeDatabaseName(name);    
     const db = this.#tools.connector.getDatabase(dbPath);
+
+    // Create the database from schema.sql
     const schema = this.#tools.files.readAbsoluteFile(this.#schemapath, 'utf8');
     db.exec(schema);
+
+    // Add meta-data into the base
     const metaTransaction = db.transaction((id,name) => {
       const insert = db.prepare('INSERT INTO metadata (id, name) VALUES (?, ?)');
       insert.run(id, name);
     });
     metaTransaction(id,name);
+
+    // Insert the competition in the master database
+    const masterTransaction = this.#masterdb.transaction((id,name) => {
+      const insert = this.#masterdb.prepare('INSERT INTO competitions (id, name) VALUES (?, ?)');
+      insert.run(id, name);
+    });
+    masterTransaction(id,name);
+
     return id;
 
   }
 
   syncRacers(competition, racers) {
 
-    const dbPath = this.getSafeDatabasePath(competition);
+    const dbPath = this.#tools.connector.getSafeDatabasePath(competition);
     if (!this.#tools.connector.isDatabaseExists(dbPath)) throw new Error("NOT_EXIST_ERROR");
 
     const db = this.#tools.connector.getDatabase(dbPath);
