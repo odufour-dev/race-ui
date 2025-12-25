@@ -37,11 +37,9 @@ export default class Database {
  
   createCompetition(name) {
 
-    const dbPath = this.#tools.connector.getSafeDatabasePath(name);
-    if (this.#tools.connector.isDatabaseExists(dbPath)) throw new Error("EXIST_ERROR");
-    
-    const id = this.#tools.connector.getSafeDatabaseName(name);    
-    const db = this.#tools.connector.getDatabase(name);
+    const id = this.#tools.connector.getSafeDatabaseName(name);
+    if (this.#tools.connector.isDatabaseExists(id)) throw new Error("EXIST_ERROR");        
+    const db = this.#tools.connector.getDatabase(id);
 
     // Create the database from schema.sql
     try {

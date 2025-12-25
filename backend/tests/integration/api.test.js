@@ -61,17 +61,13 @@ describe('End-to-end tests', () => {
     expect(response.body.id).toBe(compId);
 
     const masterdb = new Database(masterDbPath);
-    console.log(masterdb.prepare('SELECT * FROM competitions').all());
-/*
-    // Vérifier que la compétition existe dans la base Master
-    const competitions = tools.database.listCompetitions();
+    const competitions = masterdb.prepare('SELECT * FROM competitions').all();
     const createdComp = competitions.find(c => c.id === compId);
-
     expect(createdComp).toBeDefined();
     expect(createdComp.name).toBe('Tour de France 2026');
-*/
+
   });
-/*
+
   test('Should return 409 if competition already exists', async () => {
       
     // [ SETUP ]
@@ -89,5 +85,5 @@ describe('End-to-end tests', () => {
     expect(response.body.error).toBe('EXIST_ERROR');
 
   });
-*/
+
 });
