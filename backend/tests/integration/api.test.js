@@ -44,6 +44,26 @@ describe('End-to-end tests', () => {
 
   });
 
+  test('List competitions - EMPTY', async () => {
+
+    // [ SETUP ]
+    const compId = 'tour_de_france_2026';
+    const masterDbPath = path.join(TEST_DB_DIR, `master.db`);
+
+    // [ EXERCISE ]
+    const response = await request(httpServer)
+      .get('/api/v1/competitions');
+
+    // [ VERIFY ]
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
+
+    const masterdb = new Database(masterDbPath);
+    const competitions = masterdb.prepare('SELECT * FROM competitions').all();
+    expect(competitions).toEqual([]);
+
+  });
+
   test('Create a dedicated database for a competition', async () => {
 
     // [ SETUP ]
@@ -65,6 +85,15 @@ describe('End-to-end tests', () => {
     const createdComp = competitions.find(c => c.id === compId);
     expect(createdComp).toBeDefined();
     expect(createdComp.name).toBe('Tour de France 2026');
+
+    const exists = fs.existsSync(dbPath);
+    expect(exists).toBe(true);
+
+    const compdb = new Database(dbPath);
+    const metadata = compdb.prepare('SELECT * FROM metadata').all();
+    const metadataVal = metadata.find(c => c.id === compId);
+    expect(metadataVal).toBeDefined();
+    expect(metadataVal.name).toBe('Tour de France 2026');
 
   });
 
