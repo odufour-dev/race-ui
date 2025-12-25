@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { Files } from '../../src/tools/files.js'; // Ajuste le chemin selon ta structure
+import { Files } from '../../../src/tools/files.js'; // Ajuste le chemin selon ta structure
 
 describe('Files Class', () => {
     let mockFs;

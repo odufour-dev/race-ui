@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import Database from '../../src/database/database.js';
+import Database from '../../../src/database/database.js';
 
 describe('Database Class', () => {
     let mockTools;

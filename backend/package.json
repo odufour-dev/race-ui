@@ -7,7 +7,9 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/**/*.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests"
+    "test:unit": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.unit.js",
+    "test:integration": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.integration.js",
+    "test": "npm run test:unit && npm run test:integration"
   },
   "dependencies": {
     "better-sqlite3": "^11.0.0",

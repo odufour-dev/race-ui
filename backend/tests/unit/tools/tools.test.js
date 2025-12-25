@@ -1,19 +1,19 @@
 import { jest } from '@jest/globals';
 
-jest.unstable_mockModule('../../src/tools/connector.js', () => ({
+jest.unstable_mockModule('../../../src/tools/connector.js', () => ({
     createConnectorFromFolder: jest.fn(() => ({ name: 'mocked_connector' }))
 }));
-jest.unstable_mockModule('../../src/tools/express.js', () => ({
+jest.unstable_mockModule('../../../src/tools/express.js', () => ({
     createExpressFromConnector: jest.fn(() => ({ name: 'mocked_express' }))
 }));
-jest.unstable_mockModule('../../src/tools/files.js', () => ({
+jest.unstable_mockModule('../../../src/tools/files.js', () => ({
     createFilesFromFolder: jest.fn(() => ({ name: 'mocked_files' }))
 }));
 
-const { default: Tools } = await import('../../src/tools/tools.js');
-const { createConnectorFromFolder } = await import('../../src/tools/connector.js');
-const { createExpressFromConnector } = await import('../../src/tools/express.js');
-const { createFilesFromFolder } = await import('../../src/tools/files.js');
+const { default: Tools } = await import('../../../src/tools/tools.js');
+const { createConnectorFromFolder } = await import('../../../src/tools/connector.js');
+const { createExpressFromConnector } = await import('../../../src/tools/express.js');
+const { createFilesFromFolder } = await import('../../../src/tools/files.js');
 
 describe('Tools Class', () => {
     const ROOT = '/root';

@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { Express } from '../../src/tools/express.js';
+import { Express } from '../../../src/tools/express.js';
 
 describe('Express Class (Unit Tests)', () => {
 

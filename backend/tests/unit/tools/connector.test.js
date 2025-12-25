@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-import { Connector } from '../../src/tools/connector';
+import { Connector } from '../../../src/tools/connector';
 import Database from 'better-sqlite3';
 
 describe('Connector Class', () => {

@@ -14,8 +14,8 @@ export default class Database {
   }
 
   initialize(){
-    const dbPath    = this.#tools.connector.getSafeDatabasePath(this.#mastername);
-    this.#masterdb  = this.#tools.connector.getDatabase(dbPath);
+    
+    this.#masterdb  = this.#tools.connector.getDatabase(this.#mastername);
 
     const initSchema = this.#masterdb.transaction(() => {
       this.#masterdb.exec(`
