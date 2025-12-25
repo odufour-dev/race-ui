@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import {APIRouter, StaticRouter} from '../../src/routes/routers.js';
+import {APIRouter, StaticRouter} from '../../../src/routes/routers.js';
 
 describe('APIRouter', () => {
 

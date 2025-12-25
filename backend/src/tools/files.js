@@ -4,23 +4,21 @@ import path                 from 'path';
 export class Files {
 
     #fs
+    #logger
     #path    
     #rootfolder
 
-    constructor(path, fs, rootfolder) {
+    constructor(path, fs, rootfolder,logger) {
         this.#rootfolder        = rootfolder;
         this.#fs                = fs;
         this.#path              = path;
+        this.#logger            = logger;
     }
 
     get rootfolder(){return this.#rootfolder;}
 
     exists(filePath) {
         return this.#fs.existsSync(filePath);        
-    }
-
-    getSafeDatabaseName(name){
-        return name.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
     }
 
     joinAbsolutePath(...segments) {
@@ -46,7 +44,11 @@ export class Files {
 
     readAbsoluteFile(filePath, encoding='utf8') {
         filePath = this.#path.join(this.#rootfolder,filePath);
-        return this.#fs.readFileSync(filePath, encoding);
+        try {
+            return this.#fs.readFileSync(filePath, encoding);
+        } catch (e) {
+            throw Error("FILE_NOT_FOUND : " + e.message);
+        }
     }
 
     readFile(filePath, encoding='utf8') {
@@ -59,6 +61,6 @@ export class Files {
 
 }
 
-export function createFilesFromFolder(rootfolder){
-    return new Files(path,fs,rootfolder);
+export function createFilesFromFolder(rootfolder,logger=console){
+    return new Files(path,fs,rootfolder,logger);
 }

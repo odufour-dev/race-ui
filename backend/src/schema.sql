@@ -1,4 +1,9 @@
--- Structure initiale de la base de données
+-- Database initial structure
+CREATE TABLE IF NOT EXISTS metadata (
+    id TEXT PRIMARY KEY,
+    name TEXT
+);
+
 CREATE TABLE IF NOT EXISTS racers (
     id INTEGER PRIMARY KEY,
     data JSON NOT NULL
@@ -11,10 +16,10 @@ CREATE TABLE IF NOT EXISTS race_info (
 
 CREATE TABLE IF NOT EXISTS rankings (
     stage_id INTEGER,
-    type TEXT,             -- 'stage' ou 'general'
+    type TEXT,             -- 'stage' or 'general'
     data JSON NOT NULL,
     PRIMARY KEY (stage_id, type)
 );
 
--- On initialise la config avec un objet vide par défaut
+-- Initialize configuration with an empty object
 INSERT OR IGNORE INTO race_info (id, config) VALUES (1, '{}');
