@@ -3,12 +3,14 @@ export class APIRouter {
 
     #apiprefix
     #database
+    #logger
     #tools
      
-    constructor(tools,database,apiprefix) {
+    constructor(tools,database,apiprefix,logger = console) {
         this.#apiprefix = apiprefix;
         this.#database  = database;
         this.#tools     = tools;
+        this.#logger    = logger;
     }
 
     register() {
@@ -25,7 +27,8 @@ export class APIRouter {
     }
 
     getVersion(req, res) {
-        res.json({ version: '1.0.0', status: 'ok' });
+        const configuration = this.#database.readConfiguration();
+        res.json({ ...configuration, status: 'ok' });
     }
 
     getCompetitions(req, res){
@@ -61,10 +64,12 @@ export class APIRouter {
 export class StaticRouter {
 
     #filepaths
+    #logger
     #tools
 
-    constructor(tools,filepaths){
+    constructor(tools,filepaths,logger=console){
         this.#filepaths = filepaths;
+        this.#logger    = logger;
         this.#tools     = tools;
     }
 

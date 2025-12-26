@@ -48,11 +48,14 @@ describe('APIRouter', () => {
 
     const resMock = {json: jest.fn()};
 
-    const sut = new APIRouter();
+    const toolsMock     = {};
+    const databaseMock  = {readConfiguration: jest.fn().mockReturnValue({version: "0.0.0",name:"test"})};
+    const sut = new APIRouter(toolsMock, databaseMock, '/api/v1');
+
     sut.getVersion({}, resMock);
 
     expect(resMock.json).toHaveBeenCalledTimes(1);
-    expect(resMock.json).toHaveBeenCalledWith({ version: '1.0.0', status: 'ok' });
+    expect(resMock.json).toHaveBeenCalledWith({ version: '0.0.0', name: "test", status: 'ok' });
 
   });
 

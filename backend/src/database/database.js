@@ -2,39 +2,19 @@
 
 export default class Database {
 
+  #logger
   #masterdb
   #mastername
   #schemapath
   #tools
 
-  constructor(tools, schemapath, mastername = "master") {
+  constructor(tools, schemapath, logger = console, mastername = "master") {
+    this.#logger      = logger;
+    this.#mastername  = mastername;
     this.#schemapath  = schemapath;
     this.#tools       = tools;
-    this.#mastername  = mastername;
   }
 
-  initialize(){
-    
-    this.#masterdb  = this.#tools.connector.getDatabase(this.#mastername);
-
-    const initSchema = this.#masterdb.transaction(() => {
-      this.#masterdb.exec(`
-        CREATE TABLE IF NOT EXISTS competitions (
-          id TEXT PRIMARY KEY,
-          name TEXT NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-    });
-    initSchema();
-    this.#tools.logger.log(`Master database initialized (${this.#mastername})`);
-
-  }
-
-  listCompetitions() {
-    return this.#masterdb.prepare('SELECT * FROM competitions').all();
-  }
- 
   createCompetition(name) {
 
     const id = this.#tools.connector.getSafeDatabaseName(name);
@@ -65,6 +45,42 @@ export default class Database {
     masterTransaction(id,name);
 
     return id;
+
+  }
+
+  initialize(){
+    
+    this.#masterdb  = this.#tools.connector.getDatabase(this.#mastername);
+
+    const initSchema = this.#masterdb.transaction(() => {
+      this.#masterdb.exec(`
+        CREATE TABLE IF NOT EXISTS competitions (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+    });
+    initSchema();
+    this.#tools.logger.log(`Master database initialized (${this.#mastername})`);
+
+  }
+
+  listCompetitions() {
+    return this.#masterdb.prepare('SELECT * FROM competitions').all();
+  }
+
+  readConfiguration(){
+
+    try {
+      const packagetext = this.#tools.files.readAbsoluteFile("../package.json");
+      const { version = "x.x.x", name = "unknown" } = JSON.parse(packagetext);
+      return {version, name};
+    } catch (e) {
+      const version = "x.x.x";
+      const name = "invalid" ;
+      return {version, name};
+    }
 
   }
 
