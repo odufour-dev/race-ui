@@ -7,8 +7,8 @@ export const createApp = (rootfolder,dbfolder,apiprefix,port,schemapath,frontend
 
     const tools = new Tools(rootfolder, dbfolder, logger);
 
-    const database      = new Database(tools, schemapath);
-    const apirouter     = new APIRouter(tools, database, apiprefix);
+    const database      = new Database(tools, schemapath, logger);
+    const apirouter     = new APIRouter(tools, database, apiprefix, logger);
     const staticrouter  = new StaticRouter(tools, frontendbuildpath);
 
     database.initialize();

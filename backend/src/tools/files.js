@@ -52,7 +52,11 @@ export class Files {
     }
 
     readFile(filePath, encoding='utf8') {
-        return this.#fs.readFileSync(filePath, encoding);
+        try {
+            return this.#fs.readFileSync(filePath, encoding);
+        } catch (e) {
+            throw Error("FILE_NOT_FOUND : " + e.message);
+        }
     }
 
     writeFile(filePath, data, encoding='utf8') {
