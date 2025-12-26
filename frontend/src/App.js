@@ -1,21 +1,22 @@
 import './App.css';
 
-import React, { useEffect, useState, useCallback, startTransition } from 'react';
+import React, { useMemo, useEffect, useState, useCallback, startTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import APIConnection      from './components/APIConnection/APIConnection';
 import EventSettings      from './components/EventSettings/EventSettings';
 import ExcelReader        from './components/ExcelReader/ExcelReader';
 import GeneralRanking     from './components/GeneralRanking/GeneralRanking';
-import InformationBanner  from './components/InformationBanner/InformationBanner';
 import { NavigationItem, NavigationGroup, NavigationRegistry } from './navigationPanel/navigationPanel';
 import RegistrationTable  from './components/RegistrationTable/RegistrationTable';
 import Sidebar            from './components/Sidebar/Sidebar';
 import StageRanking       from './components/StageRanking/StageRanking';
 
-import { RaceModel } from './models/RaceModel';
-import { Metadata  } from './models/Metadata/Metadata';
+import { RaceModel }      from './models/RaceModel';
+import { RaceConnector }  from './models/RaceConnector';
+import { Metadata  }      from './models/Metadata/Metadata';
 
-import { Helper } from './tools/Helper';
+import { Helper }         from './tools/Helper';
 
 function App() {
 
@@ -29,7 +30,19 @@ function App() {
 
   const [appName, setAppName] = useState("");
 
-  const [ raceModel, setRaceModel ]     = useState( () => new RaceModel() );
+  const [ raceModel, setRaceModel ] = useState( () => new RaceModel() );
+  const [ competitionid, setCompetitionId] = useState("");
+  const connector = useMemo(() => new RaceConnector("/api/v1", console), []);
+  
+  useEffect(() => {
+    if (!competitionid) return;
+
+    connector.fetchFullModel(competitionid)
+      .then(newModel => {
+        setRaceModel(newModel);
+      })
+    .catch(err => console.error(err));
+}, [competitionid, connector]);
 
   /* TODO : Enable loading from backend
   const [ raceModel, setRaceModel ]     = useState( (null );
@@ -158,7 +171,7 @@ function App() {
 
   return (
     <div className="App" style={{display:'flex', flexDirection:'column', height: '100vh'}}>      
-      <InformationBanner helper={helper} dataModel={raceModel} />      
+      <APIConnection helper={helper} connector={connector} value={competitionid} onChange={setCompetitionId} />      
       <div style={{display:'flex', alignItems:'center', padding: '0.5rem 1rem'}}>
         {/* Mobile hamburger to open sidebar */}
         <button
