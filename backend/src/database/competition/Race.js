@@ -1,16 +1,11 @@
 
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../lib/db.js';
 
-import { Model, DataTypes, fn, col, literal } from 'sequelize';
-import { sequelize } from '../lib/db.js';
 import { Result } from './Result.js';
 
 export class Race extends Model {
   
-  /**
-   * Méthode d'instance : calcul le classement général de CETTE course
-   */
+  /*
   async getGeneralRanking(currentStageId) {
     // 'this.id' fait référence à l'ID de l'instance de course actuelle
     return await Result.findAll({
@@ -26,7 +21,7 @@ export class Race extends Model {
       ],
       include: [{
         association: 'stage',
-        where: { raceId: this.id }, // Utilisation de l'instance
+        where: { raceId: this.id },
         attributes: [] 
       }],
       group: ['bib'],
@@ -39,9 +34,14 @@ export class Race extends Model {
       raw: true
     });
   }
+    */
+
+  static initialize(sequelize){
+    return super.init({
+      name:     DataTypes.STRING,
+      nStages:  DataTypes.INTEGER
+    }, { sequelize, modelName: 'race' });
+  }
+
 }
 
-Race.init({
-  name: DataTypes.STRING,
-  nStages: DataTypes.INTEGER
-}, { sequelize, modelName: 'race' });
