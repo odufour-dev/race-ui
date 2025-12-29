@@ -19,7 +19,6 @@ export class Competition {
     #stage
 
     constructor(sequelize,annex,race,racer,registration,result,stage){
-    //constructor(sequelize){
         this.#sequelize     = sequelize;
         this.#annex         = annex;
         this.#race          = race;
@@ -95,7 +94,7 @@ export class Competition {
             as: 'race',
             foreignKey: 'raceId' 
         });
-
+/*
         // A annex ranking is associated to a racer
         this.#racer.hasMany(this.#annex, { 
             as: 'Annex',
@@ -106,7 +105,7 @@ export class Competition {
             as: 'racer',
             foreignKey: 'racerId' 
         });
-
+*/
     }
 
     async sync(options = {}) {

@@ -6,7 +6,7 @@ export class Annex extends Model {
     return super.init({
       type: { type: DataTypes.ENUM('points', 'mountain', 'young', 'team'), allowNull: false },
       label: DataTypes.STRING
-    }, { sequelize, modelName: 'annex_ranking' });
+    }, { sequelize, modelName: 'annex' });
   }
 
 }

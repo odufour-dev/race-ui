@@ -1,5 +1,5 @@
 import { jest }                 from '@jest/globals';
-import { createCompetition }    from './../../src/database/competition.js';
+import { createCompetition }    from './../../src/database/competition/Competition.js';
 import sqlite3                  from 'sqlite3';
 
 describe('Database Integration Tests', () => {
