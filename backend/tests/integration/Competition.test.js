@@ -1,23 +1,32 @@
 import { jest }                 from '@jest/globals';
 import { createCompetition }    from './../../src/database/competition/Competition.js';
+
+import { Sequelize }            from 'sequelize';
 import sqlite3                  from 'sqlite3';
 
 describe('Database Integration Tests', () => {
 
     let db;
+    let driver;
 
     jest.setTimeout(10000);
 
     beforeAll(async () => {
-        db = createCompetition('test-db', ':memory:', sqlite3);
+        driver = new Sequelize({
+            dialect: 'sqlite',
+            storage: ':memory:',
+            logging: false,
+            dialectModule: sqlite3
+        });
+        db = createCompetition(driver, 'test-db');
     });
 
     beforeEach(async () => {
-        await db.sync({ force: true });
+        await driver.sync({ force: true });
     });
 
     afterAll(async () => {
-        await db.close();
+        await driver.close();
     });
 
     it('Create a race and stages (Relation One-to-Many)', async () => {

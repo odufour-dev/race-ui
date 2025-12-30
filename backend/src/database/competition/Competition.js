@@ -1,30 +1,28 @@
 
-import { Sequelize }    from 'sequelize';
-
-import { Annex }        from "./competition/Annex.js";
-import { Race }         from "./competition/Race.js";
-import { Racer }        from "./competition/Racer.js";
-import { Registration } from "./competition/Registration.js";
-import { Result }       from "./competition/Result.js";
-import { Stage }        from "./competition/Stage.js";
+import { Annex }        from "./Annex.js";
+import { Race }         from "./Race.js";
+import { Racer }        from "./Racer.js";
+import { Registration } from "./Registration.js";
+import { Result }       from "./Result.js";
+import { Stage }        from "./Stage.js";
 
 export class Competition {
 
     #annex
+    #driver
     #race
     #racer
-    #sequelize
     #registration
     #result
     #stage
 
-    constructor(sequelize,annex,race,racer,registration,result,stage){
-        this.#sequelize     = sequelize;
+    constructor(driver,annex,race,racer,registration,result,stage){
         this.#annex         = annex;
+        this.#driver        = driver;
         this.#race          = race;
         this.#racer         = racer;
         this.#registration  = registration;
-        this.#result       = result;
+        this.#result        = result;
         this.#stage         = stage;
     }
 
@@ -107,34 +105,19 @@ export class Competition {
         });
 */
     }
-
-    async sync(options = {}) {
-        return await this.#sequelize.sync(options);
-    }
-
-    async close() {
-        await this.#sequelize.close();
-    }
     
 }
 
-export const createCompetition = (name,path,driver) => {
-    
-    const sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: path,
-        logging: false,
-        dialectModule: driver
-    });
+export const createCompetition = (driver,name) => {
 
-   const annex         = Annex.initialize(sequelize);
-   const race          = Race.initialize(sequelize);
-   const racer         = Racer.initialize(sequelize);
-   const registration  = Registration.initialize(sequelize);
-   const result        = Result.initialize(sequelize);
-   const stage         = Stage.initialize(sequelize);
+   const annex         = Annex.initialize(driver);
+   const race          = Race.initialize(driver);
+   const racer         = Racer.initialize(driver);
+   const registration  = Registration.initialize(driver);
+   const result        = Result.initialize(driver);
+   const stage         = Stage.initialize(driver);
 
-    const db = new Competition(sequelize,annex,race,racer,registration,result,stage);
+    const db = new Competition(driver,annex,race,racer,registration,result,stage);
     db.initialize();
     return db;
     
@@ -144,7 +127,7 @@ export const createCompetition = (name,path,driver) => {
 /*
 // Table de liaison pour les points dans les classements annexes
 // Un Rider peut avoir des points dans différents classements
-const AnnexResult = sequelize.define('annex_result', {
+const AnnexResult = driver.define('annex_result', {
   points: DataTypes.INTEGER,
   rank: DataTypes.INTEGER
 });
