@@ -1,13 +1,12 @@
-import request from 'supertest';
-import { jest } from '@jest/globals';
+import request              from 'supertest';
+import { jest }             from '@jest/globals';
 
-import Database from 'better-sqlite3';
-import fs from 'fs';
-import path from 'path';
+import Database             from 'better-sqlite3';
+import fs                   from 'fs';
+import path                 from 'path';
 import { fileURLToPath }    from 'url';
 import { dirname }          from 'path';
-import { createApp } from '../../src/app.js';
-import { create } from 'domain';
+import { createApp }        from '../../src/app.js';
 
 describe('End-to-end tests', () => {   
   
@@ -36,8 +35,8 @@ describe('End-to-end tests', () => {
   });
 
   beforeEach(() => {
-    masterdb = dbConnector.getDatabase("master"); 
-    masterdb.prepare('DELETE FROM competitions').run();
+    masterdb = new Database(path.join(TEST_DB_DIR,"master.db")); 
+    //masterdb.prepare('DELETE FROM competitions').run();
   });
 
   // Delete files and folder after tests

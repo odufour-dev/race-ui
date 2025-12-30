@@ -15,7 +15,7 @@ class Master {
 
     async registerCompetition(name, filename) {
         return await this.#index.create({
-            name,
+            name: name,
             filename: filename,
             status: 'active'
         });

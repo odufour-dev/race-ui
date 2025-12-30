@@ -9,7 +9,7 @@ export class Index extends Model {
       filename: { type: DataTypes.STRING, allowNull: false, unique: true },
       date:       DataTypes.DATEONLY,
       status:     DataTypes.ENUM('active', 'archived', 'planned')
-    }, { sequelize, modelName: 'index' });
+    }, { sequelize, modelName: 'competitions' });
   }
 
 }
