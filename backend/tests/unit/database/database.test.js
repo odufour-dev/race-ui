@@ -1,118 +1,79 @@
-import { jest } from '@jest/globals';
-import Database from '../../../src/database/database.js';
+import { jest }     from '@jest/globals';
+import { Model }    from 'sequelize';
+import Database     from '../../../src/database/database.js';
+
+jest.spyOn(Model, 'init').mockImplementation((attributes, options) => {
+  return {
+    ...attributes,
+    sequelize: options.sequelize,
+    belongsToMany: jest.fn(),
+    hasMany: jest.fn(),
+    belongsTo: jest.fn(),
+    create: jest.fn()
+  };
+});
+
+jest.mock('../../../src/database/competition/Competition.js', () => ({
+  createCompetition: jest.fn(() => ({ sync: jest.fn() }))
+}));
+jest.mock('../../../src/database/master/Master.js', () => ({
+  openMaster: jest.fn(() => ({
+    registerCompetition: jest.fn().mockResolvedValue(true),
+    getAllCompetitions: jest.fn().mockReturnValue([])
+  }))
+}));
 
 describe('Database Class', () => {
-    it('', () => {expect(1).toBe(1)})
+  let mockTools;
+  let mockLogger;
+  let db;
+
+  beforeEach(() => {
+    mockLogger = { log: jest.fn(), error: jest.fn() };
+    mockTools = {
+      connector: {
+        getDatabase: jest.fn().mockReturnValue({sync: jest.fn()}),
+        getSafeDatabaseName: jest.fn((name) => name.toLowerCase().replace(/ /g, '_')),
+        isDatabaseExists: jest.fn(),
+        readConfiguration: jest.fn(),
+      }
+    };
+    db = new Database(mockTools, mockLogger);
+  });
+
+  test('initialize() shall configure master database and log success', async () => {
+    await db.initialize();
+    
+    expect(mockTools.connector.getDatabase).toHaveBeenCalledWith('master');
+    expect(mockLogger.log).toHaveBeenCalledWith(expect.stringContaining('initialized'));
+  });
+
+  test('createCompetition() shall create a database and register into master', async () => {
+    // DB does not exist
+    mockTools.connector.isDatabaseExists.mockReturnValue(false);
+    
+    await db.initialize(); // Initialize master database
+    const result = await db.createCompetition('Tour de France');
+
+    expect(result).toBe('tour_de_france');
+    expect(mockTools.connector.getDatabase).toHaveBeenCalledWith('tour_de_france');
+  });
+
+  test('createCompetition() shall throw an error as database already exist', async () => {
+    mockTools.connector.isDatabaseExists.mockReturnValue(true);
+    
+    await db.initialize();
+    
+    await expect(db.createCompetition('Existing DB'))
+      .rejects.toThrow("EXIST_ERROR");
+  });
+
+  test('readConfiguration() catch JSON parsing error', () => {
+    mockTools.connector.readConfiguration.mockReturnValue("invalid json");
+    
+    const config = db.readConfiguration();
+    
+    expect(config.name).toBe('invalid');
+    expect(config.version).toBe('x.x.x');
+  });
 });
-    /*
-    let mockTools;
-    let mockMasterDb;
-    let mockCompDb;
-    let database;
-    const SCHEMA_PATH = '/path/to/schema.sql';
-    const SCHEMA_CONTENT = 'CREATE TABLE racers...';
-
-    beforeEach(() => {
-        // Mock d'une instance de base de données SQLite (better-sqlite3)
-        const createMockDb = () => ({
-            exec: jest.fn(),
-            prepare: jest.fn().mockReturnValue({
-                run: jest.fn(),
-                all: jest.fn().mockReturnValue([])
-            }),
-            transaction: jest.fn(fn => fn) // La transaction exécute directement la fonction
-        });
-
-        mockMasterDb = createMockDb();
-        mockCompDb = createMockDb();
-
-        // Mock de l'objet Tools et ses composants
-        mockTools = {
-            connector: {
-                getSafeDatabaseName: jest.fn(name => name.toLowerCase().replace(/ /g, '_')),
-                getSafeDatabasePath: jest.fn(name => name.toLowerCase().replace(/ /g, '_')),
-                getDatabase: jest.fn(),
-                isDatabaseExists: jest.fn()
-            },
-            files: {
-                readAbsoluteFile: jest.fn().mockReturnValue(SCHEMA_CONTENT)
-            },
-            logger: {
-              log: jest.fn(),
-              debug: jest.fn(),
-              error: jest.fn()
-            }
-        };
-
-        // Par défaut, le connecteur retourne la master ou la comp selon l'appel
-        mockTools.connector.getDatabase.mockImplementation((path) => {
-            return path.includes('master') ? mockMasterDb : mockCompDb;
-        });
-
-        database = new Database(mockTools, SCHEMA_PATH);
-    });
-
-    test('initialize() should setup master database', () => {
-        database.initialize();
-        expect(mockTools.connector.getDatabase).toHaveBeenCalledWith('master');
-        expect(mockMasterDb.exec).toHaveBeenCalledWith(expect.stringContaining('CREATE TABLE IF NOT EXISTS competitions'));
-    });
-
-    test('listCompetitions() should return data from master database', () => {
-        const mockData = [{ id: '1', name: 'Test' }];
-        mockMasterDb.prepare().all.mockReturnValue(mockData);
-        
-        database.initialize();
-        const result = database.listCompetitions();
-        
-        expect(mockMasterDb.prepare).toHaveBeenCalledWith('SELECT * FROM competitions');
-        expect(result).toBe(mockData);
-    });
-
-    test('createCompetition() should setup new file and update master index', () => {
-        database.initialize();
-        mockTools.connector.isDatabaseExists.mockReturnValue(false);
-
-        const id = database.createCompetition('Tour de France');
-
-        // Vérifications
-        expect(id).toBe('tour_de_france');
-        expect(mockTools.files.readAbsoluteFile).toHaveBeenCalledWith(SCHEMA_PATH, 'utf8');
-        
-        // Vérifie l'initialisation du schéma sur la base comp
-        expect(mockCompDb.exec).toHaveBeenCalledWith(SCHEMA_CONTENT);
-        
-        // Vérifie l'insertion des métadonnées locales
-        expect(mockCompDb.prepare).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO metadata'));
-        
-        // Vérifie l'insertion dans l'index Master
-        expect(mockMasterDb.prepare).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO competitions'));
-    });
-
-    test('createCompetition() should throw error if database already exists', () => {
-        mockTools.connector.isDatabaseExists.mockReturnValue(true);
-        expect(() => database.createCompetition('Existing')).toThrow('EXIST_ERROR');
-    });
-
-    test('syncRacers() should delete and insert racers in transaction', () => {
-        mockTools.connector.isDatabaseExists.mockReturnValue(true);
-        const racers = [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }];
-
-        database.syncRacers('comp1', racers);
-
-        expect(mockCompDb.transaction).toHaveBeenCalled();
-        expect(mockCompDb.prepare).toHaveBeenCalledWith('DELETE FROM racers');
-        expect(mockCompDb.prepare).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO racers'));
-        
-        // Vérifie que JSON.stringify a été utilisé pour le deuxième argument
-        const runMock = mockCompDb.prepare().run;
-        expect(runMock).toHaveBeenCalledWith(1, JSON.stringify(racers[0]));
-        expect(runMock).toHaveBeenCalledWith(2, JSON.stringify(racers[1]));
-    });
-
-    test('syncRacers() should throw error if database does not exist', () => {
-        mockTools.connector.isDatabaseExists.mockReturnValue(false);
-        expect(() => database.syncRacers('unknown', [])).toThrow('NOT_EXIST_ERROR');
-    });
-});
-*/

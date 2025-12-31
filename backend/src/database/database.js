@@ -1,5 +1,5 @@
 
-import { Connector } from "../tools/connector.js"
+import { Connector }          from "../tools/connector.js"
 import { createCompetition }  from "./competition/Competition.js"
 import { openMaster }         from "./master/Master.js"
 
@@ -9,14 +9,18 @@ export default class Database {
   #masterdb
   #mastername
   #tools
+  #ready
 
   constructor(tools, logger = console, mastername = "master") {
     this.#logger      = logger;
     this.#mastername  = mastername;
     this.#tools       = tools;
+    this.#ready       = false;
   }
 
   async createCompetition(name) {
+
+    if (!this.#ready) throw new Error("DATABASE_NOT_INITIALIZED");
 
     const id = this.#tools.connector.getSafeDatabaseName(name);
     if (this.#tools.connector.isDatabaseExists(id)) throw new Error("EXIST_ERROR");        
@@ -26,18 +30,31 @@ export default class Database {
     await driver.sync();
     // TODO : Insert meta-data in competition database
 
-    return this.#masterdb.registerCompetition(name, id + Connector.DATABASE_EXTENSION).then(() => id);
+    try {
+      await this.#masterdb.registerCompetition(name, id + Connector.DATABASE_EXTENSION);
+      return id;
+    } catch (err) {
+      this.#logger.error("Failed to register competition in master", err);
+      throw err;
+    }
 
   }
 
   async initialize(){
-    const driver    = this.#tools.connector.getDatabase(this.#mastername);
-    this.#masterdb  = openMaster(driver);
-    await driver.sync();
-    this.#tools.logger.log(`Master database initialized (${this.#mastername})`);
+    try {
+      const driver    = this.#tools.connector.getDatabase(this.#mastername);
+      this.#masterdb  = openMaster(driver);
+      await driver.sync();
+      this.#ready = true;
+      this.#logger.log(`Master database initialized (${this.#mastername})`);
+    } catch (error) {
+      this.#logger.error("Failed to initialize database", error);
+      throw error;
+    }
   }
 
   listCompetitions() {
+    if (!this.#ready) throw new Error("DATABASE_NOT_INITIALIZED");
     return this.#masterdb.getAllCompetitions();
   }
 
