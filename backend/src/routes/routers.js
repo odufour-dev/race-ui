@@ -31,18 +31,18 @@ export class APIRouter {
         res.json({ ...configuration, status: 'ok' });
     }
 
-    getCompetitions(req, res){
+    async getCompetitions(req, res){
         try {
-            const competitions = this.#database.listCompetitions();
+            const competitions = await this.#database.listCompetitions();
             res.json(competitions);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    createCompetition(req, res){
+    async createCompetition(req, res){
         try {
-            const id = this.#database.createCompetition(req.body.name);
+            const id = await this.#database.createCompetition(req.body.name);
             res.status(201).json({ id });
         } catch (e) {
             const code = e.message === "EXIST_ERROR" ? 409 : 500;

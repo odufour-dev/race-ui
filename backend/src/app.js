@@ -3,7 +3,7 @@ import Database                 from './database/database.js';
 import {APIRouter,StaticRouter} from './routes/routers.js';
 import Tools                    from './tools/tools.js';
 
-export const createApp = (rootfolder,dbfolder,apiprefix,port,schemapath,frontendbuildpath,logger = console) => {
+export const createApp = async (rootfolder,dbfolder,apiprefix,port,schemapath,frontendbuildpath,logger = console) => {
 
     const tools = new Tools(rootfolder, dbfolder, logger);
 
@@ -11,7 +11,7 @@ export const createApp = (rootfolder,dbfolder,apiprefix,port,schemapath,frontend
     const apirouter     = new APIRouter(tools, database, apiprefix, logger);
     const staticrouter  = new StaticRouter(tools, frontendbuildpath);
 
-    database.initialize();
+    await database.initialize();
     
     // Register API routes
     apirouter.register();

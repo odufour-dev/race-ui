@@ -18,23 +18,24 @@ export default class Database {
     this.#tools       = tools;
   }
 
-  createCompetition(name) {
+  async createCompetition(name) {
 
     const id = this.#tools.connector.getSafeDatabaseName(name);
     if (this.#tools.connector.isDatabaseExists(id)) throw new Error("EXIST_ERROR");        
-    const db = this.#tools.connector.getDatabase(id);
-
-    const competition = createCompetition(db,name);
+    
+    const driver = this.#tools.connector.getDatabase(id);
+    const competition = createCompetition(driver,name);
+    await driver.sync();
     // TODO : Insert meta-data in competition database
 
-    this.#masterdb.registerCompetition(name, id + Connector.DATABASE_EXTENSION);
-    return id;
+    return this.#masterdb.registerCompetition(name, id + Connector.DATABASE_EXTENSION).then(() => id);
 
   }
 
-  initialize(){
+  async initialize(){
     const driver    = this.#tools.connector.getDatabase(this.#mastername);
     this.#masterdb  = openMaster(driver);
+    await driver.sync();
     this.#tools.logger.log(`Master database initialized (${this.#mastername})`);
   }
 
