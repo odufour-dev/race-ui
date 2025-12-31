@@ -224,15 +224,15 @@ describe('StaticRouter', () => {
 
     const filepathsMock = '/path/to/build';
 
-    const joinAbsolutePathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
+    const joinPathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
     const existsMock = jest.fn().mockReturnValue(true);
-    const toolsMock     = {files: {joinAbsolutePath: joinAbsolutePathMock, exists: existsMock}};
+    const toolsMock     = {files: {joinPath: joinPathMock, exists: existsMock}};
 
     const sut = new StaticRouter(toolsMock, filepathsMock);
     sut.sendFile({}, resMock);
 
-    expect(joinAbsolutePathMock).toHaveBeenCalledTimes(1);
-    expect(joinAbsolutePathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
+    expect(joinPathMock).toHaveBeenCalledTimes(1);
+    expect(joinPathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
 
     expect(existsMock).toHaveBeenCalledTimes(1);
     expect(existsMock).toHaveBeenCalledWith('/path/to/build/index.html');
@@ -250,15 +250,15 @@ describe('StaticRouter', () => {
 
     const filepathsMock = '/path/to/build';
 
-    const joinAbsolutePathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
+    const joinPathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
     const existsMock = jest.fn().mockReturnValue(false);
-    const toolsMock     = {files: {joinAbsolutePath: joinAbsolutePathMock, exists: existsMock}};
+    const toolsMock     = {files: {joinPath: joinPathMock, exists: existsMock}};
 
     const sut = new StaticRouter(toolsMock, filepathsMock);
     sut.sendFile({}, resMock);
 
-    expect(joinAbsolutePathMock).toHaveBeenCalledTimes(1);
-    expect(joinAbsolutePathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
+    expect(joinPathMock).toHaveBeenCalledTimes(1);
+    expect(joinPathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
 
     expect(existsMock).toHaveBeenCalledTimes(1);
     expect(existsMock).toHaveBeenCalledWith('/path/to/build/index.html');

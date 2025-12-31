@@ -78,7 +78,7 @@ export class StaticRouter {
     }
 
     sendFile(req,res){
-        const indexPath = this.#tools.files.joinAbsolutePath(this.#filepaths, 'index.html');
+        const indexPath = this.#tools.files.joinPath(this.#filepaths, 'index.html');
         this.#tools.files.exists(indexPath) ? res.sendFile(indexPath) : res.status(404).send("Build missing");
     }
     

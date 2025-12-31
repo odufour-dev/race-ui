@@ -22,12 +22,14 @@ describe('End-to-end tests', () => {
       debug:  jest.fn(),
       error:  jest.fn()
     };
-    __dirname = dirname(dirname(fileURLToPath(import.meta.url)));
+    __dirname = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
     TEST_DB_DIR = path.join(__dirname, 'test_db');
     if (!fs.existsSync(TEST_DB_DIR)) fs.mkdirSync(TEST_DB_DIR, {recursive: true});
 
+    const frontend = path.join(path.dirname(path.dirname(__dirname)),"frontend","build");
+
     // Start the server
-    const app = await createApp(__dirname,"test_db","/api/v1",5000,"../src/schema.sql","../../frontend/build",mockLogger);
+    const app = await createApp(__dirname,TEST_DB_DIR,"/api/v1",5000,frontend,mockLogger);
     httpServer = app.httpServer;
     dbConnector = app.dbConnector;
     masterDriver = dbConnector.getDatabase('master');

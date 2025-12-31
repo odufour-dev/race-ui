@@ -48,7 +48,7 @@ export class Connector {
             return this.#connections.get(name);
         }
 
-        const filename = this.#files.joinAbsolutePath(this.#rootfolder, name + Connector.DATABASE_EXTENSION);
+        const filename = this.#files.joinPath(this.#rootfolder, name + Connector.DATABASE_EXTENSION);
         const driver = new Sequelize({
             dialect: 'sqlite',
             storage: filename,
@@ -65,6 +65,11 @@ export class Connector {
    
     isDatabaseExists(name) {
         return this.#connections.has(name);        
+    }
+
+    readConfiguration(){
+        const filename = this.#files.joinPath(this.#rootfolder, "..","package.json");
+        return this.#files.readFile(filename);        
     }
 
 }

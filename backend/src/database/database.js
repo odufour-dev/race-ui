@@ -8,13 +8,11 @@ export default class Database {
   #logger
   #masterdb
   #mastername
-  #schemapath
   #tools
 
-  constructor(tools, schemapath, logger = console, mastername = "master") {
+  constructor(tools, logger = console, mastername = "master") {
     this.#logger      = logger;
     this.#mastername  = mastername;
-    this.#schemapath  = schemapath;
     this.#tools       = tools;
   }
 
@@ -46,7 +44,7 @@ export default class Database {
   readConfiguration(){
 
     try {
-      const packagetext = this.#tools.files.readAbsoluteFile("../package.json");
+      const packagetext = this.#tools.connector.readConfiguration();
       const { version = "x.x.x", name = "unknown" } = JSON.parse(packagetext);
       return {version, name};
     } catch (e) {
