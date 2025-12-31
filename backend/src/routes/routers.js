@@ -1,4 +1,6 @@
 
+import { Version } from "./version.js"
+
 export class APIRouter {
 
     #apiprefix
@@ -17,8 +19,12 @@ export class APIRouter {
 
         const router = this.#tools.express.router;
 
+        const routes = [
+            new Version(this.#database,this.#logger)
+        ];
+        routes.map((r) => r.register(router));
+
         // Routes
-        router.get('/version',                    (req,res) => this.getVersion(req,res));
         router.get('/competitions',               (req,res) => this.getCompetitions(req,res));
         router.post('/competitions',              (req,res) => this.createCompetition(req,res));
         router.post('/:competition/racers/sync',  (req,res) => this.syncRacers(req,res));
