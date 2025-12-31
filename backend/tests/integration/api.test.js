@@ -29,7 +29,7 @@ describe('End-to-end tests', () => {
     const frontend = path.join(path.dirname(path.dirname(__dirname)),"frontend","build");
 
     // Start the server
-    const app = await createApp(__dirname,TEST_DB_DIR,"/api/v1",5000,frontend,mockLogger);
+    const app = await createApp(TEST_DB_DIR,"/api/v1",5000,frontend,mockLogger);
     httpServer = app.httpServer;
     dbConnector = app.dbConnector;
     masterDriver = dbConnector.getDatabase('master');

@@ -10,8 +10,8 @@ export default class Tools {
     #files
     #logger
 
-    constructor(rootfolder,dbfolder,logger) {
-        this.#files         = createFilesFromFolder(rootfolder,logger);
+    constructor(dbfolder,logger) {
+        this.#files         = createFilesFromFolder(logger);
         this.#connector     = createConnectorFromFolder(this.#files,dbfolder,logger);
         this.#express       = createExpressFromConnector(this.#connector,logger);
         this.#logger        = logger;

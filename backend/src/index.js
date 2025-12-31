@@ -10,5 +10,5 @@ const prefix        = process.env.APIPREFIX || "/api/v1";
 const port          = process.env.PORT || 5000;
 const logger        = console;
 
-export const app = createApp(rootfolder,dbfolder,prefix,port,frontendbuild,logger);
+export const app = createApp(dbfolder,prefix,port,frontendbuild,logger);
 
