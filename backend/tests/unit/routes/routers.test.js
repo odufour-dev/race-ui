@@ -58,8 +58,8 @@ describe('APIRouter', () => {
     expect(resMock.json).toHaveBeenCalledWith({ version: '0.0.0', name: "test", status: 'ok' });
 
   });
-/* FIXME
-  it('Get competitions', () => {
+
+  it('Get competitions', async () => {
 
     const expected = [ { id: 'tour_de_france_2026', name: 'tour_de_france_2026' } ];
 
@@ -69,13 +69,13 @@ describe('APIRouter', () => {
     const databaseMock  = {listCompetitions: jest.fn().mockReturnValue(expected)};
     const sut = new APIRouter(toolsMock, databaseMock, '/api/v1');
 
-    sut.getCompetitions({}, resMock);
+    await sut.getCompetitions({}, resMock);
 
     expect(resMock.json).toHaveBeenCalledTimes(1);
     expect(resMock.json).toHaveBeenCalledWith(expected);
 
   });
-*/
+
   it('Get competitions - ERROR', () => {
 
     const expected  = new Error("DB_ERROR");
@@ -92,8 +92,8 @@ describe('APIRouter', () => {
     expect(jsonMock).toHaveBeenCalledWith({ error: expected.message });
 
   });
-/*
-  it('Create competition', () => {
+
+  it('Create competition', async () => {
 
     const expected = 'tour_de_france_2026';
 
@@ -105,14 +105,14 @@ describe('APIRouter', () => {
     const databaseMock  = {createCompetition: jest.fn().mockReturnValue(expected)};
     const sut = new APIRouter(toolsMock, databaseMock, '/api/v1');
 
-    sut.createCompetition({body: {name: "Tour de France 2026"}}, resMock);
+    await sut.createCompetition({body: {name: "Tour de France 2026"}}, resMock);
 
     expect(statusMock).toHaveBeenCalledWith(201);
     expect(resMock.json).toHaveBeenCalledTimes(1);
     expect(resMock.json).toHaveBeenCalledWith( {id: expected});
 
   });
-*/
+
   it('Create competition - ERROR EXIST', () => {
 
     const expected  = new Error("EXIST_ERROR");
