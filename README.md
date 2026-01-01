@@ -66,7 +66,82 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 
 
-## API
+## API Documentation
+
+This API provides endpoints to manage cycling competitions and check system status.
+
+### Base URL
+`http://localhost/api/v1`
+
+**Note** For development, the API is available on port 5000.
+
+---
+
+### Endpoints
+
+#### 1. Get API Version
+Returns the current version of the API.
+
+* **URL:** `/version`
+* **Method:** `GET`
+* **Response (200 OK):**
+    ```json
+    {
+      "version": "1.0.0",
+      "name": "app",
+      "status": "ok"
+    }
+    ```
+
+### 2. List All Competitions
+Retrieves a list of all available competitions.
+
+* **URL:** `/competitions`
+* **Method:** `GET`
+* **Response (200 OK):**
+    ```json
+    [
+      {
+        "id": 1,
+        "name": "Tour de France 2026",
+        "filename": "tour_de_france_2026.db",
+        "date": null,
+        "status": "active",
+        "createdAt": "2025-12-31T20:41:12.602Z",
+        "updatedAt": "2026-01-01T18:34:26.954Z"
+      }
+    ]
+    ```
+
+### 3. Create a Competition
+Adds a new competition to the system.
+
+* **URL:** `/competitions`
+* **Method:** `POST`
+* **Request Body (JSON):**
+
+| Field  | Type   | Required | Description                |
+| :----- | :----- | :------- | :------------------------- |
+| `name` | string | **Yes** | The name of the competition |
+
+* **Example Request:**
+    ```json
+    {
+      "name": "Tour de France 2026"
+    }
+    ```
+* **Success Response (201 Created):**
+    ```json
+    {
+      "id": "tour_de_france_2026"
+    }
+    ```
+* **Error Response (400 Bad Request):**
+    ```json
+    {
+      "error": "Property 'name' is required"
+    }
+    ```
 
 ### Examples
 
