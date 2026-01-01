@@ -27,10 +27,10 @@ class Connector {
     get competitions()  { return this.#competitions; }
     get master()        { return this.#masterdb;    }
 
-    closeAll() {
+    async closeAll() {
         for (const [name, db] of this.#connections.entries()) {
             try {
-                db.close();
+                await db.close(); // Attendre la fermeture
             } catch (err) {
                 this.#logger.error(`Error while closing ${name}:`, err);
             }
@@ -50,21 +50,23 @@ class Connector {
         return false;
     }
 
-    getDatabase(name){
+    getDatabase(name) {
 
-        name = this.getSafeDatabaseName(name);
-        if (this.#connections.has(name)){
-            return this.#connections.get(name);
+        const safeName = this.getSafeDatabaseName(name);
+        
+        if (this.#connections.has(safeName)) {
+            return this.#connections.get(safeName);
         }
 
-        const filename = this.#files.joinPath(this.#rootfolder, name + Connector.DATABASE_EXTENSION);
-        const driver = new Sequelize({
+        const filename  = this.#files.joinPath(this.#rootfolder, safeName + Connector.DATABASE_EXTENSION);
+        const driver    = new Sequelize({
             dialect: 'sqlite',
             storage: filename,
             logging: false,
             dialectModule: sqlite3
-        });
-        this.#connections.set(name, driver);
+        }); 
+
+        this.#connections.set(safeName, driver);
         return driver;
     }
 
