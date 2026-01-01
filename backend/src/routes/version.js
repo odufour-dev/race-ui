@@ -7,8 +7,15 @@ export default class Version extends Route {
     }
 
     #get(req,res){
-        const configuration = this._database.readConfiguration();
-        res.json({ ...configuration, status: 'ok' });
+
+        try {
+            const configuration = this._connector.readConfiguration();
+            const { version = "x.x.x", name = "unknown" } = JSON.parse(configuration);
+            res.json({ version: version, name: name, status: 'ok' });
+        } catch (e) {
+            res.json({ version: "x.x.x", name: "invalid", status: 'error' });
+        }
+        
     }
 
 }

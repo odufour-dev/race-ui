@@ -1,22 +1,31 @@
 
-import { Sequelize }    from 'sequelize';
-import sqlite3          from 'sqlite3';
+import { Sequelize }            from 'sequelize';
+import sqlite3                  from 'sqlite3';
 
-export class Connector {
+import { createCompetition }    from "./competition/Competition.js"
+import { openMaster }           from "./master/Master.js"
+
+class Connector {
 
     static DATABASE_EXTENSION = ".db";
 
     #connections
+    #competitions
     #files
     #logger
+    #masterdb
     #rootfolder
 
-    constructor(files,rootfolder,logger){
+    constructor(files,rootfolder,competitions,logger){
         this.#files         = files;
         this.#rootfolder    = rootfolder;
         this.#connections   = new Map();
-        this.#logger        = logger;        
+        this.#competitions  = competitions;
+        this.#logger        = logger;
     }
+
+    get competitions()  { return this.#competitions; }
+    get master()        { return this.#masterdb;    }
 
     closeAll() {
         for (const [name, db] of this.#connections.entries()) {
@@ -62,6 +71,18 @@ export class Connector {
     getSafeDatabaseName(name){
         return name.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
     }
+
+    async initialize(mastername = 'master'){
+        try {
+          const driver    = this.getDatabase(mastername);
+          this.#masterdb  = openMaster(driver);
+          await driver.sync();
+          this.#logger.log(`Master database initialized (${mastername})`);
+        } catch (error) {
+          this.#logger.error("Failed to initialize database", error);
+          throw error;
+        }
+      }
    
     isDatabaseExists(name) {
         return this.#connections.has(name);        
@@ -74,6 +95,9 @@ export class Connector {
 
 }
 
-export function createConnectorFromFolder(files,rootfolder,logger=console){
-    return new Connector(files,rootfolder,logger);
+export default async function createConnector(files,rootfolder,mastername,logger=console){
+    const competitions  = { create: (driver,name) => createCompetition(driver,name)};
+    const connector     = new Connector(files,rootfolder,competitions,logger);
+    await connector.initialize(mastername);
+    return connector;    
 }

@@ -8,23 +8,28 @@ export default class Competition extends Route {
         router.post('/competitions',    (req,res) => this.#create(req,res));
     }
 
-    async #create(req,res){
-        try {
-            const id = await this._database.createCompetition(req.body.name);
+    async #create(req,res) {
+    
+        const id = this._connector.getSafeDatabaseName(req.body.name);
+        if (this._connector.isDatabaseExists(id)){
+            res.status(409).json({ error: "EXIST_ERROR" });
+        } else {       
+            
+            const driver = this._connector.getDatabase(id);
+            const competition = this._connector.competitions.create(driver,req.body.name);
+            await driver.sync();
+            // TODO : Insert meta-data in competition database
+            
+            await this._connector.registerCompetition(name, id + Connector.DATABASE_EXTENSION);
             res.status(201).json({ id });
-        } catch (e) {
-            const code = e.message === "EXIST_ERROR" ? 409 : 500;
-            res.status(code).json({ error: e.message });
+        
         }
+
     }
 
     async #get(req,res){
-        try {
-            const competitions = await this._database.listCompetitions();
-            res.json(competitions);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
+        const competitions = await this._connector.master.getAllCompetitions();
+        res.json(competitions);
     }
 
 }

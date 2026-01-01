@@ -43,6 +43,6 @@ export class Files {
 
 }
 
-export function createFilesFromFolder(logger=console){
+export default function createFiles(logger=console){
     return new Files(path,fs,logger);
 }
