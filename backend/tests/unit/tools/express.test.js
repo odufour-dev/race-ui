@@ -17,10 +17,6 @@ describe('Express Class (Unit Tests)', () => {
             exit: jest.fn()
         };
 
-        mockConnector = {
-            closeAll: jest.fn()
-        };
-
         mockServer = {
             close: jest.fn((callback) => callback())
         };
@@ -31,7 +27,7 @@ describe('Express Class (Unit Tests)', () => {
             error:  jest.fn()
         };
 
-        expressInstance = new Express(mockProcess, mockConnector, mockLogger);
+        expressInstance = new Express(mockProcess, mockLogger);
     });
 
     test('listen() shall register closing methods', () => {
@@ -56,9 +52,6 @@ describe('Express Class (Unit Tests)', () => {
         // [ VERIFY ]
         // 1. HTTP server is closed
         expect(mockServer.close).toHaveBeenCalled();
-
-        // 2. All database are closed
-        expect(mockConnector.closeAll).toHaveBeenCalled();
 
         // 3. Clean process exit (code 0)
         expect(mockProcess.exit).toHaveBeenCalledWith(0);

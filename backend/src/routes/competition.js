@@ -20,7 +20,7 @@ export default class Competition extends Route {
             await driver.sync();
             // TODO : Insert meta-data in competition database
             
-            await this._connector.registerCompetition(name, id + Connector.DATABASE_EXTENSION);
+            await this._connector.master.registerCompetition(req.body.name, id + this._connector.DATABASE_EXTENSION);
             res.status(201).json({ id });
         
         }
