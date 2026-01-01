@@ -1,4 +1,6 @@
 
+import { Version } from "./version.js"
+
 export class APIRouter {
 
     #apiprefix
@@ -17,8 +19,12 @@ export class APIRouter {
 
         const router = this.#tools.express.router;
 
+        const routes = [
+            new Version(this.#database,this.#logger)
+        ];
+        routes.map((r) => r.register(router));
+
         // Routes
-        router.get('/version',                    (req,res) => this.getVersion(req,res));
         router.get('/competitions',               (req,res) => this.getCompetitions(req,res));
         router.post('/competitions',              (req,res) => this.createCompetition(req,res));
         router.post('/:competition/racers/sync',  (req,res) => this.syncRacers(req,res));
@@ -31,18 +37,18 @@ export class APIRouter {
         res.json({ ...configuration, status: 'ok' });
     }
 
-    getCompetitions(req, res){
+    async getCompetitions(req, res){
         try {
-            const competitions = this.#database.listCompetitions();
+            const competitions = await this.#database.listCompetitions();
             res.json(competitions);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    createCompetition(req, res){
+    async createCompetition(req, res){
         try {
-            const id = this.#database.createCompetition(req.body.name);
+            const id = await this.#database.createCompetition(req.body.name);
             res.status(201).json({ id });
         } catch (e) {
             const code = e.message === "EXIST_ERROR" ? 409 : 500;
@@ -78,7 +84,7 @@ export class StaticRouter {
     }
 
     sendFile(req,res){
-        const indexPath = this.#tools.files.joinAbsolutePath(this.#filepaths, 'index.html');
+        const indexPath = this.#tools.files.joinPath(this.#filepaths, 'index.html');
         this.#tools.files.exists(indexPath) ? res.sendFile(indexPath) : res.status(404).send("Build missing");
     }
     

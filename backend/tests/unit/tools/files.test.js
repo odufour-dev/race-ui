@@ -6,16 +6,15 @@ describe('Files Class', () => {
     let mockPath;
     let mockLogger;
     let files;
-    const ROOT = '/app/data';
 
     beforeEach(() => {
         // Mock de fs
         mockFs = {
-            existsSync: jest.fn(),
-            mkdirSync: jest.fn(),
-            readdirSync: jest.fn(),
-            readFileSync: jest.fn(),
-            writeFileSync: jest.fn(),
+            existsSync:     jest.fn(),
+            mkdirSync:      jest.fn(),
+            readdirSync:    jest.fn(),
+            readFileSync:   jest.fn(),
+            writeFileSync:  jest.fn(),
         };
 
         // Mock de path
@@ -29,11 +28,7 @@ describe('Files Class', () => {
             error: jest.fn(),
         };
 
-        files = new Files(mockPath, mockFs, ROOT, mockLogger);
-    });
-
-    test('rootfolder getter should return the correct root', () => {
-        expect(files.rootfolder).toBe(ROOT);
+        files = new Files(mockPath, mockFs, mockLogger);
     });
 
     test('exists() should call fs.existsSync', () => {
@@ -42,13 +37,6 @@ describe('Files Class', () => {
         
         expect(mockFs.existsSync).toHaveBeenCalledWith('test.txt');
         expect(result).toBe(true);
-    });
-
-    test('joinAbsolutePath() should prepend root folder', () => {
-        const result = files.joinAbsolutePath('subdir', 'file.db');
-        
-        expect(mockPath.join).toHaveBeenCalledWith(ROOT, 'subdir', 'file.db');
-        expect(result).toBe(`${ROOT}/subdir/file.db`);
     });
 
     test('joinPath() should join segments without root', () => {
@@ -62,27 +50,9 @@ describe('Files Class', () => {
         expect(mockFs.mkdirSync).toHaveBeenCalledWith('/new-dir', { recursive: true });
     });
 
-    test('readAbsoluteDir() should join root and call readdirSync', () => {
-        mockFs.readdirSync.mockReturnValue(['file1.txt']);
-        const result = files.readAbsoluteDir('my-folder');
-        
-        expect(mockPath.join).toHaveBeenCalledWith(ROOT, 'my-folder');
-        expect(mockFs.readdirSync).toHaveBeenCalledWith(`${ROOT}/my-folder`);
-        expect(result).toEqual(['file1.txt']);
-    });
-
     test('readDir() should call readdirSync directly', () => {
         files.readDir('/direct/path');
         expect(mockFs.readdirSync).toHaveBeenCalledWith('/direct/path');
-    });
-
-    test('readAbsoluteFile() should join root and call readFileSync', () => {
-        mockFs.readFileSync.mockReturnValue('content');
-        const result = files.readAbsoluteFile('config.json', 'ascii');
-        
-        expect(mockPath.join).toHaveBeenCalledWith(ROOT, 'config.json');
-        expect(mockFs.readFileSync).toHaveBeenCalledWith(`${ROOT}/config.json`, 'ascii');
-        expect(result).toBe('content');
     });
 
     test('readFile() should call readFileSync with default encoding', () => {

@@ -1,79 +1,67 @@
 
+import { Connector }          from "../tools/connector.js"
+import { createCompetition }  from "./competition/Competition.js"
+import { openMaster }         from "./master/Master.js"
 
 export default class Database {
 
   #logger
   #masterdb
   #mastername
-  #schemapath
   #tools
+  #ready
 
-  constructor(tools, schemapath, logger = console, mastername = "master") {
+  constructor(tools, logger = console, mastername = "master") {
     this.#logger      = logger;
     this.#mastername  = mastername;
-    this.#schemapath  = schemapath;
     this.#tools       = tools;
+    this.#ready       = false;
   }
 
-  createCompetition(name) {
+  async createCompetition(name) {
+
+    if (!this.#ready) throw new Error("DATABASE_NOT_INITIALIZED");
 
     const id = this.#tools.connector.getSafeDatabaseName(name);
     if (this.#tools.connector.isDatabaseExists(id)) throw new Error("EXIST_ERROR");        
-    const db = this.#tools.connector.getDatabase(id);
-
-    // Create the database from schema.sql
-    try {
-      const schema = this.#tools.files.readAbsoluteFile(this.#schemapath, 'utf8');
-      db.exec(schema);
-    } catch (e) {
-      this.#tools.logger.error("SQL EXEC ERROR:", e);
-      throw new Error("CANNOT_INITIALIZE_DB : " + e.message);
-    }
     
-    // Add meta-data into the base
-    const metaTransaction = db.transaction((id,name) => {
-      const insert = db.prepare('INSERT INTO metadata (id, name) VALUES (?, ?)');
-      insert.run(id, name);
-    });
-    metaTransaction(id,name);
+    const driver = this.#tools.connector.getDatabase(id);
+    const competition = createCompetition(driver,name);
+    await driver.sync();
+    // TODO : Insert meta-data in competition database
 
-    // Insert the competition in the master database
-    const masterTransaction = this.#masterdb.transaction((id,name) => {
-      const insert = this.#masterdb.prepare('INSERT INTO competitions (id, name) VALUES (?, ?)');
-      insert.run(id, name);
-    });
-    masterTransaction(id,name);
-
-    return id;
+    try {
+      await this.#masterdb.registerCompetition(name, id + Connector.DATABASE_EXTENSION);
+      return id;
+    } catch (err) {
+      this.#logger.error("Failed to register competition in master", err);
+      throw err;
+    }
 
   }
 
-  initialize(){
-    
-    this.#masterdb  = this.#tools.connector.getDatabase(this.#mastername);
-
-    const initSchema = this.#masterdb.transaction(() => {
-      this.#masterdb.exec(`
-        CREATE TABLE IF NOT EXISTS competitions (
-          id TEXT PRIMARY KEY,
-          name TEXT NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-    });
-    initSchema();
-    this.#tools.logger.log(`Master database initialized (${this.#mastername})`);
-
+  async initialize(){
+    try {
+      const driver    = this.#tools.connector.getDatabase(this.#mastername);
+      this.#masterdb  = openMaster(driver);
+      await driver.sync();
+      this.#ready = true;
+      this.#logger.log(`Master database initialized (${this.#mastername})`);
+    } catch (error) {
+      this.#logger.error("Failed to initialize database", error);
+      throw error;
+    }
   }
 
   listCompetitions() {
-    return this.#masterdb.prepare('SELECT * FROM competitions').all();
+    if (!this.#ready) throw new Error("DATABASE_NOT_INITIALIZED");
+    return this.#masterdb.getAllCompetitions();
   }
 
   readConfiguration(){
 
     try {
-      const packagetext = this.#tools.files.readAbsoluteFile("../package.json");
+      const packagetext = this.#tools.connector.readConfiguration();
       const { version = "x.x.x", name = "unknown" } = JSON.parse(packagetext);
       return {version, name};
     } catch (e) {
@@ -83,7 +71,7 @@ export default class Database {
     }
 
   }
-
+/*
   syncRacers(competition, racers) {
 
     const dbPath = this.#tools.connector.getSafeDatabasePath(competition);
@@ -97,5 +85,5 @@ export default class Database {
     });
     syncTransaction(racers);
   }
-
+*/
 }

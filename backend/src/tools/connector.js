@@ -1,7 +1,10 @@
 
-import Database from 'better-sqlite3';
+import { Sequelize }    from 'sequelize';
+import sqlite3          from 'sqlite3';
 
 export class Connector {
+
+    static DATABASE_EXTENSION = ".db";
 
     #connections
     #files
@@ -37,35 +40,36 @@ export class Connector {
         }
         return false;
     }
-    
-    getDatabase(name) {
+
+    getDatabase(name){
 
         name = this.getSafeDatabaseName(name);
-        if (this.isDatabaseExists(name)) {
+        if (this.#connections.has(name)){
             return this.#connections.get(name);
         }
 
-        const dbPath = this.getSafeDatabasePath(name);
-        try {
-            const db = new Database(dbPath);
-            this.#connections.set(name, db);
-            return db;
-        } catch (error) {
-            throw new Error(`Cannot open database ${name}: ${error.message}`);
-        }
+        const filename = this.#files.joinPath(this.#rootfolder, name + Connector.DATABASE_EXTENSION);
+        const driver = new Sequelize({
+            dialect: 'sqlite',
+            storage: filename,
+            logging: false,
+            dialectModule: sqlite3
+        });
+        this.#connections.set(name, driver);
+        return driver;
     }
 
     getSafeDatabaseName(name){
         return name.replace(/[^a-z0-9_-]/gi, '_').toLowerCase();
     }
-
-    getSafeDatabasePath(name){
-        const dbName = this.getSafeDatabaseName(name) + ".db";
-        return this.#files.joinAbsolutePath(this.#rootfolder, dbName);
-    }
-
+   
     isDatabaseExists(name) {
         return this.#connections.has(name);        
+    }
+
+    readConfiguration(){
+        const filename = this.#files.joinPath(this.#rootfolder, "..","package.json");
+        return this.#files.readFile(filename);        
     }
 
 }

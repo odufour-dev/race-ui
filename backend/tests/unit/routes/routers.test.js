@@ -59,7 +59,7 @@ describe('APIRouter', () => {
 
   });
 
-  it('Get competitions', () => {
+  it('Get competitions', async () => {
 
     const expected = [ { id: 'tour_de_france_2026', name: 'tour_de_france_2026' } ];
 
@@ -69,7 +69,7 @@ describe('APIRouter', () => {
     const databaseMock  = {listCompetitions: jest.fn().mockReturnValue(expected)};
     const sut = new APIRouter(toolsMock, databaseMock, '/api/v1');
 
-    sut.getCompetitions({}, resMock);
+    await sut.getCompetitions({}, resMock);
 
     expect(resMock.json).toHaveBeenCalledTimes(1);
     expect(resMock.json).toHaveBeenCalledWith(expected);
@@ -93,7 +93,7 @@ describe('APIRouter', () => {
 
   });
 
-  it('Create competition', () => {
+  it('Create competition', async () => {
 
     const expected = 'tour_de_france_2026';
 
@@ -105,7 +105,7 @@ describe('APIRouter', () => {
     const databaseMock  = {createCompetition: jest.fn().mockReturnValue(expected)};
     const sut = new APIRouter(toolsMock, databaseMock, '/api/v1');
 
-    sut.createCompetition({body: {name: "Tour de France 2026"}}, resMock);
+    await sut.createCompetition({body: {name: "Tour de France 2026"}}, resMock);
 
     expect(statusMock).toHaveBeenCalledWith(201);
     expect(resMock.json).toHaveBeenCalledTimes(1);
@@ -224,15 +224,15 @@ describe('StaticRouter', () => {
 
     const filepathsMock = '/path/to/build';
 
-    const joinAbsolutePathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
+    const joinPathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
     const existsMock = jest.fn().mockReturnValue(true);
-    const toolsMock     = {files: {joinAbsolutePath: joinAbsolutePathMock, exists: existsMock}};
+    const toolsMock     = {files: {joinPath: joinPathMock, exists: existsMock}};
 
     const sut = new StaticRouter(toolsMock, filepathsMock);
     sut.sendFile({}, resMock);
 
-    expect(joinAbsolutePathMock).toHaveBeenCalledTimes(1);
-    expect(joinAbsolutePathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
+    expect(joinPathMock).toHaveBeenCalledTimes(1);
+    expect(joinPathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
 
     expect(existsMock).toHaveBeenCalledTimes(1);
     expect(existsMock).toHaveBeenCalledWith('/path/to/build/index.html');
@@ -250,15 +250,15 @@ describe('StaticRouter', () => {
 
     const filepathsMock = '/path/to/build';
 
-    const joinAbsolutePathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
+    const joinPathMock = jest.fn().mockReturnValue('/path/to/build/index.html');
     const existsMock = jest.fn().mockReturnValue(false);
-    const toolsMock     = {files: {joinAbsolutePath: joinAbsolutePathMock, exists: existsMock}};
+    const toolsMock     = {files: {joinPath: joinPathMock, exists: existsMock}};
 
     const sut = new StaticRouter(toolsMock, filepathsMock);
     sut.sendFile({}, resMock);
 
-    expect(joinAbsolutePathMock).toHaveBeenCalledTimes(1);
-    expect(joinAbsolutePathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
+    expect(joinPathMock).toHaveBeenCalledTimes(1);
+    expect(joinPathMock).toHaveBeenCalledWith(filepathsMock, 'index.html');
 
     expect(existsMock).toHaveBeenCalledTimes(1);
     expect(existsMock).toHaveBeenCalledWith('/path/to/build/index.html');
