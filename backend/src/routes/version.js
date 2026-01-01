@@ -1,6 +1,6 @@
 import Route from "./route.js"
 
-export class Version extends Route {
+export default class Version extends Route {
 
     register(router){
         router.get('/version', (req,res) => this.#get(req,res));
