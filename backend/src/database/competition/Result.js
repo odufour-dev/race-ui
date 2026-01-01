@@ -2,10 +2,6 @@ import { Model, DataTypes } from 'sequelize';
 
 export class Result extends Model {
 
-    formatTime() {
-        return `${this.time} (Rank: ${this.rank})`;
-    }
-
     static initialize(sequelize){
 
         return super.init({
