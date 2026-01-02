@@ -328,7 +328,21 @@ Update the competition configuration.
     }
     ```
 
-### 7. Synchronize stage ranking
+### 7. Get the stage ranking
+Retrieves the stage ranking.
+
+* **URL:** `/competitions/:id/stages/:stageId/rankings`
+* **Method:** `GET`
+* **Response (200 OK):**
+    ```json
+    [
+      {"position": 1, "bib": "1",   "time": "01:25:34", "status": "done", "bonifications": [10], "penalties": []},
+      {"position": 2, "bib": "11",  "time": "01:25:45", "status": "done", "bonifications": [6],  "penalties": []},
+      {"position": 3, "bib": "2",   "time": "01:28:10", "status": "done", "bonifications": [4],  "penalties": []}
+    ]
+    ```
+
+### 8. Synchronize stage ranking
 Update the stage ranking information in database.
 
 * **URL:** `/competitions/:id/stages/:stageId/rankings`
@@ -364,7 +378,20 @@ Update the stage ranking information in database.
     }
     ```
 
-### 8. Synchronize annex rankings
+### 9. Get the annex ranking
+Retrieves the annex ranking.
+
+* **URL:** `/competitions/:id/stages/:stageId/annexes/:annexId`
+* **Method:** `GET`
+* **Response (200 OK):**
+    ```json
+    [
+      {"name": "Sprint #1", "distance": 50.5,   "racers": ["11","2","1"]},
+      {"name": "Sprint #2", "distance": 100.4,  "racers": ["2","11","1"]}
+    ]
+    ```
+
+### 10. Synchronize annex rankings
 Update the stage annex ranking information in database.
 
 * **URL:** `/competitions/:id/stages/:stageId/annexes/:annexId`
@@ -400,7 +427,7 @@ Update the stage annex ranking information in database.
     ```
 
 
-### 9. Get racers
+### 11. Get racers
 Retrieves a list of racers.
 
 * **URL:** `/competitions/:id/racers`
@@ -416,7 +443,7 @@ Retrieves a list of racers.
     }
     ```
 
-### 10. Synchronize racers
+### 12. Synchronize racers
 Update the racers information in database.
 
 * **URL:** `/competitions/:id/racers`
