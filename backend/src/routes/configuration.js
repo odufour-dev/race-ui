@@ -23,7 +23,45 @@ export default class Configuration extends Route {
 
         const compid = req.params.id;
         if (this._connector.isDatabaseExists(compid)){
-            res.status(200).json("TODO : Update configuration for database : " + compid);
+
+            const db = this._connector.getDatabase(compid);
+            const data = req.body;
+
+            if ("stages" in data){
+
+                try {
+
+                    const result = await db.transaction(async (t) => {
+                        
+                        const existingRace = await db.models.race.findOne({ 
+                            where: { name: data.name }, 
+                            transaction: t 
+                        });
+
+                        if (existingRace) {
+                            await existingRace.destroy({ transaction: t });
+                        }
+
+                        const raceData = {
+                            name: data.name,
+                            nStages: data.stages.length,
+                            Stages: data.stages
+                        };
+
+                        return await db.models.race.create(raceData, {
+                            include: [{ model: db.models.stage, as: 'Stages' }],
+                            transaction: t 
+                        });
+                    });
+
+                    res.status(201).json(result);
+                    
+                } catch (error) {
+                    res.status(500).json({ error: error.message });
+                }
+
+            }
+
         } else {
             res.status(404).json("Database not found for " + compid);
         }

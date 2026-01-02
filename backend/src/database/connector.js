@@ -52,6 +52,7 @@ class Connector {
 
     getDatabase(name) {
 
+        name = this.#files.basename(name);
         const safeName = this.getSafeDatabaseName(name);
         
         if (this.#connections.has(safeName)) {
@@ -65,6 +66,7 @@ class Connector {
             logging: false,
             dialectModule: sqlite3
         }); 
+        this.#competitions.create(driver,name);
 
         this.#connections.set(safeName, driver);
         return driver;

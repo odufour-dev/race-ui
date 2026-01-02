@@ -291,13 +291,13 @@ Update the competition configuration.
     {
       "stages": [
         {"name": "Etape 1", "distance": "150.1",  "date": "2026-07-13"},
-        {"name": "Etape 2", "distance": "120",    "date": "2026-07-14"},
+        {"name": "Etape 2", "distance": "120",    "date": "2026-07-14"}
         ],
       "annex": [
           {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
           {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","points": [5,3,1]},{"name": "cat2", "points": [3,1]}]},
           {"name": "Jeunes",        "type": "filter",       "priority": 3, "filter": "age < 23"},
-          {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"},
+          {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"}
         ],
       "events" : [
         {
@@ -327,6 +327,12 @@ Update the competition configuration.
       "error": "Property 'stages' is required"
     }
     ```
+* **cURL request example:**
+  ```bash
+  curl -X POST http://localhost:5000/api/v1/competitions/tour_de_france_2026/configuration \
+     -H "Content-Type: application/json" \
+     -d @configuration01.json
+  ```
 
 ### 7. Get the stage ranking
 Retrieves the stage ranking.
