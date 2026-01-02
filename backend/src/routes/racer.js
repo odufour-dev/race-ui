@@ -4,19 +4,30 @@ import Route from "./route.js"
 export default class Racer extends Route {
 
     register(router){
-        router.post('/:competition/racers/sync',  (req,res) => this.#sync(req,res));
+        router.get( '/competitions/:id/racers',  (req,res) => this.#get(req,res));
+        router.post('/competitions/:id/racers',  (req,res) => this.#post(req,res));
     }
 
-    async #sync(req,res){
-        /*
-       try {
-            this._database.syncRacers(req.params.competition, req.body.racers);
-            res.json({ message: "OK" });
-        } catch (e) {
-            res.status(500).json({ error: e.message });
+    async #get(req,res){
+
+        const compid = req.params.id;
+        if (this._connector.isDatabaseExists(compid)){
+            res.status(200).json("TODO : Retrieve racers for database : " + compid);
+        } else {
+            res.status(404).json("Database not found for " + compid);
         }
-        */
-       res.status(500).json({ error: 'Route not implemented' });
+
+    }
+
+    async #post(req,res){
+
+        const compid = req.params.id;
+        if (this._connector.isDatabaseExists(compid)){
+            res.status(200).json("TODO : Update racers for database : " + compid);
+        } else {
+            res.status(404).json("Database not found for " + compid);
+        }
+
     }
 
 }

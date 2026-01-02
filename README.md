@@ -144,63 +144,7 @@ Adds a new competition to the system.
     }
     ```
 
-### 4. Configure the competition
-Update the competition configuration.
-
-* **URL:** `/competitions/:id/configuration`
-* **Method:** `POST`
-* **Header** `Content-Type: application/json`
-* **Request Body (JSON):**
-
-| Field     | Type   | Required | Description                |
-| :-------- | :----- | :------- | :------------------------- |
-| `stages` | JSON array of objects | **Yes** - Shall contain at least 1 element | The list of stages with meta-data (name, date, distance) |
-| `annex` | JSON array of objects | **No** | The list of annex rankings |
-
-* **Example Request:**
-    ```json
-    {
-      "stages": [
-        {"name": "Etape 1", "distance": "150.1",  "date": "2026-07-13"},
-        {"name": "Etape 2", "distance": "120",    "date": "2026-07-14"},
-        ],
-      "annex": [
-          {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
-          {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","points": [5,3,1]},{"name": "cat2", "points": [3,1]}]},
-          {"name": "Jeunes",        "type": "filter",       "priority": 3, "filter": "age < 23"},
-          {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"},
-        ],
-      "events" : [
-        {
-          "stage": "1",
-          "annex": [
-            {"name": "points", "category": "sprint",  "distance": 50.5,   "points": [5,3,1]},
-            {"name": "GPM",    "category": "cat1",    "distance": 62.4,   "points": [5,3,1]},
-            {"name": "points", "category": "sprint",  "distance": 100.4,  "points": [5,3,1]},
-            {"name": "GPM",    "category": "cat2",    "distance": 85.3,   "points": [3,1]}
-          ],
-          "bonifications": [
-            {"name": "Arrivée", "distance": 150.1, "time": [10,6,4], "finish": true}
-          ]
-        }
-      ]
-    }
-    ```
-* **Success Response (201 Created):**
-    ```json
-    {
-      "status": "ok"
-    }
-    ```
-* **Error Response (400 Bad Request):**
-    ```json
-    {
-      "error": "Property 'stages' is required"
-    }
-    ```
-    
-
-### 5. Get competition information
+### 4. Get competition information
 Retrieves all information about a competition
 
 * **URL:** `/competitions/:id`
@@ -294,7 +238,97 @@ Retrieves all information about a competition
     }
     ```
 
-### 6. Synchronize stage ranking
+### 5. Get the competition configuration
+Retrieves the configuration of a competition.
+
+* **URL:** `/competitions/:id/configuration`
+* **Method:** `GET`
+* **Response (200 OK):**
+    ```json
+    {
+      "stages": [
+        {"name": "Etape 1", "distance": "150.1",  "date": "2026-07-13"},
+        {"name": "Etape 2", "distance": "120",    "date": "2026-07-14"},
+        ],
+      "annex": [
+          {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
+          {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","points": [5,3,1]},{"name": "cat2", "points": [3,1]}]},
+          {"name": "Jeunes",        "type": "filter",       "priority": 3, "filter": "age < 23"},
+          {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"},
+        ],
+      "events" : [
+        {
+          "stage": "1",
+          "annex": [
+            {"name": "points", "category": "sprint",  "distance": 50.5,   "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat1",    "distance": 62.4,   "points": [5,3,1]},
+            {"name": "points", "category": "sprint",  "distance": 100.4,  "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat2",    "distance": 85.3,   "points": [3,1]}
+          ],
+          "bonifications": [
+            {"name": "Arrivée", "distance": 150.1, "time": [10,6,4], "finish": true}
+          ]
+        }
+      ]
+    }
+    ```
+
+### 6. Configure the competition
+Update the competition configuration.
+
+* **URL:** `/competitions/:id/configuration`
+* **Method:** `POST`
+* **Header** `Content-Type: application/json`
+* **Request Body (JSON):**
+
+| Field     | Type   | Required | Description                |
+| :-------- | :----- | :------- | :------------------------- |
+| `stages` | JSON array of objects | **Yes** - Shall contain at least 1 element | The list of stages with meta-data (name, date, distance) |
+| `annex` | JSON array of objects | **No** | The list of annex rankings |
+
+* **Example Request:**
+    ```json
+    {
+      "stages": [
+        {"name": "Etape 1", "distance": "150.1",  "date": "2026-07-13"},
+        {"name": "Etape 2", "distance": "120",    "date": "2026-07-14"},
+        ],
+      "annex": [
+          {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
+          {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","points": [5,3,1]},{"name": "cat2", "points": [3,1]}]},
+          {"name": "Jeunes",        "type": "filter",       "priority": 3, "filter": "age < 23"},
+          {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"},
+        ],
+      "events" : [
+        {
+          "stage": "1",
+          "annex": [
+            {"name": "points", "category": "sprint",  "distance": 50.5,   "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat1",    "distance": 62.4,   "points": [5,3,1]},
+            {"name": "points", "category": "sprint",  "distance": 100.4,  "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat2",    "distance": 85.3,   "points": [3,1]}
+          ],
+          "bonifications": [
+            {"name": "Arrivée", "distance": 150.1, "time": [10,6,4], "finish": true}
+          ]
+        }
+      ]
+    }
+    ```
+* **Success Response (201 Created):**
+    ```json
+    {
+      "status": "ok"
+    }
+    ```
+* **Error Response (400 Bad Request):**
+    ```json
+    {
+      "error": "Property 'stages' is required"
+    }
+    ```
+
+### 7. Synchronize stage ranking
 Update the stage ranking information in database.
 
 * **URL:** `/competitions/:id/stages/:stageId/rankings`
@@ -330,7 +364,7 @@ Update the stage ranking information in database.
     }
     ```
 
-### 7. Synchronize annex rankings
+### 8. Synchronize annex rankings
 Update the stage annex ranking information in database.
 
 * **URL:** `/competitions/:id/stages/:stageId/annexes/:annexId`
@@ -366,7 +400,7 @@ Update the stage annex ranking information in database.
     ```
 
 
-### 8. Get racers
+### 9. Get racers
 Retrieves a list of racers.
 
 * **URL:** `/competitions/:id/racers`
@@ -382,7 +416,7 @@ Retrieves a list of racers.
     }
     ```
 
-### 9. Synchronize racers
+### 10. Synchronize racers
 Update the racers information in database.
 
 * **URL:** `/competitions/:id/racers`
