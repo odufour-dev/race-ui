@@ -1,5 +1,6 @@
 
 import CompetitionRoutes    from './routes/competition.js';
+import ConfigurationRoutes  from './routes/configuration.js';
 import RacerRoutes          from './routes/racer.js';
 import VersionRoutes        from './routes/version.js';
 import StaticRoutes         from './routes/static.js';
@@ -19,6 +20,7 @@ export const createApp = async (dbfolder,apiprefix,port,frontendbuildpath,logger
     // Register API routes
     const routes = [
         new CompetitionRoutes(connector,logger),
+        new ConfigurationRoutes(connector,logger),
         new RacerRoutes(connector,logger),
         new VersionRoutes(connector,logger),
     ];
