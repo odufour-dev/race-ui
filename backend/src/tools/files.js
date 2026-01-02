@@ -13,6 +13,10 @@ export class Files {
         this.#logger            = logger;
     }
 
+    basename(filename){
+        return this.#path.parse(filename).name;
+    }
+
     exists(filePath) {
         return this.#fs.existsSync(filePath);        
     }

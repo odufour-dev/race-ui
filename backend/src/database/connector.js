@@ -87,7 +87,9 @@ class Connector {
       }
    
     isDatabaseExists(name) {
-        return this.#connections.has(name);        
+        name = this.#files.basename(name);
+        const filename  = this.#files.joinPath(this.#rootfolder, name + Connector.DATABASE_EXTENSION);
+        return this.#connections.has(name) || this.#files.exists(this.#files.joinPath(filename));        
     }
 
     readConfiguration(){

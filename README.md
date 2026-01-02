@@ -147,7 +147,7 @@ Adds a new competition to the system.
 ### 4. Configure the competition
 Update the competition configuration.
 
-* **URL:** `/:competition/configure`
+* **URL:** `/competitions/:id/configuration`
 * **Method:** `POST`
 * **Header** `Content-Type: application/json`
 * **Request Body (JSON):**
@@ -203,7 +203,7 @@ Update the competition configuration.
 ### 5. Get competition information
 Retrieves all information about a competition
 
-* **URL:** `/:competition/all`
+* **URL:** `/competitions/:id`
 * **Method:** `GET`
 * **Response (200 OK):**
     ```json
@@ -297,7 +297,7 @@ Retrieves all information about a competition
 ### 6. Synchronize stage ranking
 Update the stage ranking information in database.
 
-* **URL:** `/:competition/:stageid/ranking`
+* **URL:** `/competitions/:id/stages/:stageId/rankings`
 * **Method:** `POST`
 * **Header** `Content-Type: application/json`
 * **Request Body (JSON):**
@@ -333,7 +333,7 @@ Update the stage ranking information in database.
 ### 7. Synchronize annex rankings
 Update the stage annex ranking information in database.
 
-* **URL:** `/:competition/:stageid/annex/:annex`
+* **URL:** `/competitions/:id/stages/:stageId/annexes/:annexId`
 * **Method:** `POST`
 * **Header** `Content-Type: application/json`
 * **Request Body (JSON):**
@@ -369,7 +369,7 @@ Update the stage annex ranking information in database.
 ### 8. Get racers
 Retrieves a list of racers.
 
-* **URL:** `/:competition/racers`
+* **URL:** `/competitions/:id/racers`
 * **Method:** `GET`
 * **Response (200 OK):**
     ```json
@@ -385,7 +385,7 @@ Retrieves a list of racers.
 ### 9. Synchronize racers
 Update the racers information in database.
 
-* **URL:** `/:competition/racers`
+* **URL:** `/competitions/:id/racers`
 * **Method:** `POST`
 * **Header** `Content-Type: application/json`
 * **Request Body (JSON):**
