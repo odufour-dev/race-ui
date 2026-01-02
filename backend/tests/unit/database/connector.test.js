@@ -3,6 +3,8 @@ import createConnector from '../../../src/database/connector.js';
 
 // 1. Mock the file system and logger
 const mockFiles = {
+    basename: jest.fn((name) => name),
+    exists: jest.fn(),
     joinPath: jest.fn((...args) => args.join('/')),
     // Important: readConfiguration expects a string/buffer
     readFile: jest.fn(() => JSON.stringify({ version: "1.0.0" }))
@@ -58,6 +60,9 @@ describe('Connector Class Integration Test', () => {
     });
 
     test('should close a specific database', async () => {
+
+        mockFiles.exists.mockReturnValue(false);
+        
         await connector.getDatabase('temp_db');
         expect(connector.isDatabaseExists('temp_db')).toBe(true);
 
@@ -67,6 +72,9 @@ describe('Connector Class Integration Test', () => {
     });
 
     test('should close all connections', async () => {
+        
+        mockFiles.exists.mockReturnValue(false);
+
         await connector.getDatabase('db_1');
         await connector.getDatabase('db_2');
 
