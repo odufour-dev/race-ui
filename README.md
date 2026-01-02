@@ -118,6 +118,7 @@ Adds a new competition to the system.
 
 * **URL:** `/competitions`
 * **Method:** `POST`
+* **Header** `Content-Type: application/json`
 * **Request Body (JSON):**
 
 | Field  | Type   | Required | Description                |
@@ -140,6 +141,280 @@ Adds a new competition to the system.
     ```json
     {
       "error": "Property 'name' is required"
+    }
+    ```
+
+### 4. Configure the competition
+Update the competition configuration.
+
+* **URL:** `/:competition/configure`
+* **Method:** `POST`
+* **Header** `Content-Type: application/json`
+* **Request Body (JSON):**
+
+| Field     | Type   | Required | Description                |
+| :-------- | :----- | :------- | :------------------------- |
+| `stages` | JSON array of objects | **Yes** - Shall contain at least 1 element | The list of stages with meta-data (name, date, distance) |
+| `annex` | JSON array of objects | **No** | The list of annex rankings |
+
+* **Example Request:**
+    ```json
+    {
+      "stages": [
+        {"name": "Etape 1", "distance": "150.1",  "date": "2026-07-13"},
+        {"name": "Etape 2", "distance": "120",    "date": "2026-07-14"},
+        ],
+      "annex": [
+          {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
+          {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","points": [5,3,1]},{"name": "cat2", "points": [3,1]}]},
+          {"name": "Jeunes",        "type": "filter",       "priority": 3, "filter": "age < 23"},
+          {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"},
+        ],
+      "events" : [
+        {
+          "stage": "1",
+          "annex": [
+            {"name": "points", "category": "sprint",  "distance": 50.5,   "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat1",    "distance": 62.4,   "points": [5,3,1]},
+            {"name": "points", "category": "sprint",  "distance": 100.4,  "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat2",    "distance": 85.3,   "points": [3,1]}
+          ],
+          "bonifications": [
+            {"name": "Arrivée", "distance": 150.1, "time": [10,6,4], "finish": true}
+          ]
+        }
+      ]
+    }
+    ```
+* **Success Response (201 Created):**
+    ```json
+    {
+      "status": "ok"
+    }
+    ```
+* **Error Response (400 Bad Request):**
+    ```json
+    {
+      "error": "Property 'stages' is required"
+    }
+    ```
+    
+
+### 5. Get competition information
+Retrieves all information about a competition
+
+* **URL:** `/:competition/all`
+* **Method:** `GET`
+* **Response (200 OK):**
+    ```json
+    {
+      "id": 1,
+      "name": "Tour de France 2026",
+      "filename": "tour_de_france_2026.db",
+      "date": null,
+      "status": "active",
+      "createdAt": "2025-12-31T20:41:12.602Z",
+      "updatedAt": "2026-01-01T18:34:26.954Z",
+      "configuration": {
+        "stages": [
+          {"order": "1", "name": "Etape 1", "distance": 150.1,  "date": "2026-07-13"},
+          {"order": "2", "name": "Etape 2", "distance": 120,    "date": "2026-07-14"},
+        ],
+        "annex": [
+          {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
+          {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","points": [5,3,1]},{"name": "cat2", "points": [3,1]}]},
+          {"name": "Jeunes",        "type": "filter",       "priority": 3, "filter": "age < 23"},
+          {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"},
+        ]
+      },
+      "events" : [
+        {
+          "stage": "1",
+          "annex": [
+            {"name": "points", "category": "sprint",  "distance": 50.5,   "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat1",    "distance": 62.4,   "points": [5,3,1]},
+            {"name": "points", "category": "sprint",  "distance": 100.4,  "points": [5,3,1]},
+            {"name": "GPM",    "category": "cat2",    "distance": 85.3,   "points": [3,1]}
+          ],
+          "bonifications": [
+            {"name": "Arrivée", "distance": 150.1, "time": [10,6,4], "finish": true}
+          ]
+        }
+      ],
+      "racers": [
+        {"bib": "1",  "firstname": "Paul",    "lastname": "POULE", "team": "UAE",   "age": 25, "uciID": "1002563585", "ffcID": ""},
+        {"bib": "2",  "firstname": "Pierre",  "lastname": "PONCE", "team": "UAE",   "age": 30, "uciID": "1012356984", "ffcID": ""}
+        {"bib": "11", "firstname": "René",    "lastname": "TAUPE", "team": "Visma", "age": 22, "uciID": "1007896325", "ffcID": ""}
+      ],
+      "rankings": [
+        {
+          "stage": "1", 
+          "ranking": [
+            {"position": 1, "bib": "1",   "time": "01:25:34", "status": "done", "bonifications": [10], "penalties": []},
+            {"position": 2, "bib": "11",  "time": "01:25:45", "status": "done", "bonifications": [6],  "penalties": []},
+            {"position": 3, "bib": "2",   "time": "01:28:10", "status": "done", "bonifications": [4],  "penalties": []}
+          ],
+          "general": [
+            {"position": 1, "bib": "1",   "time": "01:25:34", "millis": 0, "cumulated": 1, "last": 1, "status": "done"},
+            {"position": 2, "bib": "11",  "time": "01:25:45", "millis": 0, "cumulated": 2, "last": 2, "status": "done"},
+            {"position": 3, "bib": "2",   "time": "01:28:10", "millis": 0, "cumulated": 3, "last": 3, "status": "done"}
+          ],
+          "teams": [
+            {"name": "UAE",   "time": "02:53:44", "position": 4, "racers": ["1","2"]  },
+            {"name": "Visma", "time": [],         "position": "",  "racers": []         },
+          ],
+          "annex": [
+            {
+              "name": "points", 
+              "classifications": [
+                {"name": "Sprint #1", "distance": 50.5,   "racers": ["11","2","1"]},
+                {"name": "Sprint #2", "distance": 100.4,  "racers": ["2","11","1"]}
+              ], 
+              "ranking": [
+                {"racer": "11", "points": 8, "victory": [1], "position": 2},
+                {"racer": "2",  "points": 8, "victory": [1], "position": 3},
+                {"racer": "1",  "points": 2, "victory": [0], "position": 1},
+              ]
+            },
+            {
+              "name": "GPM", 
+              "classifications": [
+                {"name": "Col 1", "distance": 62.4,   "racers":  ["1","11","2"]},
+                {"name": "Col 2", "distance": 85.3,   "racers":  ["1","2"]}
+              ], 
+              "ranking": [
+                {"racer": "1",  "points": 8, "victory": [1,1], "position": 1},
+                {"racer": "11", "points": 3, "victory": [0,0], "position": 2},
+                {"racer": "2",  "points": 2, "victory": [0,0], "position": 3},
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    ```
+
+### 6. Synchronize stage ranking
+Update the stage ranking information in database.
+
+* **URL:** `/:competition/:stageid/ranking`
+* **Method:** `POST`
+* **Header** `Content-Type: application/json`
+* **Request Body (JSON):**
+
+| Field  | Type   | Required | Description                |
+| :----- | :----- | :------- | :------------------------- |
+| `ranking` | JSON array of objects | **Yes** | The list of annex rankings |
+
+* **Example Request:**
+    ```json
+     {
+        "ranking": [
+          {"position": 1, "bib": "1",   "time": "01:25:34", "status": "done", "bonifications": [10], "penalties": []},
+          {"position": 2, "bib": "11",  "time": "01:25:45", "status": "done", "bonifications": [6],  "penalties": []},
+          {"position": 3, "bib": "2",   "time": "01:28:10", "status": "done", "bonifications": [4],  "penalties": []}
+        ]
+     }
+    ```
+* **Success Response (201 Created):**
+    ```json
+    {
+      "status": "ok",
+      "entries": 3
+    }
+    ```
+* **Error Response (400 Bad Request):**
+    ```json
+    {
+      "error": "Invalid format"
+    }
+    ```
+
+### 7. Synchronize annex rankings
+Update the stage annex ranking information in database.
+
+* **URL:** `/:competition/:stageid/annex/:annex`
+* **Method:** `POST`
+* **Header** `Content-Type: application/json`
+* **Request Body (JSON):**
+
+| Field  | Type   | Required | Description                |
+| :----- | :----- | :------- | :------------------------- |
+| `classifications` | JSON array of objects | **Yes** | The list of annex rankings |
+
+* **Example Request:**
+    ```json
+     {
+        "classifications": [
+          {"name": "Sprint #1", "distance": 50.5,   "racers": ["11","2","1"]},
+          {"name": "Sprint #2", "distance": 100.4,  "racers": ["2","11","1"]}
+        ]
+     }
+    ```
+* **Success Response (201 Created):**
+    ```json
+    {
+      "status": "ok",
+      "entries": 2
+    }
+    ```
+* **Error Response (400 Bad Request):**
+    ```json
+    {
+      "error": "Invalid format"
+    }
+    ```
+
+
+### 8. Get racers
+Retrieves a list of racers.
+
+* **URL:** `/:competition/racers`
+* **Method:** `GET`
+* **Response (200 OK):**
+    ```json
+    {
+      "racers": [
+        {"bib": "1",  "firstname": "Paul",    "lastname": "POULE", "team": "UAE",   "age": 25, "uciID": "1002563585", "ffcID": ""},
+        {"bib": "2",  "firstname": "Pierre",  "lastname": "PONCE", "team": "UAE",   "age": 30, "uciID": "1012356984", "ffcID": ""}
+        {"bib": "11", "firstname": "René",    "lastname": "TAUPE", "team": "Visma", "age": 22, "uciID": "1007896325", "ffcID": ""}
+      ],
+    }
+    ```
+
+### 9. Synchronize racers
+Update the racers information in database.
+
+* **URL:** `/:competition/racers`
+* **Method:** `POST`
+* **Header** `Content-Type: application/json`
+* **Request Body (JSON):**
+
+| Field  | Type   | Required | Description                |
+| :----- | :----- | :------- | :------------------------- |
+| `racers` | Array of JSON object | **Yes** | List of racers information |
+
+* **Example Request:**
+    ```json
+     {
+      "racers": [
+        {"bib": "1",  "firstname": "Paul",    "lastname": "POULE", "team": "UAE",   "age": 25, "uciID": "1002563585", "ffcID": ""},
+        {"bib": "2",  "firstname": "Pierre",  "lastname": "PONCE", "team": "UAE",   "age": 30, "uciID": "1012356984", "ffcID": ""}
+        {"bib": "11", "firstname": "René",    "lastname": "TAUPE", "team": "Visma", "age": 22, "uciID": "1007896325", "ffcID": ""}
+      ],
+    }
+    ```
+* **Success Response (201 Created):**
+    ```json
+    {
+      "status": "ok",
+      "entries": 3
+    }
+    ```
+* **Error Response (400 Bad Request):**
+    ```json
+    {
+      "error": "Invalid format"
     }
     ```
 
