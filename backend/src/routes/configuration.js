@@ -27,39 +27,47 @@ export default class Configuration extends Route {
             const db = this._connector.getDatabase(compid);
             const data = req.body;
 
-            if ("stages" in data){
+            try {
 
-                try {
-
-                    const result = await db.transaction(async (t) => {
-                        
-                        const existingRace = await db.models.race.findOne({ 
-                            where: { name: data.name }, 
-                            transaction: t 
-                        });
-
-                        if (existingRace) {
-                            await existingRace.destroy({ transaction: t });
-                        }
-
-                        const raceData = {
-                            name: data.name,
-                            nStages: data.stages.length,
-                            Stages: data.stages
-                        };
-
-                        return await db.models.race.create(raceData, {
-                            include: [{ model: db.models.stage, as: 'Stages' }],
-                            transaction: t 
-                        });
+                const result = await db.transaction(async (t) => {
+                    
+                    const existingRace = await db.models.race.findOne({ 
+                        where: { name: data.name }, 
+                        transaction: t 
                     });
 
-                    res.status(201).json(result);
-                    
-                } catch (error) {
-                    res.status(500).json({ error: error.message });
-                }
+                    if (existingRace) {
+                        await existingRace.destroy({ transaction: t });
+                    }
 
+                    /*
+                    const annexesToInsert = rawData.map(item => {
+                    const { name, type, priority, ...rest } = item;
+                    return {
+                        name,
+                        type,
+                        priority,
+                        options: rest // Tout ce qui n'est pas name/type/priority va dans options
+                    };
+                    });
+                    */
+
+                    const raceData = {
+                        name: data.name,
+                        nStages: data.stages.length,
+                        Stages: data.stages
+                    };
+
+                    return await db.models.race.create(raceData, {
+                        include: [{ model: db.models.stage, as: 'Stages' }],
+                        transaction: t 
+                    });
+                });
+
+                res.status(201).json(result);
+                
+            } catch (error) {
+                res.status(500).json({ error: error.message });
             }
 
         } else {
