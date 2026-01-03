@@ -78,13 +78,22 @@ class Connector {
 
     async initialize(mastername = 'master'){
         try {
-          const driver    = this.getDatabase(mastername);
-          this.#masterdb  = openMaster(driver);
-          await driver.sync();
-          this.#logger.log(`Master database initialized (${mastername})`);
+
+            const filename  = this.#files.joinPath(this.#rootfolder, mastername + Connector.DATABASE_EXTENSION);
+            const driver    = new Sequelize({
+                dialect: 'sqlite',
+                storage: filename,
+                logging: false,
+                dialectModule: sqlite3
+            }); 
+
+            this.#masterdb  = openMaster(driver);
+            await driver.sync();
+            this.#logger.log(`Master database initialized (${mastername})`);
+
         } catch (error) {
-          this.#logger.error("Failed to initialize database", error);
-          throw error;
+            this.#logger.error("Failed to initialize database", error);
+            throw error;
         }
       }
    

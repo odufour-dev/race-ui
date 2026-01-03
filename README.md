@@ -143,6 +143,12 @@ Adds a new competition to the system.
       "error": "Property 'name' is required"
     }
     ```
+* **cURL request example:**
+  ```bash
+  curl -X POST http://localhost:5000/api/v1/competitions \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Tour de France 2026"}'
+  ```
 
 ### 4. Get competition information
 Retrieves all information about a competition
