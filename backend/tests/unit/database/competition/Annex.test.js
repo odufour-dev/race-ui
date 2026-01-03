@@ -21,10 +21,11 @@ describe('Annex Model Class', () => {
         expect(Model.init).toHaveBeenCalledWith(
             expect.objectContaining({
                 type: expect.objectContaining({ 
-                    type: DataTypes.ENUM('points', 'mountain', 'young', 'team'), 
+                    type: DataTypes.ENUM('points', 'mountain', 'age', 'team'), 
                     allowNull: false 
                 }),
-                label: DataTypes.STRING
+                priority: DataTypes.INTEGER,
+                name: DataTypes.STRING
             }),
             expect.objectContaining({
                 sequelize: mockSequelize,
