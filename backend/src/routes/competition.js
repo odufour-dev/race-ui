@@ -22,17 +22,20 @@ export default class Competition extends Route {
             }
 
             const driver = this._connector.getDatabase(id);
-            const competition = this._connector.competitions.create(driver, req.body.name);            
+            this._connector.competitions.create(driver, req.body.name);            
             await driver.sync();
             
+            const competition = await driver.models.race.create({"name": req.body.name})
+
             await this._connector.master.registerCompetition(
                 req.body.name, 
-                id + this._connector.constructor.DATABASE_EXTENSION
+                id + this._connector.constructor.DATABASE_EXTENSION,
+                competition.id
             );
 
             res.status(201).json({ id });
         } catch (error) {
-            res.status(500).json({ error: "INTERNAL_ERROR" });
+            res.status(500).json({ error: error.message });
         }
     }
 

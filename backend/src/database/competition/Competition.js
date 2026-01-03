@@ -84,7 +84,7 @@ export class Competition {
 
         // An annex ranking belong to a race
         this.#race.hasMany(this.#annex, { 
-            as: 'Annex',
+            as: 'Annexes',
             foreignKey: 'raceId',
             onDelete: 'CASCADE' 
         });

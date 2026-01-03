@@ -11,10 +11,15 @@ export class Master {
         this.#index  = index;
     }
 
-    async registerCompetition(name, filename) {
+    async findCompetition(id){
+        return await this.#driver.models.competitions.findOne({where: {filename: id + '.db'}});
+    }
+
+    async registerCompetition(name, filename, id) {
         return await this.#index.create({
             name: name,
             filename: filename,
+            raceId: id,
             status: 'active'
         });
     }
