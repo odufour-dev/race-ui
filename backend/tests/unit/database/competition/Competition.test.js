@@ -81,7 +81,7 @@ describe('Competition Class', () => {
 
         // Check Race -> Annex
         expect(mockRace.hasMany).toHaveBeenCalledWith(mockAnnex, expect.objectContaining({
-            as: 'Annex'
+            as: 'Annexes'
         }));
         expect(mockAnnex.belongsTo).toHaveBeenCalledWith(mockRace, expect.objectContaining({
             as: 'race'

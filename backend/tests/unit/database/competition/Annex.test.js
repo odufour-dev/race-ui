@@ -21,7 +21,7 @@ describe('Annex Model Class', () => {
         expect(Model.init).toHaveBeenCalledWith(
             expect.objectContaining({
                 type: expect.objectContaining({ 
-                    type: DataTypes.ENUM('points', 'mountain', 'age', 'team'), 
+                    type: DataTypes.ENUM('points', 'mountain', 'filter', 'team'), 
                     allowNull: false 
                 }),
                 priority: DataTypes.INTEGER,
