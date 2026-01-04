@@ -3,7 +3,7 @@ import { Competition } from '../../../../src/database/competition/Competition.js
 
 describe('Competition Class', () => {
     let competition;
-    let mockDriver, mockAnnex, mockRace, mockRacer, mockRegistration, mockResult, mockStage;
+    let mockDriver, mockAnnex, mockEvent, mockRace, mockRacer, mockRegistration, mockResult, mockStage;
 
     beforeEach(() => {
         // Create mock models with association methods
@@ -14,16 +14,18 @@ describe('Competition Class', () => {
         });
 
         mockDriver = {}; // Driver isn't used in initialize methods logic
-        mockAnnex = createMockModel();
-        mockRace = createMockModel();
-        mockRacer = createMockModel();
-        mockRegistration = createMockModel();
-        mockResult = createMockModel();
-        mockStage = createMockModel();
+        mockAnnex           = createMockModel();
+        mockEvent           = createMockModel();
+        mockRace            = createMockModel();
+        mockRacer           = createMockModel();
+        mockRegistration    = createMockModel();
+        mockResult          = createMockModel();
+        mockStage           = createMockModel();
 
         competition = new Competition(
             mockDriver,
             mockAnnex,
+            mockEvent,
             mockRace,
             mockRacer,
             mockRegistration,
@@ -34,6 +36,7 @@ describe('Competition Class', () => {
 
     test('Getters should return the injected models', () => {
         expect(competition.Annex).toBe(mockAnnex);
+        expect(competition.Event).toBe(mockEvent);
         expect(competition.Race).toBe(mockRace);
         expect(competition.Racer).toBe(mockRacer);
         expect(competition.Registration).toBe(mockRegistration);

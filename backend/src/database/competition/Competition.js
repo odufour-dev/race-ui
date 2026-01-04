@@ -1,5 +1,6 @@
 
 import { Annex }        from "./Annex.js";
+import { Event }        from "./Event.js";
 import { Race }         from "./Race.js";
 import { Racer }        from "./Racer.js";
 import { Registration } from "./Registration.js";
@@ -10,15 +11,17 @@ export class Competition {
 
     #annex
     #driver
+    #event
     #race
     #racer
     #registration
     #result
     #stage
 
-    constructor(driver,annex,race,racer,registration,result,stage){
+    constructor(driver,annex,event,race,racer,registration,result,stage){
         this.#annex         = annex;
         this.#driver        = driver;
+        this.#event         = event;
         this.#race          = race;
         this.#racer         = racer;
         this.#registration  = registration;
@@ -27,10 +30,11 @@ export class Competition {
     }
 
     get Annex()         {return this.#annex;        }
+    get Event()         {return this.#event;        }
     get Race()          {return this.#race;         }
     get Racer()         {return this.#racer;        }
     get Registration()  {return this.#registration; }
-    get Results()       {return this.#result;      }
+    get Results()       {return this.#result;       }
     get Stage()         {return this.#stage;        }
 
     initialize(){
@@ -92,6 +96,26 @@ export class Competition {
             as: 'race',
             foreignKey: 'raceId' 
         });
+
+        this.#race.hasMany(this.#event, { 
+            as: 'Events',
+            foreignKey: 'raceId',
+            onDelete: 'CASCADE' 
+        });
+        this.#event.belongsTo(this.#race, { 
+            foreignKey: 'raceId' 
+        });
+
+        this.#annex.hasMany(this.#event, { 
+            as: 'Events',
+            foreignKey: 'annexId',
+            onDelete: 'CASCADE'
+        });
+        this.#event.belongsTo(this.#annex, { 
+            as: 'Type',
+            foreignKey: 'annexId' 
+        });
+
 /*
         // A annex ranking is associated to a racer
         this.#racer.hasMany(this.#annex, { 
@@ -111,13 +135,14 @@ export class Competition {
 export const createCompetition = (driver,name) => {
 
    const annex         = Annex.initialize(driver);
+   const event         = Event.initialize(driver);
    const race          = Race.initialize(driver);
    const racer         = Racer.initialize(driver);
    const registration  = Registration.initialize(driver);
    const result        = Result.initialize(driver);
    const stage         = Stage.initialize(driver);
 
-    const db = new Competition(driver,annex,race,racer,registration,result,stage);
+    const db = new Competition(driver,annex,event,race,racer,registration,result,stage);
     db.initialize();
     return db;
     
