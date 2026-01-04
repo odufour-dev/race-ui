@@ -39,6 +39,8 @@ export default class Configuration extends Route {
 
                 let raceData = { name: data.name };
                 
+                // Stage
+                // -----
                 await db.models.stage.destroy({
                     where: { raceId: raceId },
                     transaction: t
@@ -51,11 +53,13 @@ export default class Configuration extends Route {
                 }
 
                 // Annexes
+                // -------
                 await db.models.annex.destroy({
                     where: { raceId: raceId },
                     transaction: t
                 });
 
+                let annexMap = {};
                 if (data.annex && data.annex.length > 0) {
                     const annexesToCreate = data.annex.map(item => {
                         const { name, type, priority, ...rest } = item;
@@ -67,9 +71,34 @@ export default class Configuration extends Route {
                             options: rest
                         };
                     });
-                    await db.models.annex.bulkCreate(annexesToCreate, { transaction: t });
+                    const annexes = await db.models.annex.bulkCreate(annexesToCreate, { transaction: t, returning: true });
+                    annexMap = new Map(annexes.map(a => [a.name, a.id]));
+                }
+
+                // Events
+                // ------
+                await db.models.event.destroy({
+                    truncate: true,
+                    cascade: false
+                });
+
+                if (data.event && data.event.length > 0){
+                    data.event.map(async(e) => {
+
+                        const stageId = await db.models.event.findOne({where: {name: e.stage}});                        
+                        if (data.event.annex && data.event.annex.length && annexMap){
+                            const eventToCreate = data.event.annex.map((a) => {
+                                const annexId = annexMap.get(a.name);
+                                return { stageId, annexId, distance: Number(a.distance), points: a.points }
+                            });
+                            await db.models.event.bulkCreate(eventToCreate, { transaction: t });
+                        }
+                        
+                    });
                 }
                 
+                // Race
+                // ----
                 await db.models.race.update(
                     raceData,
                     { where: { id: raceId }, transaction: t }

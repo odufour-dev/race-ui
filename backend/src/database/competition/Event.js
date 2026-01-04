@@ -12,14 +12,18 @@ export class Event extends Model {
                 key: 'id'
             }
         },
-        raceId: {
+        stageId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'race',
+                model: 'stage',
                 key: 'id'
             }
-        }
+        },
+        points: {
+            type: DataTypes.JSON
+        },
+        distance: DataTypes.INTEGER
     }, { sequelize, modelName: 'event' });
   }
 

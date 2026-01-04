@@ -97,13 +97,14 @@ export class Competition {
             foreignKey: 'raceId' 
         });
 
-        this.#race.hasMany(this.#event, { 
+        this.#stage.hasMany(this.#event, { 
             as: 'Events',
-            foreignKey: 'raceId',
+            foreignKey: 'stageId',
             onDelete: 'CASCADE' 
         });
-        this.#event.belongsTo(this.#race, { 
-            foreignKey: 'raceId' 
+        this.#event.belongsTo(this.#stage, { 
+            as: 'stage',
+            foreignKey: 'stageId' 
         });
 
         this.#annex.hasMany(this.#event, { 
