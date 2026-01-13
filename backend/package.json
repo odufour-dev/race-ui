@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "sequelize": "^6.37.0",
-    "sqlite3": "^5.1.7",
+    "sqlite3": "^5.1.7", 
+    "umzug": "^3.2.1",
     "better-sqlite3": "^11.0.0",
     "cors": "^2.8.5",
     "express": "^4.18.2"

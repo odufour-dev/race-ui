@@ -1,25 +1,23 @@
 
-//import { Umzug, SequelizeStorage } from 'umzug';
+import { Umzug, SequelizeStorage } from 'umzug';
 
 class Migrator {
 
-    #files;
+    #filelocation;
     #logger;
-    #rootfolder;
 
-    constructor(files, rootfolder, logger) {
+    constructor(filelocation, logger) {
         
-        this.#files      = files;
-        this.#logger     = logger;
-        this.#rootfolder = rootfolder;
+        this.#filelocation  = filelocation;
+        this.#logger        = logger;
 
     }
 
     async migrate(driver) {
-        /*
+        
         const migrator = new Umzug({
             migrations: {
-                glob: this.#files.jointPath(this.#rootfolder, 'migrations','*.js'),
+                glob: this.#filelocation + '/*.js',
             },
             context: driver.getQueryInterface(),
             storage: new SequelizeStorage({ sequelize: driver }),
@@ -33,11 +31,11 @@ class Migrator {
             this.#logger.error("Error during database migration:", error);
             throw error;
         }
-            */
+    
     }
 
 }
 
-export function createMigrator(file, rootfolder, logger = console) {
-    return new Migrator(file, rootfolder, logger);
+export default function createMigrator(filelocation, logger = console) {
+    return new Migrator(filelocation, logger);
 }

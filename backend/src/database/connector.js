@@ -4,7 +4,6 @@ import sqlite3                  from 'sqlite3';
 
 import { createCompetition }    from "./competition/Competition.js"
 import { openMaster }           from "./master/Master.js"
-import { createMigrator }       from './migrator.js';
 
 class Connector {
 
@@ -116,10 +115,9 @@ class Connector {
 
 }
 
-export default async function createConnector(files,rootfolder,mastername,logger=console){
+export default async function createConnector(files,dbfolder,mastername,migrator,logger=console){
     const competitions  = { create: async (driver,name) => createCompetition(driver,name)};
-    const migrator      = createMigrator(files, rootfolder, logger);
-    const connector     = new Connector(files,rootfolder,competitions,migrator,logger);
+    const connector     = new Connector(files,dbfolder,competitions,migrator,logger);
     await connector.initialize(mastername);
     return connector;    
 }

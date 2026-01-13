@@ -8,17 +8,19 @@ import VersionRoutes        from './routes/version.js';
 import StaticRoutes         from './routes/static.js';
 
 import createConnector      from './database/connector.js';
+import createMigrator       from './database/migrator.js';
 
 import createServer         from './tools/express.js';
 import createFiles          from './tools/files.js';
 
-export const createApp = async (dbfolder,apiprefix,port,frontendbuildpath,logger = console) => {
+export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuildpath,logger = console) => {
 
     // Create utility classes
     const files     = createFiles(logger);
     const server    = createServer(logger);
 
-    const connector = await createConnector(files, dbfolder, 'master', logger);
+    const migrator  = createMigrator(files.joinPath(appfolder, 'migrations'), logger);
+    const connector = await createConnector(files, dbfolder, 'master', migrator, logger);
     
     // Register API routes
     const routes = [
