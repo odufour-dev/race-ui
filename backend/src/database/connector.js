@@ -4,6 +4,7 @@ import sqlite3                  from 'sqlite3';
 
 import { createCompetition }    from "./competition/Competition.js"
 import { openMaster }           from "./master/Master.js"
+import { createMigrator }       from './migrator.js';
 
 class Connector {
 
@@ -14,13 +15,15 @@ class Connector {
     #files
     #logger
     #masterdb
+    #migrator
     #rootfolder
 
-    constructor(files,rootfolder,competitions,logger){
+    constructor(files,rootfolder,competitions,migrator,logger){
         this.#files         = files;
         this.#rootfolder    = rootfolder;
         this.#connections   = new Map();
         this.#competitions  = competitions;
+        this.#migrator      = migrator;
         this.#logger        = logger;
     }
 
@@ -50,10 +53,10 @@ class Connector {
         return false;
     }
 
-    getDatabase(name) {
+    async getDatabase(id,name=null){ 
 
-        name = this.#files.basename(name);
-        const safeName = this.getSafeDatabaseName(name);
+        id = this.#files.basename(id);
+        const safeName = this.getSafeDatabaseName(id);
         
         if (this.#connections.has(safeName)) {
             return this.#connections.get(safeName);
@@ -66,7 +69,9 @@ class Connector {
             logging: false,
             dialectModule: sqlite3
         }); 
-        this.#competitions.create(driver,name);
+        this.#competitions.create(driver,name || id);
+        await this.#migrator.migrate(driver);
+        await driver.sync();
 
         this.#connections.set(safeName, driver);
         return driver;
@@ -88,6 +93,7 @@ class Connector {
             }); 
 
             this.#masterdb  = openMaster(driver);
+            await this.#migrator.migrate(driver);
             await driver.sync();
             this.#logger.log(`Master database initialized (${mastername})`);
 
@@ -112,7 +118,8 @@ class Connector {
 
 export default async function createConnector(files,rootfolder,mastername,logger=console){
     const competitions  = { create: async (driver,name) => createCompetition(driver,name)};
-    const connector     = new Connector(files,rootfolder,competitions,logger);
+    const migrator      = createMigrator(files, rootfolder, logger);
+    const connector     = new Connector(files,rootfolder,competitions,migrator,logger);
     await connector.initialize(mastername);
     return connector;    
 }

@@ -34,7 +34,7 @@ export default class Configuration extends Route {
 
                 const race = await this._connector.master.findCompetition(compid);
                 const raceId = race.id;
-                const db = this._connector.getDatabase(compid);
+                const db = await this._connector.getDatabase(compid);
                 const t = await db.transaction();
 
                 let raceData = { name: data.name };

@@ -21,10 +21,8 @@ export default class Competition extends Route {
                 return res.status(409).json({ error: "EXIST_ERROR" });
             }
 
-            const driver = this._connector.getDatabase(id);
-            this._connector.competitions.create(driver, req.body.name);            
-            await driver.sync();
-            
+            const driver = await this._connector.getDatabase(id, req.body.name);          
+                        
             const competition = await driver.models.race.create({"name": req.body.name})
 
             await this._connector.master.registerCompetition(
