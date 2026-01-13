@@ -18,22 +18,6 @@ export const createApp = async (dbfolder,apiprefix,port,frontendbuildpath,logger
     const files     = createFiles(logger);
     const server    = createServer(logger);
 
-    // FIXME : Apply the following pattern to initialize the DB
-    /*
-    const driver = new Sequelize(...);
-
-    // 1. Define all models
-    const models = defineAllModels(driver);
-
-    // 2. Create all associations
-    associateAllModels(models);
-
-    // 3. Sync once
-    await driver.sync();
-
-    // 4. Cache the fully initialized DB
-    this.#connections.set(safeName, driver);
-*/
     const connector = await createConnector(files, dbfolder, 'master', logger);
     
     // Register API routes

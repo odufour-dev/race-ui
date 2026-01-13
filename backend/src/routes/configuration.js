@@ -85,17 +85,16 @@ export default class Configuration extends Route {
                     transaction: t
                 });
 
-                console.log("STARTING EVENTS CREATION");
-                if (data.event && data.event.length > 0) {console.log("FOUND EVENT TO INSERT")
+                if (data.event && data.event.length > 0) {
                     for (const e of data.event) {
-console.log("SEARCH STAGE")
+
                         const stage = await db.models.stage.findOne({
                             where: { name: e.stage },
                             transaction: t
                         });
 
                         if (stage && e.annex && e.annex.length > 0 && annexMap) {
-console.log("Prepare event to create")
+
                             const eventToCreate = e.annex.map(a => {
                                 const annexId = annexMap.get(a.name);
                                 return {
@@ -105,20 +104,17 @@ console.log("Prepare event to create")
                                     points: a.points
                                 };
                             });
-console.log("Run bulk create for event")
                             await db.models.event.bulkCreate(eventToCreate, { transaction: t });
                         }
                     }
                 }
 
-             /*   
                 // Race
                 // ----
                 await db.models.race.update(
                     raceData,
                     { where: { id: raceId }, transaction: t }
                 );
-*/
 
                 await t.commit();
 
