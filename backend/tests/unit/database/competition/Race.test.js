@@ -20,7 +20,7 @@ describe('Race Model Class', () => {
 
         expect(Model.init).toHaveBeenCalledWith(
             expect.objectContaining({
-                // Direct reference matching for simple assignments
+                description: { type: DataTypes.STRING, allowNull: true },
                 name: DataTypes.STRING,
                 nStages: DataTypes.INTEGER
             }),

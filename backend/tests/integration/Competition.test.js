@@ -18,7 +18,7 @@ describe('Database Integration Tests', () => {
             logging: false,
             dialectModule: sqlite3
         });
-        db = createCompetition(driver, 'test-db');
+        db = await createCompetition(driver, 'test-db');
     });
 
     beforeEach(async () => {
@@ -42,11 +42,11 @@ describe('Database Integration Tests', () => {
         });
 
         // Verify with Eager Loading
-        const raceWithStages = await Race.findByPk(race.id, { include: "Stages" });
+        const raceWithStages = await Race.findByPk(race.id, { include: "stages" });
         
         expect(raceWithStages.name).toBe('Tour de France');
-        expect(raceWithStages.Stages).toHaveLength(1);
-        expect(raceWithStages.Stages[0].name).toBe('Étape 1');
+        expect(raceWithStages.stages).toHaveLength(1);
+        expect(raceWithStages.stages[0].name).toBe('Étape 1');
 
     });
 
@@ -60,10 +60,10 @@ describe('Database Integration Tests', () => {
 
         await race.addRacer(racer);
 
-        const raceWithParticipants = await Race.findByPk(race.id, { include: "Racers" });
+        const raceWithParticipants = await Race.findByPk(race.id, { include: "racers" });
         
-        expect(raceWithParticipants.Racers).toHaveLength(1);
-        expect(raceWithParticipants.Racers[0].lastName).toBe('Merckx');
+        expect(raceWithParticipants.racers).toHaveLength(1);
+        expect(raceWithParticipants.racers[0].lastName).toBe('Merckx');
 
     });
 

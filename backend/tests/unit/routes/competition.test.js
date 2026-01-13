@@ -6,7 +6,6 @@ describe('Competition Route Class', () => {
     let mockRouter;
     let mockConnector;
     let mockRes;
-    let mockSync;
     let mockModels;
 
     beforeEach(() => {
@@ -16,14 +15,12 @@ describe('Competition Route Class', () => {
             json: jest.fn().mockReturnThis() 
         };
 
-        mockSync = jest.fn().mockResolvedValue([]);
         mockModels = {race: {create: jest.fn()}};
         
         mockConnector = {
             getSafeDatabaseName: jest.fn(name => name.toLowerCase()),
             isDatabaseExists: jest.fn(),
             getDatabase: jest.fn().mockReturnValue({
-                sync: mockSync,
                 models: mockModels 
             }),
             DATABASE_EXTENSION: '.db',
@@ -52,18 +49,15 @@ describe('Competition Route Class', () => {
 
         await postHandler(req, mockRes);
 
-        expect(mockConnector.getDatabase).toHaveBeenCalledWith('world cup');
-        expect(mockSync).toHaveBeenCalled(); // Use the mockSync defined in beforeEach
+        expect(mockConnector.getDatabase).toHaveBeenCalledWith('world cup','World Cup');
         expect(mockRes.status).toHaveBeenCalledWith(201);
     });
 
     test('POST /competitions should return 500 on server error', async () => {
         const req = { body: { name: 'Error' } };
         mockConnector.isDatabaseExists.mockReturnValue(false);
+        mockConnector.getDatabase.mockRejectedValue(new Error('DB Fail'));
         
-        // Force the sync (which is awaited) to fail
-        mockSync.mockRejectedValue(new Error('DB Fail'));
-
         competitionRoute.register(mockRouter);
         const postHandler = mockRouter.post.mock.calls[0][1];
 

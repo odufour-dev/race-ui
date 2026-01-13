@@ -50,7 +50,7 @@ describe('Competition Class', () => {
         // Check Many-to-Many Race <-> Racer
         expect(mockRace.belongsToMany).toHaveBeenCalledWith(mockRacer, expect.objectContaining({
             through: mockRegistration,
-            as: 'Racers'
+            as: 'racers'
         }));
         expect(mockRacer.belongsToMany).toHaveBeenCalledWith(mockRace, expect.objectContaining({
             through: mockRegistration,
@@ -59,7 +59,7 @@ describe('Competition Class', () => {
 
         // Check Race -> Stage
         expect(mockRace.hasMany).toHaveBeenCalledWith(mockStage, expect.objectContaining({
-            as: 'Stages',
+            as: 'stages',
             onDelete: 'CASCADE'
         }));
         expect(mockStage.belongsTo).toHaveBeenCalledWith(mockRace, expect.objectContaining({
@@ -68,7 +68,7 @@ describe('Competition Class', () => {
 
         // Check Stage -> Result
         expect(mockStage.hasMany).toHaveBeenCalledWith(mockResult, expect.objectContaining({
-            as: 'Results'
+            as: 'stageresults'
         }));
         expect(mockResult.belongsTo).toHaveBeenCalledWith(mockStage, expect.objectContaining({
             as: 'stage'
@@ -76,7 +76,7 @@ describe('Competition Class', () => {
 
         // Check Racer -> Result
         expect(mockRacer.hasMany).toHaveBeenCalledWith(mockResult, expect.objectContaining({
-            as: 'Results'
+            as: 'racerresults'
         }));
         expect(mockResult.belongsTo).toHaveBeenCalledWith(mockRacer, expect.objectContaining({
             as: 'racer'
@@ -84,7 +84,7 @@ describe('Competition Class', () => {
 
         // Check Race -> Annex
         expect(mockRace.hasMany).toHaveBeenCalledWith(mockAnnex, expect.objectContaining({
-            as: 'Annexes'
+            as: 'annexes'
         }));
         expect(mockAnnex.belongsTo).toHaveBeenCalledWith(mockRace, expect.objectContaining({
             as: 'race'

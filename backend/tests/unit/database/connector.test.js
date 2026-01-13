@@ -10,6 +10,10 @@ const mockFiles = {
     readFile: jest.fn(() => JSON.stringify({ version: "1.0.0" }))
 };
 
+const mockMigrator = {
+    migrate: jest.fn()
+}
+
 const mockLogger = {
     log: jest.fn(),
     error: jest.fn()
@@ -25,7 +29,7 @@ describe('Connector Class Integration Test', () => {
         jest.clearAllMocks();
         // The real Sequelize will be used, but since the path contains ':memory:', 
         // it won't write to disk.
-        connector = await createConnector(mockFiles, rootFolder, masterName, mockLogger);
+        connector = await createConnector(mockFiles, rootFolder, masterName, mockMigrator, mockLogger);
     });
 
     afterEach(async () => {
@@ -92,7 +96,7 @@ describe('Connector Class Integration Test', () => {
     test('should throw an error and log it if initialization fails', async () => {
         // We simulate a failure by passing invalid arguments to a new instance
         const badFiles = { ...mockFiles, joinPath: () => { throw new Error("FS Error"); } };
-        const failingConnector = new (connector.constructor)(badFiles, rootFolder, {}, mockLogger);
+        const failingConnector = new (connector.constructor)(badFiles, rootFolder, {}, {}, mockLogger);
 
         await expect(failingConnector.initialize('fail'))
             .rejects.toThrow("FS Error");

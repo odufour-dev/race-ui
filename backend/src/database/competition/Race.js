@@ -5,8 +5,8 @@ export class Race extends Model {
   
   static initialize(sequelize){
     return super.init({
-      name:         { type: DataTypes.STRING, allowNull: true },
-      description:  DataTypes.STRING,
+      name:         DataTypes.STRING,
+      description:  { type: DataTypes.STRING, allowNull: true },
       nStages:      DataTypes.INTEGER
     }, { sequelize, modelName: 'race',  tableName: 'race' });
   }
