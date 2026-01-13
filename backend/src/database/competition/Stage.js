@@ -12,7 +12,7 @@ export class Stage extends Model {
       endLocation:    DataTypes.STRING,
       distance:       DataTypes.FLOAT,      // Distance en km
       type:           DataTypes.ENUM('flat', 'hilly', 'mountain', 'time-trial') 
-    }, { sequelize, modelName: 'stage' });
+    }, { sequelize, modelName: 'stage',  tableName: 'stage' });
 
   }
 

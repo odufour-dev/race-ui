@@ -1,5 +1,6 @@
 
 import { Annex }        from "./Annex.js";
+import { Event }        from "./Event.js";
 import { Race }         from "./Race.js";
 import { Racer }        from "./Racer.js";
 import { Registration } from "./Registration.js";
@@ -10,15 +11,17 @@ export class Competition {
 
     #annex
     #driver
+    #event
     #race
     #racer
     #registration
     #result
     #stage
 
-    constructor(driver,annex,race,racer,registration,result,stage){
+    constructor(driver,annex,event,race,racer,registration,result,stage){
         this.#annex         = annex;
         this.#driver        = driver;
+        this.#event         = event;
         this.#race          = race;
         this.#racer         = racer;
         this.#registration  = registration;
@@ -27,10 +30,11 @@ export class Competition {
     }
 
     get Annex()         {return this.#annex;        }
+    get Event()         {return this.#event;        }
     get Race()          {return this.#race;         }
     get Racer()         {return this.#racer;        }
     get Registration()  {return this.#registration; }
-    get Results()       {return this.#result;      }
+    get Results()       {return this.#result;       }
     get Stage()         {return this.#stage;        }
 
     initialize(){
@@ -38,7 +42,7 @@ export class Competition {
         // Relation Many-to-Many entre Race et Racer via Registration
         this.#race.belongsToMany(this.#racer, { 
             through: this.#registration,
-            as: 'Racers',
+            as: 'racers',
             foreignKey: 'raceId',
             otherKey: 'racerId'
         });
@@ -51,7 +55,7 @@ export class Competition {
 
         // A race has many stages
         this.#race.hasMany(this.#stage, { 
-            as: 'Stages',
+            as: 'stages',
             foreignKey: 'raceId',
             onDelete: 'CASCADE' 
         });
@@ -62,7 +66,7 @@ export class Competition {
 
         // Results are linked to the stage
         this.#stage.hasMany(this.#result, { 
-            as: 'Results',
+            as: 'stageresults',
             foreignKey: 'stageId',
             onDelete: 'CASCADE' 
         });
@@ -73,7 +77,7 @@ export class Competition {
 
         // A result is associated to a racer
         this.#racer.hasMany(this.#result, { 
-            as: 'Results',
+            as: 'racerresults',
             foreignKey: 'racerId',
             onDelete: 'CASCADE' 
         });
@@ -84,7 +88,7 @@ export class Competition {
 
         // An annex ranking belong to a race
         this.#race.hasMany(this.#annex, { 
-            as: 'Annex',
+            as: 'annexes',
             foreignKey: 'raceId',
             onDelete: 'CASCADE' 
         });
@@ -92,6 +96,27 @@ export class Competition {
             as: 'race',
             foreignKey: 'raceId' 
         });
+
+        this.#stage.hasMany(this.#event, { 
+            as: 'stageevents',
+            foreignKey: 'stageId',
+            onDelete: 'CASCADE' 
+        });
+        this.#event.belongsTo(this.#stage, { 
+            as: 'stage',
+            foreignKey: 'stageId' 
+        });
+
+        this.#annex.hasMany(this.#event, { 
+            as: 'annexevents',
+            foreignKey: 'annexId',
+            onDelete: 'CASCADE'
+        });
+        this.#event.belongsTo(this.#annex, { 
+            as: 'annex',
+            foreignKey: 'annexId' 
+        });
+
 /*
         // A annex ranking is associated to a racer
         this.#racer.hasMany(this.#annex, { 
@@ -108,16 +133,17 @@ export class Competition {
     
 }
 
-export const createCompetition = (driver,name) => {
+export const createCompetition = async (driver,name) => {
 
    const annex         = Annex.initialize(driver);
+   const event         = Event.initialize(driver);
    const race          = Race.initialize(driver);
    const racer         = Racer.initialize(driver);
    const registration  = Registration.initialize(driver);
    const result        = Result.initialize(driver);
    const stage         = Stage.initialize(driver);
 
-    const db = new Competition(driver,annex,race,racer,registration,result,stage);
+    const db = new Competition(driver,annex,event,race,racer,registration,result,stage);
     db.initialize();
     return db;
     

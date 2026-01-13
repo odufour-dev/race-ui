@@ -6,7 +6,8 @@ describe('Competition Route Class', () => {
     let mockRouter;
     let mockConnector;
     let mockRes;
-    let mockSync; // Move this out to access it in tests
+    let mockSync;
+    let mockModels;
 
     beforeEach(() => {
         mockRouter = { get: jest.fn(), post: jest.fn() };
@@ -16,12 +17,14 @@ describe('Competition Route Class', () => {
         };
 
         mockSync = jest.fn().mockResolvedValue([]);
+        mockModels = {race: {create: jest.fn()}};
         
         mockConnector = {
             getSafeDatabaseName: jest.fn(name => name.toLowerCase()),
             isDatabaseExists: jest.fn(),
             getDatabase: jest.fn().mockReturnValue({
-                sync: mockSync 
+                sync: mockSync,
+                models: mockModels 
             }),
             DATABASE_EXTENSION: '.db',
             competitions: { create: jest.fn() },
@@ -39,6 +42,7 @@ describe('Competition Route Class', () => {
     test('POST /competitions should create a new competition', async () => {
         const req = { body: { name: 'World Cup' } };
         mockConnector.isDatabaseExists.mockReturnValue(false);
+        mockModels.race.create.mockResolvedValue({id: 1});
         
         // DO NOT use mockResolvedValue on getDatabase here.
         // The beforeEach already set it up correctly as a sync call.
@@ -67,6 +71,6 @@ describe('Competition Route Class', () => {
 
         // This will now trigger your "Error caught!" console log
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "INTERNAL_ERROR" });
+        expect(mockRes.json).toHaveBeenCalledWith({ error: "DB Fail" });
     });
 });

@@ -111,7 +111,7 @@ class Connector {
 }
 
 export default async function createConnector(files,rootfolder,mastername,logger=console){
-    const competitions  = { create: (driver,name) => createCompetition(driver,name)};
+    const competitions  = { create: async (driver,name) => createCompetition(driver,name)};
     const connector     = new Connector(files,rootfolder,competitions,logger);
     await connector.initialize(mastername);
     return connector;    

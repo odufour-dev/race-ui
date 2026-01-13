@@ -7,7 +7,7 @@ export class Race extends Model {
     return super.init({
       name:     DataTypes.STRING,
       nStages:  DataTypes.INTEGER
-    }, { sequelize, modelName: 'race' });
+    }, { sequelize, modelName: 'race',  tableName: 'race' });
   }
 
 }

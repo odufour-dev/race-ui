@@ -32,7 +32,7 @@ describe('Database Integration Tests', () => {
     it('Create a competition', async () => {
 
         // [ EXERCISE ]
-        await db.registerCompetition("Tour de France 2026", "tour_de_france_2026.db");
+        await db.registerCompetition("Tour de France 2026", "tour_de_france_2026.db",1);
         const allRaces = await db.getAllCompetitions();
 
         // [ VERIFY ]
