@@ -24,7 +24,7 @@ export class Event extends Model {
             type: DataTypes.JSON
         },
         distance: DataTypes.INTEGER
-    }, { sequelize, modelName: 'event' });
+    }, { sequelize, modelName: 'event',  tableName: 'event' });
   }
 
 }

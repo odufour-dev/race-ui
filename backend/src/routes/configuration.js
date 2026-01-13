@@ -38,7 +38,7 @@ export default class Configuration extends Route {
                 const t = await db.transaction();
 
                 let raceData = { name: data.name };
-                
+             
                 // Stage
                 // -----
                 await db.models.stage.destroy({
@@ -77,34 +77,51 @@ export default class Configuration extends Route {
 
                 // Events
                 // ------
+                console.log("STARTING EVENTS DELETION");
                 await db.models.event.destroy({
+                    where: {},
                     truncate: true,
-                    cascade: false
+                    cascade: false,
+                    transaction: t
                 });
 
-                if (data.event && data.event.length > 0){
-                    data.event.map(async(e) => {
+                console.log("STARTING EVENTS CREATION");
+                if (data.event && data.event.length > 0) {console.log("FOUND EVENT TO INSERT")
+                    for (const e of data.event) {
+console.log("SEARCH STAGE")
+                        const stage = await db.models.stage.findOne({
+                            where: { name: e.stage },
+                            transaction: t
+                        });
 
-                        const stageId = await db.models.event.findOne({where: {name: e.stage}});                        
-                        if (data.event.annex && data.event.annex.length && annexMap){
-                            const eventToCreate = data.event.annex.map((a) => {
+                        if (stage && e.annex && e.annex.length > 0 && annexMap) {
+console.log("Prepare event to create")
+                            const eventToCreate = e.annex.map(a => {
                                 const annexId = annexMap.get(a.name);
-                                return { stageId, annexId, distance: Number(a.distance), points: a.points }
+                                return {
+                                    stageId: stage.id,
+                                    annexId,
+                                    distance: Number(a.distance),
+                                    points: a.points
+                                };
                             });
+console.log("Run bulk create for event")
                             await db.models.event.bulkCreate(eventToCreate, { transaction: t });
                         }
-                        
-                    });
+                    }
                 }
-                
+
+             /*   
                 // Race
                 // ----
                 await db.models.race.update(
                     raceData,
                     { where: { id: raceId }, transaction: t }
                 );
+*/
+
                 await t.commit();
-                
+
                 res.status(201).json({status: "ok"});
                 
             } catch (error) {

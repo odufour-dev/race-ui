@@ -12,7 +12,7 @@ export class Annex extends Model {
         allowNull: true,
         defaultValue: {}
       }
-    }, { sequelize, modelName: 'annex' });
+    }, { sequelize, modelName: 'annex',  tableName: 'annex' });
   }
 
 }

@@ -12,7 +12,7 @@ export class Racer extends Model {
       ffcID:      DataTypes.STRING,
       uciID:      DataTypes.STRING,
       sex:        DataTypes.ENUM('men', 'women') 
-    }, { sequelize, modelName: 'racer' });
+    }, { sequelize, modelName: 'racer',  tableName: 'racer' });
   }
 
 }

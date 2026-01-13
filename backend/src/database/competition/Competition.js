@@ -42,7 +42,7 @@ export class Competition {
         // Relation Many-to-Many entre Race et Racer via Registration
         this.#race.belongsToMany(this.#racer, { 
             through: this.#registration,
-            as: 'Racers',
+            as: 'racers',
             foreignKey: 'raceId',
             otherKey: 'racerId'
         });
@@ -55,7 +55,7 @@ export class Competition {
 
         // A race has many stages
         this.#race.hasMany(this.#stage, { 
-            as: 'Stages',
+            as: 'stages',
             foreignKey: 'raceId',
             onDelete: 'CASCADE' 
         });
@@ -66,7 +66,7 @@ export class Competition {
 
         // Results are linked to the stage
         this.#stage.hasMany(this.#result, { 
-            as: 'Results',
+            as: 'stageresults',
             foreignKey: 'stageId',
             onDelete: 'CASCADE' 
         });
@@ -77,7 +77,7 @@ export class Competition {
 
         // A result is associated to a racer
         this.#racer.hasMany(this.#result, { 
-            as: 'Results',
+            as: 'racerresults',
             foreignKey: 'racerId',
             onDelete: 'CASCADE' 
         });
@@ -88,7 +88,7 @@ export class Competition {
 
         // An annex ranking belong to a race
         this.#race.hasMany(this.#annex, { 
-            as: 'Annexes',
+            as: 'annexes',
             foreignKey: 'raceId',
             onDelete: 'CASCADE' 
         });
@@ -98,7 +98,7 @@ export class Competition {
         });
 
         this.#stage.hasMany(this.#event, { 
-            as: 'Events',
+            as: 'stageevents',
             foreignKey: 'stageId',
             onDelete: 'CASCADE' 
         });
@@ -108,12 +108,12 @@ export class Competition {
         });
 
         this.#annex.hasMany(this.#event, { 
-            as: 'Events',
+            as: 'annexevents',
             foreignKey: 'annexId',
             onDelete: 'CASCADE'
         });
         this.#event.belongsTo(this.#annex, { 
-            as: 'Type',
+            as: 'annex',
             foreignKey: 'annexId' 
         });
 
@@ -133,7 +133,7 @@ export class Competition {
     
 }
 
-export const createCompetition = (driver,name) => {
+export const createCompetition = async (driver,name) => {
 
    const annex         = Annex.initialize(driver);
    const event         = Event.initialize(driver);
