@@ -45,6 +45,8 @@ export default class Configuration extends Route {
                     where: { raceId: raceId },
                     transaction: t
                 });
+                // Reset auto-increment for stage table
+                await db.query('DELETE FROM sqlite_sequence WHERE name="stage"', { transaction: t });
     
                 if (data.stages && data.stages.length > 0) {
                     const stagesToCreate = data.stages.map(s => ({ ...s, raceId }));
@@ -58,6 +60,8 @@ export default class Configuration extends Route {
                     where: { raceId: raceId },
                     transaction: t
                 });
+                // Reset auto-increment for annex table
+                await db.query('DELETE FROM sqlite_sequence WHERE name="annex"', { transaction: t });
 
                 let annexMap = {};
                 if (data.annex && data.annex.length > 0) {
@@ -84,6 +88,8 @@ export default class Configuration extends Route {
                     cascade: false,
                     transaction: t
                 });
+                // Reset auto-increment for event table
+                await db.query('DELETE FROM sqlite_sequence WHERE name="event"', { transaction: t });
 
                 if (data.event && data.event.length > 0) {
                     for (const e of data.event) {
