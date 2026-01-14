@@ -11,10 +11,91 @@ export default class Configuration extends Route {
     async #get(req,res){
 
         const compid = req.params.id;
-        if (this._connector.isDatabaseExists(compid)){
-            res.status(200).json("TODO : Retrieve configuration for database : " + compid);
-        } else {
-            res.status(404).json("Database not found for " + compid);
+        
+        if (!this._connector.isDatabaseExists(compid)){
+            res.status(404).json({status: "notfound", message: "Database not found for " + compid});
+            return;
+        }
+        
+        try {
+            const race = await this._connector.master.findCompetition(compid);
+            const raceId = race.id;
+            const db = await this._connector.getDatabase(compid);
+            
+            // Get race basic info
+            const raceData = await db.models.race.findOne({
+                where: { id: raceId }
+            });
+            
+            // Get stages
+            const stages = await db.models.stage.findAll({
+                where: { raceId: raceId },
+                order: [['id', 'ASC']]
+            });
+            
+            // Get annexes
+            const annexes = await db.models.annex.findAll({
+                where: { raceId: raceId }
+            });
+            
+            // Get events grouped by stage
+            const events = await db.models.event.findAll({
+                include: [{
+                    model: db.models.stage,
+                    as: 'stage',
+                    where: { raceId: raceId },
+                    attributes: ['id', 'name'],
+                    required: true
+                }],
+                order: [['stageId', 'ASC']]
+            });
+            
+            // Build event structure grouped by stage
+            const eventsByStage = {};
+            stages.forEach(s => {
+                eventsByStage[s.name] = { annex: [], bonification: [] };
+            });
+            
+            events.forEach(e => {
+                const stageName = e.stage.name;
+                if (e.type === 'annex') {
+                    eventsByStage[stageName].annex.push({
+                        name: annexes.find(a => a.id === e.annexId)?.name,
+                        distance: e.distance,
+                        category: e.values?.category,
+                        points: e.values?.points
+                    });
+                } else if (e.type === 'bonification') {
+                    eventsByStage[stageName].bonification.push({
+                        distance: e.distance,
+                        time: e.values?.time
+                    });
+                }
+            });
+            
+            // Build response
+            const response = {
+                name: raceData.name,
+                stages: stages.map(s => ({
+                    name: s.name,
+                    ...s.dataValues
+                })),
+                annex: annexes.map(a => ({
+                    name: a.name,
+                    type: a.type,
+                    priority: a.priority,
+                    ...a.options
+                })),
+                event: stages.map(s => ({
+                    stage: s.name,
+                    ...eventsByStage[s.name]
+                }))
+            };
+            
+            res.status(200).json(response);
+            
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
 
     }
