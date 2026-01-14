@@ -20,7 +20,7 @@
         {"name": "GPM",    "category": "cat2",    "distance": 85.3,   "points": [3,1]}
       ],
       "bonification": [
-        {"name": "Arrivée", "distance": 150.1, "time": [10,6,4], "finish": true}
+        {"name": "Arrivée", "distance": 150.1, "time": [10,6,4]}
       ]
     }
   ]

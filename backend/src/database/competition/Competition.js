@@ -107,16 +107,6 @@ export class Competition {
             foreignKey: 'stageId' 
         });
 
-        this.#annex.hasMany(this.#event, { 
-            as: 'annexevents',
-            foreignKey: 'annexId',
-            onDelete: 'CASCADE'
-        });
-        this.#event.belongsTo(this.#annex, { 
-            as: 'annex',
-            foreignKey: 'annexId' 
-        });
-
 /*
         // A annex ranking is associated to a racer
         this.#racer.hasMany(this.#annex, { 

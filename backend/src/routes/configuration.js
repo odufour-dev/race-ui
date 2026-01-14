@@ -99,19 +99,36 @@ export default class Configuration extends Route {
                             transaction: t
                         });
 
+                        // Annex
                         if (stage && e.annex && e.annex.length > 0 && annexMap) {
 
-                            const eventToCreate = e.annex.map(a => {
+                            const annexToCreate = e.annex.map(a => {
                                 const annexId = annexMap.get(a.name);
                                 return {
                                     stageId: stage.id,
                                     annexId,
+                                    type: 'annex',
                                     distance: Number(a.distance),
-                                    points: a.points
+                                    values: {category: a.category, points: a.points}
                                 };
                             });
-                            await db.models.event.bulkCreate(eventToCreate, { transaction: t });
+                            await db.models.event.bulkCreate(annexToCreate, { transaction: t });
                         }
+
+                        // Bonification
+                        if (stage && e.bonification && e.bonification.length > 0) {
+
+                            const bonifToCreate = e.bonification.map(a => {
+                                return {
+                                    stageId: stage.id,
+                                    type: 'bonification',
+                                    distance: Number(a.distance),
+                                    values: {time: a.time}
+                                };
+                            });
+                            await db.models.event.bulkCreate(bonifToCreate, { transaction: t });
+                        }
+
                     }
                 }
 

@@ -4,26 +4,15 @@ export class Event extends Model {
 
   static initialize(sequelize){
     return super.init({
-      annexId: {
+        annexId: {
             type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'annex',
-                key: 'id'
-            }
+            allowNull: true
         },
-        stageId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'stage',
-                key: 'id'
-            }
-        },
-        points: {
+        values: {
             type: DataTypes.JSON
         },
-        distance: DataTypes.INTEGER
+        distance: DataTypes.INTEGER,
+        type: DataTypes.ENUM('annex', 'bonification')
     }, { sequelize, modelName: 'event',  tableName: 'event' });
   }
 
