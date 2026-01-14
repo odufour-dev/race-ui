@@ -18,6 +18,17 @@ class Migrator {
         const migrator = new Umzug({
             migrations: {
                 glob: this.#filelocation + '/*.js',
+                resolve: ({ name, path: filepath, context }) => ({
+                    name,
+                    up: async () => {
+                        const migration = await import(`file://${filepath}`);
+                        return migration.up({ context });
+                    },
+                    down: async () => {
+                        const migration = await import(`file://${filepath}`);
+                        return migration.down({ context });
+                    },
+                }),
             },
             context: driver.getQueryInterface(),
             storage: new SequelizeStorage({ sequelize: driver }),

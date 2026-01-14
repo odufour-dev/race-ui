@@ -69,8 +69,8 @@ class Connector {
             dialectModule: sqlite3
         }); 
         this.#competitions.create(driver,name || id);
-        await this.#migrator.migrate(driver);
         await driver.sync();
+        await this.#migrator.migrate(driver);
 
         this.#connections.set(safeName, driver);
         return driver;
@@ -92,8 +92,8 @@ class Connector {
             }); 
 
             this.#masterdb  = openMaster(driver);
-            await this.#migrator.migrate(driver);
             await driver.sync();
+            await this.#migrator.migrate(driver);
             this.#logger.log(`Master database initialized (${mastername})`);
 
         } catch (error) {

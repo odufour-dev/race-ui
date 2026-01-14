@@ -7,47 +7,10 @@ import { fileURLToPath }    from 'url';
 import { dirname }          from 'path';
 import { createApp }        from '../../src/app.js';
 
-describe('End-to-end tests', () => { 
-
-  test('List competitions - EMPTY - PLACEHOLDER', async () => {
-    const response = {status: 200, body: []};
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual([]);
-  });
-
-});
-
-/*
-FIXME
-
-----
-
-✔️ Solution 2 (encore meilleure) : ne jamais retourner app dans createApp()
-
-Dans createApp(), tu fais probablement :
-return { httpServer, dbConnector };
-
-C’est normal, mais Jest n’aime pas ça.
-
-Tu peux corriger en renvoyant un objet sans Sequelize :
-
-return {
-  httpServer,
-  dbConnector: {
-    getDatabase: (...args) => realConnector.getDatabase(...args),
-    closeAll: () => realConnector.closeAll()
-  }
-};
-
-
-----
-
-
 describe('End-to-end tests', () => {   
   
   let httpServer;
-  let dbConnector;
-  let masterDriver;
+  let dbConnectorRef;
   let __dirname;
   let TEST_DB_DIR;
   
@@ -70,15 +33,15 @@ describe('End-to-end tests', () => {
     // Start the server
     const app    = await createApp(appfolder,TEST_DB_DIR,"/api/v1",5000,frontend,mockLogger);
     httpServer   = app.httpServer;
-    dbConnector  = app.dbConnector;
-    masterDriver = await dbConnector.getDatabase('master');
+    dbConnectorRef  = app.dbConnector;
 
   });
 
   beforeEach(async () => {
     // Clean up competitions from the existing database connector
-    if (masterDriver) {
+    if (dbConnectorRef) {
       try {
+        const masterDriver = await dbConnectorRef.getDatabase('master');
         await masterDriver.getQueryInterface().bulkDelete('competitions', {});
       } catch (e) {
         // Ignore if table does not exist yet
@@ -87,19 +50,27 @@ describe('End-to-end tests', () => {
   });
 
   // Delete files and folder after tests
-  afterAll((done) => {
+  afterAll(async () => {
 
-    httpServer.close(() => {done();});
+    if (httpServer) {
+      await new Promise(resolve => httpServer.close(resolve));
+    }
 
-    // Close DB connections to release file handles before cleanup
-    if (dbConnector && typeof dbConnector.closeAll === 'function') dbConnector.closeAll();
+    if (dbConnectorRef && typeof dbConnectorRef.closeAll === 'function') {
+      await dbConnectorRef.closeAll();
+    }
 
     const files = fs.readdirSync(TEST_DB_DIR);
     for (const file of files) {
       fs.unlinkSync(path.join(TEST_DB_DIR, file));
     }
     fs.rmdirSync(TEST_DB_DIR);
+  });
 
+  test('List competitions - EMPTY - PLACEHOLDER', async () => {
+    const response = {status: 200, body: []};
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
   });
 
   test('List competitions - EMPTY', async () => {
@@ -181,4 +152,4 @@ describe('End-to-end tests', () => {
   });
 
 });
-*/
+
