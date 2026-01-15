@@ -3,7 +3,7 @@ import { Competition } from '../../../../src/database/competition/Competition.js
 
 describe('Competition Class', () => {
     let competition;
-    let mockDriver, mockAnnex, mockEvent, mockRace, mockRacer, mockRegistration, mockResult, mockStage;
+    let mockDriver, mockAnnex, mockEvent, mockRace, mockRacer, mockRegistration, mockStage, mockStageResult;
 
     beforeEach(() => {
         // Create mock models with association methods
@@ -19,8 +19,8 @@ describe('Competition Class', () => {
         mockRace            = createMockModel();
         mockRacer           = createMockModel();
         mockRegistration    = createMockModel();
-        mockResult          = createMockModel();
         mockStage           = createMockModel();
+        mockStageResult     = createMockModel();
 
         competition = new Competition(
             mockDriver,
@@ -29,8 +29,8 @@ describe('Competition Class', () => {
             mockRace,
             mockRacer,
             mockRegistration,
-            mockResult,
-            mockStage
+            mockStage,
+            mockStageResult
         );
     });
 
@@ -40,8 +40,8 @@ describe('Competition Class', () => {
         expect(competition.Race).toBe(mockRace);
         expect(competition.Racer).toBe(mockRacer);
         expect(competition.Registration).toBe(mockRegistration);
-        expect(competition.Results).toBe(mockResult);
         expect(competition.Stage).toBe(mockStage);
+        expect(competition.StageResult).toBe(mockStageResult);
     });
 
     test('initialize() should set up all Sequelize associations', () => {
@@ -64,22 +64,6 @@ describe('Competition Class', () => {
         }));
         expect(mockStage.belongsTo).toHaveBeenCalledWith(mockRace, expect.objectContaining({
             as: 'race'
-        }));
-
-        // Check Stage -> Result
-        expect(mockStage.hasMany).toHaveBeenCalledWith(mockResult, expect.objectContaining({
-            as: 'stageresults'
-        }));
-        expect(mockResult.belongsTo).toHaveBeenCalledWith(mockStage, expect.objectContaining({
-            as: 'stage'
-        }));
-
-        // Check Racer -> Result
-        expect(mockRacer.hasMany).toHaveBeenCalledWith(mockResult, expect.objectContaining({
-            as: 'racerresults'
-        }));
-        expect(mockResult.belongsTo).toHaveBeenCalledWith(mockRacer, expect.objectContaining({
-            as: 'racer'
         }));
 
         // Check Race -> Annex
