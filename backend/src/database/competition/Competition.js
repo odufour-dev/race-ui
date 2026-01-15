@@ -4,8 +4,8 @@ import { Event }        from "./Event.js";
 import { Race }         from "./Race.js";
 import { Racer }        from "./Racer.js";
 import { Registration } from "./Registration.js";
-import { Result }       from "./Result.js";
 import { Stage }        from "./Stage.js";
+import { StageResult }  from "./StageResult.js";
 
 export class Competition {
 
@@ -15,18 +15,18 @@ export class Competition {
     #race
     #racer
     #registration
-    #result
+    #stageresult
     #stage
 
-    constructor(driver,annex,event,race,racer,registration,result,stage){
+    constructor(driver,annex,event,race,racer,registration,stage,stageresult){
         this.#annex         = annex;
         this.#driver        = driver;
         this.#event         = event;
         this.#race          = race;
         this.#racer         = racer;
-        this.#registration  = registration;
-        this.#result        = result;
+        this.#registration  = registration
         this.#stage         = stage;
+        this.#stageresult   = stageresult;
     }
 
     get Annex()         {return this.#annex;        }
@@ -34,8 +34,8 @@ export class Competition {
     get Race()          {return this.#race;         }
     get Racer()         {return this.#racer;        }
     get Registration()  {return this.#registration; }
-    get Results()       {return this.#result;       }
     get Stage()         {return this.#stage;        }
+    get StageResult()   {return this.#stageresult;  }
 
     initialize(){
         
@@ -64,28 +64,6 @@ export class Competition {
             foreignKey: 'raceId' 
         });
 
-        // Results are linked to the stage
-        this.#stage.hasMany(this.#result, { 
-            as: 'stageresults',
-            foreignKey: 'stageId',
-            onDelete: 'CASCADE' 
-        });
-        this.#result.belongsTo(this.#stage, { 
-            as: 'stage',
-            foreignKey: 'stageId' 
-        });
-
-        // A result is associated to a racer
-        this.#racer.hasMany(this.#result, { 
-            as: 'racerresults',
-            foreignKey: 'racerId',
-            onDelete: 'CASCADE' 
-        });
-        this.#result.belongsTo(this.#racer, { 
-            as: 'racer',
-            foreignKey: 'racerId' 
-        });
-
         // An annex ranking belong to a race
         this.#race.hasMany(this.#annex, { 
             as: 'annexes',
@@ -107,18 +85,6 @@ export class Competition {
             foreignKey: 'stageId' 
         });
 
-/*
-        // A annex ranking is associated to a racer
-        this.#racer.hasMany(this.#annex, { 
-            as: 'Annex',
-            foreignKey: 'racerId',
-            onDelete: 'CASCADE' 
-        });
-        this.#annex.belongsTo(this.#racer, { 
-            as: 'racer',
-            foreignKey: 'racerId' 
-        });
-*/
     }
     
 }
@@ -130,10 +96,10 @@ export const createCompetition = async (driver,name) => {
    const race          = Race.initialize(driver);
    const racer         = Racer.initialize(driver);
    const registration  = Registration.initialize(driver);
-   const result        = Result.initialize(driver);
    const stage         = Stage.initialize(driver);
+   const stageresult   = StageResult.initialize(driver);
 
-    const db = new Competition(driver,annex,event,race,racer,registration,result,stage);
+    const db = new Competition(driver,annex,event,race,racer,registration,stage,stageresult);
     db.initialize();
     return db;
     

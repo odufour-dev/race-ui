@@ -1,8 +1,8 @@
 {
   "name": "Tour de France 2026",
   "stages": [
-    {"name": "Etape 1", "distance": "150.1",  "date": "2026-07-13"},
-    {"name": "Etape 2", "distance": "120",    "date": "2026-07-14"}
+    {"name": "Etape 1", "distance": "150.1",  "date": "2026-07-13", "number": 1},
+    {"name": "Etape 2", "distance": "120",    "date": "2026-07-14", "number": 2}
     ],
   "annex": [
       {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
