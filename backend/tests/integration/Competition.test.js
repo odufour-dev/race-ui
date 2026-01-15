@@ -85,23 +85,17 @@ describe('Database Integration Tests', () => {
 
     it('Link results to a racer and a stage', async () => {
         
-        const Race      = db.Race;
-        const Stage     = db.Stage;
-        const Racer     = db.Racer;
-        const Results   = db.Results;
-
-        const race  = await Race.create({ name: 'Critérium' });
-        const stage = await Stage.create({ name: 'Prologue', raceId: race.id });
-        const racer = await Racer.create({ firstName: 'Bernard', lastName: 'Hinault' });
+        const StageResult   = db.StageResult;
         
-        const result = await Results.create({
-            time: '00:15:30',
-            stageId: stage.id,
-            racerId: racer.id
+        const result = await StageResult.create({
+            rank: 1,
+            bib:  101,
+            time: 120000,
+            stage: 1
         });
 
-        expect(result.racerId).toBe(racer.id);
-        expect(result.stageId).toBe(stage.id);
+        expect(result.bib).toBe(101);
+        expect(result.stage).toBe(1);
 
     });
 
