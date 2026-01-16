@@ -36,6 +36,23 @@ export class RaceConnector {
 
   }
 
+  async createCompetition(compName){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: compName })
+      });
+      if (!response.ok) throw new Error("Error while creating the competition");
+      return response.json();
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
   async fetchFullModel() {
     try {
       /*

@@ -27,14 +27,11 @@ function APIConnection({ helper, connector, onChange, value }) {
     if (!newName.trim()) return;
     setLoading(true);
     try {
-      /*
-      // On suppose que ton connector a une méthode saveNewCompetition
-      const result = await connector.saveNewCompetition({ name: newName });
-      await loadData(); // Rafraîchir la liste
-      onChange(result.id); // Sélectionner la nouvelle compète
+      const result = await connector.createCompetition(newName);
+      loadData();
+      onChange(result.id);
       setIsCreating(false);
       setNewName("");
-      */
     } catch (e) {
       console.error(helper.translator("error.creation"), e);
     } finally {
