@@ -162,7 +162,6 @@ export default class Configuration extends Route {
 
                 // Events
                 // ------
-                console.log("STARTING EVENTS DELETION");
                 await db.models.event.destroy({
                     where: {},
                     truncate: true,
@@ -183,28 +182,40 @@ export default class Configuration extends Route {
                         // Annex
                         if (stage && e.annex && e.annex.length > 0 && annexMap) {
 
-                            const annexToCreate = e.annex.map(a => {
-                                const annexId = annexMap.get(a.name);
+                            const grouped = e.annex.reduce((acc, item) => { 
+                                acc[item.name] = acc[item.name] || []; 
+                                acc[item.name].push(item); return acc; }
+                                , {}); 
+                                
+                            const annexToCreate = Object.values(grouped).flatMap(group => { 
+                                group.sort((a, b) => a.distance - b.distance); 
+                                return group.map((item, index) => {
+                                const annexId = annexMap.get(item.name);
                                 return {
                                     stageId: stage.id,
                                     annexId,
                                     type: 'annex',
-                                    distance: Number(a.distance),
-                                    values: {category: a.category, points: a.points}
-                                };
+                                    name: `${item.name}_${index + 1}`,
+                                    distance: Number(item.distance),
+                                    values: {category: item.category, points: item.points}
+                                    }
+                                }); 
                             });
+
                             await db.models.event.bulkCreate(annexToCreate, { transaction: t });
                         }
 
                         // Bonification
                         if (stage && e.bonification && e.bonification.length > 0) {
 
-                            const bonifToCreate = e.bonification.map(a => {
+                            e.bonification.sort((a, b) => a.distance - b.distance); 
+                            const bonifToCreate = e.bonification.map((item,index) => {
                                 return {
                                     stageId: stage.id,
                                     type: 'bonification',
-                                    distance: Number(a.distance),
-                                    values: {time: a.time}
+                                    name: `bonif_${index + 1}`,
+                                    distance: Number(item.distance),item,
+                                    values: {time: item.time}
                                 };
                             });
                             await db.models.event.bulkCreate(bonifToCreate, { transaction: t });

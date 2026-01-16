@@ -8,6 +8,7 @@ export class Event extends Model {
             type: DataTypes.INTEGER,
             allowNull: true
         },
+        name: DataTypes.STRING,
         values: {
             type: DataTypes.JSON
         },
