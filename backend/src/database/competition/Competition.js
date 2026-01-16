@@ -1,5 +1,6 @@
 
 import { Annex }        from "./Annex.js";
+import { AnnexResult }  from "./AnnexResult.js";
 import { Event }        from "./Event.js";
 import { Race }         from "./Race.js";
 import { Racer }        from "./Racer.js";
@@ -10,6 +11,7 @@ import { StageResult }  from "./StageResult.js";
 export class Competition {
 
     #annex
+    #annexresult
     #driver
     #event
     #race
@@ -18,8 +20,9 @@ export class Competition {
     #stageresult
     #stage
 
-    constructor(driver,annex,event,race,racer,registration,stage,stageresult){
+    constructor(driver,annex,annexresult,event,race,racer,registration,stage,stageresult){
         this.#annex         = annex;
+        this.#annexresult   = annexresult;
         this.#driver        = driver;
         this.#event         = event;
         this.#race          = race;
@@ -30,6 +33,7 @@ export class Competition {
     }
 
     get Annex()         {return this.#annex;        }
+    get AnnexResult()   {return this.#annexresult;  }
     get Event()         {return this.#event;        }
     get Race()          {return this.#race;         }
     get Racer()         {return this.#racer;        }
@@ -92,6 +96,7 @@ export class Competition {
 export const createCompetition = async (driver,name) => {
 
    const annex         = Annex.initialize(driver);
+   const annexresult   = AnnexResult.initialize(driver);
    const event         = Event.initialize(driver);
    const race          = Race.initialize(driver);
    const racer         = Racer.initialize(driver);
@@ -99,7 +104,7 @@ export const createCompetition = async (driver,name) => {
    const stage         = Stage.initialize(driver);
    const stageresult   = StageResult.initialize(driver);
 
-    const db = new Competition(driver,annex,event,race,racer,registration,stage,stageresult);
+    const db = new Competition(driver,annex,annexresult,event,race,racer,registration,stage,stageresult);
     db.initialize();
     return db;
     

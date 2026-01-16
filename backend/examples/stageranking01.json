@@ -1,0 +1,34 @@
+[
+    {
+        "name": "points_1",
+        "results": [
+            {"rank":1, "bib":101, "points":25},
+            {"rank":2, "bib":102, "points":18},
+            {"rank":3, "bib":103, "points":15}
+        ]
+    },
+    {
+        "name": "points_2",
+        "results": [
+            {"rank":1, "bib":102, "points":25},
+            {"rank":2, "bib":101, "points":18},
+            {"rank":3, "bib":103, "points":15}
+        ]
+    },
+    {
+        "name": "GPM_1",
+        "results": [
+            {"rank":1, "bib":101, "points":25},
+            {"rank":2, "bib":102, "points":18},
+            {"rank":3, "bib":103, "points":15}
+        ]
+    },
+    {
+        "name": "GPM_2",
+        "results": [
+            {"rank":1, "bib":102, "points":25},
+            {"rank":2, "bib":101, "points":18},
+            {"rank":3, "bib":103, "points":15}
+        ]
+    }
+]
