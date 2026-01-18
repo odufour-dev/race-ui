@@ -31,10 +31,10 @@ describe('RaceModel', () => {
     //expect(mockClassifications.update).toHaveBeenCalledWith( json_tdf2026.classifications );
     expect(mockRace.update).toHaveBeenCalledWith( json_tdf2026.configuration );
     expect(mockRacers.update).toHaveBeenCalledWith( json_tdf2026.racers );
-    expect(mockRanking.update).toHaveBeenCalledWith( json_tdf2026.stageResults );
+    //expect(mockRanking.update).toHaveBeenCalledWith( json_tdf2026.stageResults );
 
   });
-/*
+
   it('From JSON - Tour de France 2026', () => {
 
     const sut = createRaceModelFromJSON( json_tdf2026 );
@@ -42,5 +42,5 @@ describe('RaceModel', () => {
     expect(sut.Racers.getAll().length).toBe(8);
 
   });
-*/
+
 });

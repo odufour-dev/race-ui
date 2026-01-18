@@ -8,6 +8,8 @@ export class RacerManager {
     this.#racers = racers;
   }
 
+  get length() { return this.#racers.length; }
+
   clone(){
     return new RacerManager(this.#racers);
   }
@@ -67,6 +69,15 @@ export class RacerManager {
     return data;
   }
 
+  update(values) {
+    let data = this.clone();
+    data.#racers = values.map((r) => {
+      const racer = new Racer();
+      return racer.update(r);
+    });
+    return data;
+  }
+
   updateRanking(stage, ranking){
     // ranking:
     //  - bib = Racer identifier
@@ -87,10 +98,6 @@ export class RacerManager {
     });
     
     return data;
-  }
-  
-  get length() {
-    return this.#racers.length;
   }
 
 }
