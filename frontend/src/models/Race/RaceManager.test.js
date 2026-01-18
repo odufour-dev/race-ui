@@ -75,7 +75,11 @@ describe('RaceManager', () => {
 
     expect(actual.nStages).toEqual(2);
     expect(actual.stages[0].name).toEqual("Etape 1");
+    expect(actual.stages[0].date).toEqual("2026-07-13");
+    expect(actual.stages[0].distance).toEqual(150.1);
     expect(actual.stages[1].name).toEqual("Etape 2");
+    expect(actual.stages[1].date).toEqual("2026-07-14");
+    expect(actual.stages[1].distance).toEqual(120);
     expect(actual.annexRankings).toEqual([]);
     
   });
@@ -120,7 +124,11 @@ describe('RaceManager', () => {
 
     expect(actual.nStages).toEqual(2);
     expect(actual.stages[0].name).toEqual("Etape 1");
+    expect(actual.stages[0].date).toEqual("2026-07-13");
+    expect(actual.stages[0].distance).toEqual(150.1);
     expect(actual.stages[1].name).toEqual("Etape 2");
+    expect(actual.stages[1].date).toEqual("2026-07-14");
+    expect(actual.stages[1].distance).toEqual(120);
     expect(actual.annexRankings).toEqual(annexMock);
     
   });
