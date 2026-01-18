@@ -2,7 +2,7 @@ import { Classification }       from './References/Classification';
 import { RaceManager }          from './Race/RaceManager';
 import { RacerManager }         from './Racers/RacerManager'; 
 import { RankingManager }       from './Ranking/RankingManager';
-import { AnnexRankingManager, createAnnexFromJSON }  from './AnnexRanking/AnnexRankingManager';
+import { AnnexRankingManager }  from './AnnexRanking/AnnexRankingManager';
 
 export class RaceModel {
 

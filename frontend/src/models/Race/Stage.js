@@ -38,3 +38,8 @@ export class Stage {
     }
 
 }
+
+export function createStageFromJSON(jsondata){
+    const stage = new Stage();
+    return stage.update(jsondata);
+}

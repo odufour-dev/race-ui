@@ -1,4 +1,4 @@
-import { Stage } from "./Stage"
+import { Stage, createStageFromJSON } from "./Stage"
 
 export class RaceManager {
 
@@ -38,7 +38,7 @@ export class RaceManager {
     return data.clone();
   }  
 
-  update(settings){
+  update(settings, annexRankings = []){
 
     let data = this.clone();
     if (settings.stages){
@@ -47,9 +47,7 @@ export class RaceManager {
         return stage.update(s);
       });
     }
-    if (settings.annexRankings){
-        data.#annexrankings = settings.annexRankings.map((r) => r);
-    }
+    data.#annexrankings = annexRankings;
     return data;
   }
 
