@@ -8,9 +8,9 @@ export class AnnexRankingManager {
 
     constructor(){
         this.#mapping = {
-            "points":   (id) => new PointsRanking(id, "points"),
-            "team":     (id) => new TeamRanking(id, "team"),
-            "filter":   (id) => new FilterRanking(id, "filter"),
+            "points":   (id) => new PointsRanking(id,   "points"),
+            "team":     (id) => new TeamRanking(id,     "team"),
+            "filter":   (id) => new FilterRanking(id,   "filter"),
         };
     }
 
@@ -24,6 +24,15 @@ export class AnnexRankingManager {
 
     build(type,id){
         return this.#mapping[type](id);
+    }
+
+    fromJSON(data){
+        
+        return data.map( (annexData) => {
+            const ranking = this.build(annexData.type, annexData.name);
+            return ranking.update(annexData);
+        });
+
     }
 
 }

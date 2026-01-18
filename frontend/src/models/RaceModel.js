@@ -115,10 +115,7 @@ export class RaceModel {
   update(data){
 
     if ('configuration' in data){
-
-      if ('annex' in data.configuration){
-        this.#annex = this.#annex.update( data.configuration.annex );
-      }
+      const annex = data.configuration.annex ? this.#annex.fromJSON( data.configuration.annex ) : [];
       this.#race = this.#race.update( data.configuration );
     }
 
