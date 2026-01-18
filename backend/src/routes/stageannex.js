@@ -31,7 +31,7 @@ export default class StageAnnex extends Route {
             });
 
             if (annexResults.length === 0) {
-                return res.status(404).json({status: "notfound", message: "No results found for annex '" + annexid + "' at stage " + stageNumber});
+                return res.status(404).json({status: "notfound", message: "No results found for race '" + raceId + "' at stage " + stageNumber});
             }
 
             // Get all registrations to map bib to racer
