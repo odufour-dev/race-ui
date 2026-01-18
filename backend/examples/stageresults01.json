@@ -1,0 +1,7 @@
+[
+    {"bib": 3, "rank": 1, "time": "01:23:45",   "status": "done"},
+    {"bib": 1, "rank": 2, "time": "01:24:10",   "status": "done"},
+    {"bib": 5, "rank": 3, "time": "01:25:00",   "status": "done"},
+    {"bib": 2,                                  "status": "dns"},
+    {"bib": 4,                                  "status": "dnf"}
+]

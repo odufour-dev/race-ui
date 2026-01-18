@@ -1,16 +1,15 @@
 import { fileURLToPath }    from 'url';
-import { dirname }          from 'path';
+import path                 from 'path';
 
-import { createApp } from './app.js';
+import { createApp }        from './app.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootfolder    = path.dirname(fileURLToPath(import.meta.url));
+const appfolder     = path.join(rootfolder, "backend");
+const dbfolder      = path.join(path.dirname(rootfolder), "db");
+const frontendbuild = path.join(path.dirname(path.dirname(rootfolder)),"frontend","build");
+const prefix        = process.env.APIPREFIX || "/api/v1";
+const port          = process.env.PORT || 5000;
+const logger        = console;
 
-export const app = createApp(
-    __dirname,
-    "../db",
-    "/api/v1",
-    process.env.PORT || 5000,
-    "schema.sql",
-    "../../frontend/build"
-);
+export const app = createApp(appfolder,dbfolder,prefix,port,frontendbuild,logger);
 

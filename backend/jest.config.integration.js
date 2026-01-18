@@ -4,4 +4,5 @@ export default {
   ...baseConfig,
   displayName: 'INTEGRATION',
   testMatch: ['<rootDir>/tests/integration/**/*.test.js'],
+  maxWorkers: 1,
 };

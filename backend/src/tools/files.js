@@ -5,24 +5,20 @@ export class Files {
 
     #fs
     #logger
-    #path    
-    #rootfolder
+    #path
 
-    constructor(path, fs, rootfolder,logger) {
-        this.#rootfolder        = rootfolder;
+    constructor(path, fs, logger = console) {
         this.#fs                = fs;
         this.#path              = path;
         this.#logger            = logger;
     }
 
-    get rootfolder(){return this.#rootfolder;}
+    basename(filename){
+        return this.#path.parse(filename).name;
+    }
 
     exists(filePath) {
         return this.#fs.existsSync(filePath);        
-    }
-
-    joinAbsolutePath(...segments) {
-        return this.#path.join(this.#rootfolder, ...segments);
     }
 
     joinPath(...segments) {
@@ -33,22 +29,8 @@ export class Files {
         this.#fs.mkdirSync(dirPath, options);
     }
 
-    readAbsoluteDir(dirPath) {
-        dirPath = this.#path.join(this.#rootfolder,dirPath)
-        return this.#fs.readdirSync(dirPath);
-    }
-
     readDir(dirPath) {
         return this.#fs.readdirSync(dirPath);
-    }
-
-    readAbsoluteFile(filePath, encoding='utf8') {
-        filePath = this.#path.join(this.#rootfolder,filePath);
-        try {
-            return this.#fs.readFileSync(filePath, encoding);
-        } catch (e) {
-            throw Error("FILE_NOT_FOUND : " + e.message);
-        }
     }
 
     readFile(filePath, encoding='utf8') {
@@ -65,6 +47,6 @@ export class Files {
 
 }
 
-export function createFilesFromFolder(rootfolder,logger=console){
-    return new Files(path,fs,rootfolder,logger);
+export default function createFiles(logger=console){
+    return new Files(path,fs,logger);
 }

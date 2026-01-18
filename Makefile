@@ -35,6 +35,7 @@ lint-front:
 
 test-back:
 	docker run --rm --name=ui-test -v "$(PWD)/backend:/app/backend" -v /app/backend/node_modules -w /app/backend -e CI=true $(IMAGE)-dev npm test -- --watchAll=false
+	@sudo rm -Rf backend/:memory:
 
 lint-back:
 	docker run --rm --name=ui-test -v "$(PWD)/backend:/app/backend" -v /app/backend/node_modules -w /app/backend -e CI=true $(IMAGE)-dev npm run lint

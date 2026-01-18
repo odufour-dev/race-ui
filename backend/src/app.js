@@ -1,28 +1,51 @@
 
-import Database                 from './database/database.js';
-import {APIRouter,StaticRouter} from './routes/routers.js';
-import Tools                    from './tools/tools.js';
+import CompetitionRoutes    from './routes/competition.js';
+import ConfigurationRoutes  from './routes/configuration.js';
+import RacerRoutes          from './routes/racer.js';
+import StageAnnexRoutes     from './routes/stageannex.js';
+import StageRankingRoutes   from './routes/stageranking.js';
+import VersionRoutes        from './routes/version.js';
+import StaticRoutes         from './routes/static.js';
 
-export const createApp = (rootfolder,dbfolder,apiprefix,port,schemapath,frontendbuildpath,logger = console) => {
+import createConnector      from './database/connector.js';
+import createMigrator       from './database/migrator.js';
 
-    const tools = new Tools(rootfolder, dbfolder, logger);
+import createServer         from './tools/express.js';
+import createFiles          from './tools/files.js';
 
-    const database      = new Database(tools, schemapath, logger);
-    const apirouter     = new APIRouter(tools, database, apiprefix, logger);
-    const staticrouter  = new StaticRouter(tools, frontendbuildpath);
+export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuildpath,logger = console) => {
 
-    database.initialize();
+    // Create utility classes
+    const files     = createFiles(logger);
+    const server    = createServer(logger);
+
+    const migrator  = createMigrator(files.joinPath(appfolder, 'migrations'), logger);
+    const connector = await createConnector(files, dbfolder, 'master', migrator, logger);
     
     // Register API routes
-    apirouter.register();
-    staticrouter.register();
+    const routes = [
+        new CompetitionRoutes(connector,logger),
+        new ConfigurationRoutes(connector,logger),
+        new RacerRoutes(connector,logger),
+        new StageAnnexRoutes(connector,logger),
+        new StageRankingRoutes(connector,logger),
+        new VersionRoutes(connector,logger),
+    ];
+
+    const router = server.router;
+    routes.map((r) => r.register(router));    
+    server.registerRoutes(apiprefix, router);
+    
+    // Register Static Routes for the front-end files
+    const staticroutes = new StaticRoutes(files, frontendbuildpath, logger);
+    staticroutes.register(server);
 
     // Listen at port 
-    const server = tools.express.listen(port);
+    const httpServer = server.listen(port);
 
     return {
-        httpServer: server,
-        dbConnector: tools.connector
+        httpServer: httpServer,
+        dbConnector: connector
     }
 
 }

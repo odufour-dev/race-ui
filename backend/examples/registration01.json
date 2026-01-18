@@ -1,0 +1,93 @@
+{
+  "racers": [
+    {
+      "firstName": "Jean",
+      "lastName": "Dupont",
+      "team": "Team France Cyclisme",
+      "category": "Elite",
+      "age": 28,
+      "ffcID": "FFC123456",
+      "uciID": "UCI123456789",
+      "sex": "men",
+      "bib": 1
+    },
+    {
+      "firstName": "Marie",
+      "lastName": "Bernard",
+      "team": "Vélo Club Lyon",
+      "category": "U23",
+      "age": 22,
+      "ffcID": "FFC654321",
+      "uciID": "UCI987654321",
+      "sex": "women",
+      "bib": 2
+    },
+    {
+      "firstName": "Pierre",
+      "lastName": "Moreau",
+      "team": "Cycling Academy Paris",
+      "category": "Junior",
+      "age": 18,
+      "ffcID": "FFC111222",
+      "uciID": "UCI111222333",
+      "sex": "men",
+      "bib": 3
+    },
+    {
+      "firstName": "Sophie",
+      "lastName": "Laurent",
+      "team": "Team France Cyclisme",
+      "category": "Elite",
+      "age": 32,
+      "ffcID": "FFC333444",
+      "uciID": "UCI444555666",
+      "sex": "women",
+      "bib": 4
+    },
+    {
+      "firstName": "Lucas",
+      "lastName": "Renard",
+      "team": "Bordeaux Vélo Club",
+      "category": "U23",
+      "age": 21,
+      "ffcID": "FFC555666",
+      "uciID": "UCI777888999",
+      "sex": "men",
+      "bib": 5
+    },
+    {
+      "firstName": "Amélie",
+      "lastName": "Rousseau",
+      "team": "Provence Cycling",
+      "category": "Junior",
+      "age": 17,
+      "ffcID": "FFC777888",
+      "uciID": "UCI222333444",
+      "sex": "women",
+      "bib": 6
+    },
+    {
+      "firstName": "François",
+      "lastName": "Petit",
+      "team": "Marseille CC",
+      "category": "Elite",
+      "age": 35,
+      "ffcID": "FFC999000",
+      "uciID": "UCI555666777",
+      "sex": "men",
+      "bib": 7
+    },
+    {
+      "firstName": "Claire",
+      "lastName": "Lefevre",
+      "team": "Team France Cyclisme",
+      "category": "U23",
+      "age": 22,
+      "ffcID": "FFC111333",
+      "uciID": "UCI888999000",
+      "sex": "women",
+      "bib": 8
+    }
+  ]
+}
+
