@@ -1,328 +1,38 @@
 
-import { RaceModel } from "./RaceModel"
+import { RaceModel }    from './RaceModel';
 
-import { Classification } from './References/Classification';
-import { RaceManager }    from './Race/RaceManager';
-import { RacerManager }   from './Racers/RacerManager'; 
+import json_tdf2026 from '../../testdata/tour_de_france_2026.json' with { type: 'json' };
 
 describe('RaceModel', () => {
 
   it('Constructor - default', () => {
 
     const sut = new RaceModel();
-
-    expect(sut.Racers).toBeInstanceOf(RacerManager);
-    expect(sut.Race).toBeInstanceOf(RaceManager);
-    expect(sut.Classifications).toBeInstanceOf(Classification);
+    expect(sut.Annex).toBeDefined();
+    expect(sut.Classifications).toBeDefined();
+    expect(sut.Race).toBeDefined();
+    expect(sut.Racers).toBeDefined();
 
   });
 
-  it('updateRacerManager', () => {
+  it('From JSON - Tour de France 2026', () => {
 
-    const sut = new RaceModel();
+    const mockAnnex           = {update: jest.fn()};
+    const mockClassifications = {update: jest.fn()};
+    const mockRace            = {update: jest.fn()};
+    const mockRacers          = {update: jest.fn()};
+    const mockRanking         = {update: jest.fn()};
 
-    const actual = sut.getStageRanking(1);
+    const sut = new RaceModel(mockRacers, mockAnnex, mockClassifications, mockRace, mockRanking );
 
-    expect(actual).toEqual([]);
-    
+    sut.update( json_tdf2026 );
+
+    expect(mockAnnex.update).toHaveBeenCalledWith( json_tdf2026.configuration.annex );
+    //expect(mockClassifications.update).toHaveBeenCalledWith( json_tdf2026.classifications );
+    expect(mockRace.update).toHaveBeenCalledWith( json_tdf2026.configuration );
+    expect(mockRacers.update).toHaveBeenCalledWith( json_tdf2026.racers );
+    expect(mockRanking.update).toHaveBeenCalledWith( json_tdf2026.stageResults );
+
   });
 
-  it('getStageRanking - no data', () => {
-
-    const sut = new RaceModel();
-
-    const actual = sut.getStageRanking(1);
-
-    expect(actual).toEqual([]);
-    
-  });
-
-  it('getStageRanking - no ranking', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"     });
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"     });
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT" });
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"     });
-
-    const actual = sut.getStageRanking(1);
-    expect(actual).toMatchObject([
-      {bib: 1, stage: 1, position: null, time: null, status: "unknown", firstname: "Paul",   lastname: "POULE"     },
-      {bib: 2, stage: 1, position: null, time: null, status: "unknown", firstname: "Pierre", lastname: "PONCE"     },
-      {bib: 3, stage: 1, position: null, time: null, status: "unknown", firstname: "Jacques",lastname: "BEAUREGARD"},
-      {bib: 4, stage: 1, position: null, time: null, status: "unknown", firstname: "Jean",   lastname: "CROISSANT" },
-      {bib: 5, stage: 1, position: null, time: null, status: "unknown", firstname: "René",   lastname: "TAUPE"     },
-    ]);
-    
-  });
-
-  it('getStageRanking - all', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"});
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"});
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT"});
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"});
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: 1, time: 5010, status: "done"},
-      {bib: 5, position: 2, time: 5010, status: "done"},
-      {bib: 3, position: 3, time: 5010, status: "done"},
-      {bib: 1, position: 4, time: 5010, status: "done"},
-      {bib: 4, position: 5, time: 5010, status: "done"},
-    ]);
-
-    const actual = sut.getStageRanking(1);
-    expect(actual).toMatchObject([
-      {bib: 2, stage: 1, position: 1, time: 5010, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 1, position: 2, time: 5010, status: "done", firstname: "René",    lastname: "TAUPE"     },
-      {bib: 3, stage: 1, position: 3, time: 5010, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 1, stage: 1, position: 4, time: 5010, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: 5, time: 5010, status: "done", firstname: "Jean",    lastname: "CROISSANT" },
-    ]);
-    
-  });
-
-  it('getStageRanking - with dnf/dns', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"});
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"});
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT"});
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"});
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: 1, time: "01:23:32", status: "done"},
-      {bib: 5, position: 2, time: "01:23:35", status: "done"},
-      {bib: 3, position: 3, time: "01:23:35", status: "done"},
-      {bib: 1, position: 4, time: "",         status: "dnf"},
-      {bib: 4, position: 5, time: "",         status: "dns"},
-    ]);
-
-    const actual = sut.getStageRanking(1);
-    expect(actual).toMatchObject([
-      {bib: 2, stage: 1, position: 1,   time: 5012,   status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 1, position: 2,   time: 5015,   status: "done", firstname: "René",    lastname: "TAUPE"     },
-      {bib: 3, stage: 1, position: 3,   time: 5015,   status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 1, stage: 1, position: 4,   time: null,    status: "dnf" , firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: 5,   time: null,    status: "dns" , firstname: "Jean",    lastname: "CROISSANT" },
-    ]);
-    
-  });
-
-  it('getStageRanking - with dnf/dns/abs/unknown in previous stage', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"});
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"});
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT"});
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"});
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: null, time: "",         status: "abs"},
-      {bib: 5, position: null, time: "",         status: "unknown"},
-      {bib: 3, position: 3,    time: "01:23:35", status: "done"},
-      {bib: 1, position: null, time: "",         status: "dnf"},
-      {bib: 4, position: null, time: "",         status: "dns"},
-    ]);
-
-    const actual = sut.getStageRanking(2);
-    expect(actual).toMatchObject([
-      {bib: 1, stage: 2, position: null,  time: null,   status: "abs",    firstname: "Paul",    lastname: "POULE"     },
-      {bib: 2, stage: 2, position: null,  time: null,   status: "abs",    firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 3, stage: 2, position: null,  time: null,   status: "unknown",firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 4, stage: 2, position: null,  time: null,   status: "abs" ,   firstname: "Jean",    lastname: "CROISSANT" },
-      {bib: 5, stage: 2, position: null,  time: null,   status: "abs" ,   firstname: "René",    lastname: "TAUPE"     },
-    ]);
-    
-  });
-
-  it('getGeneralRanking - no ranking', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"     });
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"     });
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT" });
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"     });
-
-    const actual = sut.getGeneralRanking(1);
-    expect(actual).toMatchObject([]);
-    
-  });
-
-  it('getGeneralRanking - all', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"});
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"});
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT"});
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"});
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: 1, time: 5010, status: "done"},
-      {bib: 5, position: 2, time: 5010, status: "done"},
-      {bib: 3, position: 3, time: 5010, status: "done"},
-      {bib: 1, position: 4, time: 5010, status: "done"},
-      {bib: 4, position: 5, time: 5010, status: "done"},
-    ]);
-    sut = sut.updateStageRanking(2, [
-      {bib: 1, position: 1, time: 1234, status: "done"},
-      {bib: 3, position: 2, time: 1236, status: "done"},
-      {bib: 2, position: 3, time: 1238, status: "done"},
-      {bib: 4, position: 4, time: 1240, status: "done"},
-      {bib: 5, position: 5, time: 1500, status: "done"},
-    ]);
-
-    // General ranking after 1st stage (== stage ranking)
-    expect(sut.getGeneralRanking(1)).toMatchObject([
-      {bib: 2, stage: 1, position: 1, time: 5010, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 1, position: 2, time: 5010, status: "done", firstname: "René",    lastname: "TAUPE"     },
-      {bib: 3, stage: 1, position: 3, time: 5010, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 1, stage: 1, position: 4, time: 5010, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: 5, time: 5010, status: "done", firstname: "Jean",    lastname: "CROISSANT" },
-    ]);
-
-    // General ranking after 2nd stage
-    expect(sut.getGeneralRanking(2)).toMatchObject([
-      {bib: 1, stage: 2, position: 1, time: 6244, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 3, stage: 2, position: 2, time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 2, stage: 2, position: 3, time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 4, stage: 2, position: 4, time: 6250, status: "done", firstname: "Jean",    lastname: "CROISSANT" },
-      {bib: 5, stage: 2, position: 5, time: 6510, status: "done", firstname: "René",    lastname: "TAUPE"     },
-    ]);
-    
-  });
-
-  it('getGeneralRanking - with dnf/dns', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"});
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"});
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT"});
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"});
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: 1,   time: 5010, status: "done"},
-      {bib: 5, position: 2,   time: 5010, status: "done"},
-      {bib: 3, position: 3,   time: 5010, status: "done"},
-      {bib: 1, position: 4,   time: 5010, status: "done"},
-      {bib: 4, position: null, time: null,  status: "dnf"},
-    ]);
-    sut = sut.updateStageRanking(2, [
-      {bib: 1, position: 1,     time: 1234, status: "done"},
-      {bib: 3, position: 2,     time: 1236, status: "done"},
-      {bib: 2, position: 3,     time: 1238, status: "done"},
-      {bib: 5, position: null,  time: null, status: "dns" },
-    ]);
-
-    // General ranking after 1st stage (== stage ranking)
-    expect(sut.getGeneralRanking(1)).toMatchObject([
-      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 1, position: 2,   time: 5010, status: "done", firstname: "René",    lastname: "TAUPE"     },
-      {bib: 3, stage: 1, position: 3,   time: 5010, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 1, stage: 1, position: 4,   time: 5010, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: 0,   time: null,  status: "dnf", firstname: "Jean",    lastname: "CROISSANT" },
-    ]);
-
-    // General ranking after 2nd stage
-    expect(sut.getGeneralRanking(2)).toMatchObject([
-      {bib: 1, stage: 2, position: 1,   time: 6244, status: "done", firstname: "Paul",    lastname: "POULE"     },
-      {bib: 3, stage: 2, position: 2,   time: 6246, status: "done", firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 2, stage: 2, position: 3,   time: 6248, status: "done", firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 2, position: 0,   time: 5010, status: "dns",  firstname: "René",    lastname: "TAUPE"     },
-      {bib: 4, stage: 1, position: 0,   time: null, status: "dnf",  firstname: "Jean",    lastname: "CROISSANT" },
-    ]);
-    
-  });
-
-  it('getGeneralRanking - with dnf/dns/abs/unknown in previous stage', () => {
-
-    let sut = new RaceModel();
-
-    sut.Racers.add({id: 1, firstName: "Paul",   lastName: "POULE"});
-    sut.Racers.add({id: 2, firstName: "Pierre", lastName: "PONCE"});
-    sut.Racers.add({id: 3, firstName: "Jacques",lastName: "BEAUREGARD"});
-    sut.Racers.add({id: 4, firstName: "Jean",   lastName: "CROISSANT"});
-    sut.Racers.add({id: 5, firstName: "René",   lastName: "TAUPE"});
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: null, time: "",         status: "abs"},
-      {bib: 5, position: null, time: "",         status: "unknown"},
-      {bib: 3, position: 1,    time: "01:23:35", status: "done"},
-      {bib: 1, position: null, time: "",         status: "dnf"},
-      {bib: 4, position: null, time: "",         status: "dns"},
-    ]);
-    sut = sut.updateStageRanking(2, [
-      {bib: 3, position: 1,     time: 1234, status: "done"},
-    ]);
-
-    // General ranking after 1st stage (== stage ranking)
-    expect(sut.getGeneralRanking(1)).toMatchObject([
-      {bib: 3, stage: 1, position: 1,   time: 5015, status: "done",   firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 2, stage: 1, position: 0,   time: null, status: "abs",    firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 1, position: 0,   time: null, status: "unknown",firstname: "René",    lastname: "TAUPE"     },
-      {bib: 1, stage: 1, position: 0,   time: null, status: "dnf",    firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: 0,   time: null, status: "dns",    firstname: "Jean",    lastname: "CROISSANT" },
-    ]);
-
-    // General ranking after 2nd stage
-    expect(sut.getGeneralRanking(2)).toMatchObject([
-      {bib: 3, stage: 2, position: 1,   time: 6249, status: "done",   firstname: "Jacques", lastname: "BEAUREGARD"},
-      {bib: 2, stage: 1, position: 0,   time: null, status: "abs",    firstname: "Pierre",  lastname: "PONCE"     },
-      {bib: 5, stage: 1, position: 0,   time: null, status: "unknown",firstname: "René",    lastname: "TAUPE"     },
-      {bib: 1, stage: 1, position: 0,   time: null, status: "dnf",    firstname: "Paul",    lastname: "POULE"     },
-      {bib: 4, stage: 1, position: 0,   time: null, status: "dns",    firstname: "Jean",    lastname: "CROISSANT" },
-    ]);
-    
-  });
-
-  it('getGeneralRanking - no registered racers', () => {
-
-    let sut = new RaceModel();
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: 1,   time: 5010, status: "done"},
-    ]);
-
-    // General ranking after 1st stage (== stage ranking)
-    expect(sut.getGeneralRanking(1)).toMatchObject([
-      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done"},
-    ]);
-    
-  });
-
-  it('getStageRanking & getGeneralRanking - no registered racers', () => {
-
-    let sut = new RaceModel();
-
-    sut = sut.updateStageRanking(1, [
-      {bib: 2, position: 1,   time: 5010, status: "done"},
-    ]);
-
-    // Stage ranking after 1st stage (== stage ranking)
-    expect(sut.getStageRanking(1)).toMatchObject([
-      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done"},
-    ]);
-
-    // General ranking after 1st stage (== stage ranking)
-    expect(sut.getGeneralRanking(1)).toMatchObject([
-      {bib: 2, stage: 1, position: 1,   time: 5010, status: "done"},
-    ]);
-    
-  });
-  
 });

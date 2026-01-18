@@ -1,0 +1,423 @@
+{
+  "id": "tour_de_france_2026",
+  "name": "Tour de France 2026",
+  "description": "",
+  "configuration": {
+    "name": "Tour de France 2026",
+    "stages": [
+      {
+        "name": "Etape 1",
+        "id": 1,
+        "number": 1,
+        "date": "2026-07-13",
+        "startLocation": null,
+        "endLocation": null,
+        "distance": 150.1,
+        "type": null,
+        "createdAt": "2026-01-18T19:35:54.003Z",
+        "updatedAt": "2026-01-18T19:35:54.003Z",
+        "raceId": 1
+      },
+      {
+        "name": "Etape 2",
+        "id": 2,
+        "number": 2,
+        "date": "2026-07-14",
+        "startLocation": null,
+        "endLocation": null,
+        "distance": 120,
+        "type": null,
+        "createdAt": "2026-01-18T19:35:54.003Z",
+        "updatedAt": "2026-01-18T19:35:54.003Z",
+        "raceId": 1
+      }
+    ],
+    "annex": [
+      {
+        "name": "points",
+        "type": "points",
+        "priority": 1,
+        "categories": [
+          {
+            "name": "sprint",
+            "points": [
+              5,
+              3,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GPM",
+        "type": "points",
+        "priority": 2,
+        "categories": [
+          {
+            "name": "cat1",
+            "points": [
+              5,
+              3,
+              1
+            ]
+          },
+          {
+            "name": "cat2",
+            "points": [
+              3,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Jeunes",
+        "type": "filter",
+        "priority": 3,
+        "filter": "age < 23"
+      },
+      {
+        "name": "Equipe",
+        "type": "team",
+        "priority": 4,
+        "nracers": "2"
+      }
+    ],
+    "event": [
+      {
+        "stage": "Etape 1",
+        "annex": [
+          {
+            "name": "points",
+            "distance": 50.5,
+            "category": "sprint",
+            "points": [
+              5,
+              3,
+              1
+            ]
+          },
+          {
+            "name": "points",
+            "distance": 100.4,
+            "category": "sprint",
+            "points": [
+              5,
+              3,
+              1
+            ]
+          },
+          {
+            "name": "GPM",
+            "distance": 62.4,
+            "category": "cat1",
+            "points": [
+              5,
+              3,
+              1
+            ]
+          },
+          {
+            "name": "GPM",
+            "distance": 85.3,
+            "category": "cat2",
+            "points": [
+              3,
+              1
+            ]
+          }
+        ],
+        "bonification": [
+          {
+            "distance": 150.1,
+            "time": [
+              10,
+              6,
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "stage": "Etape 2",
+        "annex": [],
+        "bonification": []
+      }
+    ]
+  },
+  "racers": [
+    {
+      "id": 1,
+      "firstName": "Jean",
+      "lastName": "Dupont",
+      "team": "Team France Cyclisme",
+      "category": "Elite",
+      "ffcID": "FFC123456",
+      "uciID": "UCI123456789",
+      "sex": "men",
+      "bib": 1
+    },
+    {
+      "id": 2,
+      "firstName": "Marie",
+      "lastName": "Bernard",
+      "team": "Vélo Club Lyon",
+      "category": "U23",
+      "ffcID": "FFC654321",
+      "uciID": "UCI987654321",
+      "sex": "women",
+      "bib": 2
+    },
+    {
+      "id": 3,
+      "firstName": "Pierre",
+      "lastName": "Moreau",
+      "team": "Cycling Academy Paris",
+      "category": "Junior",
+      "ffcID": "FFC111222",
+      "uciID": "UCI111222333",
+      "sex": "men",
+      "bib": 3
+    },
+    {
+      "id": 4,
+      "firstName": "Sophie",
+      "lastName": "Laurent",
+      "team": "Team France Cyclisme",
+      "category": "Elite",
+      "ffcID": "FFC333444",
+      "uciID": "UCI444555666",
+      "sex": "women",
+      "bib": 4
+    },
+    {
+      "id": 5,
+      "firstName": "Lucas",
+      "lastName": "Renard",
+      "team": "Bordeaux Vélo Club",
+      "category": "U23",
+      "ffcID": "FFC555666",
+      "uciID": "UCI777888999",
+      "sex": "men",
+      "bib": 5
+    },
+    {
+      "id": 6,
+      "firstName": "Amélie",
+      "lastName": "Rousseau",
+      "team": "Provence Cycling",
+      "category": "Junior",
+      "ffcID": "FFC777888",
+      "uciID": "UCI222333444",
+      "sex": "women",
+      "bib": 6
+    },
+    {
+      "id": 7,
+      "firstName": "François",
+      "lastName": "Petit",
+      "team": "Marseille CC",
+      "category": "Elite",
+      "ffcID": "FFC999000",
+      "uciID": "UCI555666777",
+      "sex": "men",
+      "bib": 7
+    },
+    {
+      "id": 8,
+      "firstName": "Claire",
+      "lastName": "Lefevre",
+      "team": "Team France Cyclisme",
+      "category": "U23",
+      "ffcID": "FFC111333",
+      "uciID": "UCI888999000",
+      "sex": "women",
+      "bib": 8
+    }
+  ],
+  "stageResults": {
+    "Etape 1": [
+      {
+        "id": 24,
+        "rank": 0,
+        "bib": 2,
+        "stage": 1,
+        "status": "dns",
+        "time": 0,
+        "millis": 0,
+        "createdAt": "2026-01-18T19:35:54.050Z",
+        "updatedAt": "2026-01-18T19:35:54.050Z"
+      },
+      {
+        "id": 25,
+        "rank": 0,
+        "bib": 4,
+        "stage": 1,
+        "status": "dnf",
+        "time": 0,
+        "millis": 0,
+        "createdAt": "2026-01-18T19:35:54.050Z",
+        "updatedAt": "2026-01-18T19:35:54.050Z"
+      },
+      {
+        "id": 21,
+        "rank": 1,
+        "bib": 3,
+        "stage": 1,
+        "status": "done",
+        "time": 5025,
+        "millis": 0,
+        "createdAt": "2026-01-18T19:35:54.050Z",
+        "updatedAt": "2026-01-18T19:35:54.050Z"
+      },
+      {
+        "id": 22,
+        "rank": 2,
+        "bib": 1,
+        "stage": 1,
+        "status": "done",
+        "time": 5050,
+        "millis": 0,
+        "createdAt": "2026-01-18T19:35:54.050Z",
+        "updatedAt": "2026-01-18T19:35:54.050Z"
+      },
+      {
+        "id": 23,
+        "rank": 3,
+        "bib": 5,
+        "stage": 1,
+        "status": "done",
+        "time": 5100,
+        "millis": 0,
+        "createdAt": "2026-01-18T19:35:54.050Z",
+        "updatedAt": "2026-01-18T19:35:54.050Z"
+      }
+    ],
+    "Etape 2": []
+  },
+  "annexResults": {
+    "Etape 1": [
+      {
+        "id": 49,
+        "rank": 1,
+        "bib": 101,
+        "stage": 1,
+        "annex": "points_1",
+        "points": 25,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 52,
+        "rank": 1,
+        "bib": 102,
+        "stage": 1,
+        "annex": "points_2",
+        "points": 25,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 55,
+        "rank": 1,
+        "bib": 101,
+        "stage": 1,
+        "annex": "GPM_1",
+        "points": 25,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 58,
+        "rank": 1,
+        "bib": 102,
+        "stage": 1,
+        "annex": "GPM_2",
+        "points": 25,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 50,
+        "rank": 2,
+        "bib": 102,
+        "stage": 1,
+        "annex": "points_1",
+        "points": 18,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 53,
+        "rank": 2,
+        "bib": 101,
+        "stage": 1,
+        "annex": "points_2",
+        "points": 18,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 56,
+        "rank": 2,
+        "bib": 102,
+        "stage": 1,
+        "annex": "GPM_1",
+        "points": 18,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 59,
+        "rank": 2,
+        "bib": 101,
+        "stage": 1,
+        "annex": "GPM_2",
+        "points": 18,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 51,
+        "rank": 3,
+        "bib": 103,
+        "stage": 1,
+        "annex": "points_1",
+        "points": 15,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 54,
+        "rank": 3,
+        "bib": 103,
+        "stage": 1,
+        "annex": "points_2",
+        "points": 15,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 57,
+        "rank": 3,
+        "bib": 103,
+        "stage": 1,
+        "annex": "GPM_1",
+        "points": 15,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      },
+      {
+        "id": 60,
+        "rank": 3,
+        "bib": 103,
+        "stage": 1,
+        "annex": "GPM_2",
+        "points": 15,
+        "createdAt": "2026-01-18T19:35:54.062Z",
+        "updatedAt": "2026-01-18T19:35:54.062Z"
+      }
+    ],
+    "Etape 2": []
+  }
+}

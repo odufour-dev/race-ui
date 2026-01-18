@@ -2,7 +2,7 @@ import { Classification }       from './References/Classification';
 import { RaceManager }          from './Race/RaceManager';
 import { RacerManager }         from './Racers/RacerManager'; 
 import { RankingManager }       from './Ranking/RankingManager';
-import { AnnexRankingManager }  from './AnnexRanking/AnnexRankingManager';
+import { AnnexRankingManager, createAnnexFromJSON }  from './AnnexRanking/AnnexRankingManager';
 
 export class RaceModel {
 
@@ -112,6 +112,28 @@ export class RaceModel {
 
   }
 
+  update(data){
+
+    if ('configuration' in data){
+
+      if ('annex' in data.configuration){
+        this.#annex = this.#annex.update( data.configuration.annex );
+      }
+      this.#race = this.#race.update( data.configuration );
+    }
+
+    if ('racers' in data){
+      this.#racers = this.#racers.update( data.racers );
+    }
+
+    if ('stageResults' in data){
+      this.#ranking = this.#ranking.update( data.stageResults );
+    }
+
+    return this;
+
+  }
+
   updateRace(race){
     return new RaceModel(this.#racers.clone(), this.#annex.clone(), this.#classifications, race, this.#ranking.clone());
   }
@@ -143,4 +165,12 @@ export class RaceModel {
 
 }
 
+export function createRaceModelFromJSON(jsondata) {
+  const model = new RaceModel();
+  model.update(jsondata);
+  return model
+}
 
+export function createEmptyRaceModel() {
+  return new RaceModel();
+}
