@@ -135,22 +135,21 @@ export default class Competition extends Route {
             // Get stage results
             const stageResults = {};
             for (const stage of stages) {
-                const results = await db.models.result.findAll({
-                    where: { stageId: stage.id },
-                    include: [{
-                        model: db.models.racer,
-                        as: 'racer',
-                        attributes: ['id', 'firstName', 'lastName']
-                    }],
+                const results = await db.models.stageresult.findAll({
+                    where: { stage: stage.number },
                     order: [['rank', 'ASC']]
                 });
-                stageResults[stage.name] = results.map(r => ({
-                    racerId: r.racerId,
-                    racer: r.racer ? `${r.racer.firstName} ${r.racer.lastName}` : null,
-                    rank: r.rank,
-                    time: r.time,
-                    points: r.points
-                }));
+                stageResults[stage.name] = results;
+            }
+
+            // Get annex results
+            const annexResults = {};
+            for (const stage of stages) {
+                const results = await db.models.annexresult.findAll({
+                    where: { stage: stage.number },
+                    order: [['rank', 'ASC']]
+                });
+                annexResults[stage.name] = results;
             }
             
             // Build complete response
@@ -160,17 +159,18 @@ export default class Competition extends Route {
                 description: raceData.description || '',
                 configuration: configuration,
                 racers: racers.map(r => ({
-                    id: r.id,
-                    firstName: r.firstName,
-                    lastName: r.lastName,
-                    team: r.team,
-                    category: r.category,
-                    ffcID: r.ffcID,
-                    uciID: r.uciID,
-                    sex: r.sex,
-                    bib: bibMap.get(r.id) || null
+                    id:         r.id,
+                    firstName:  r.firstName,
+                    lastName:   r.lastName,
+                    team:       r.team,
+                    category:   r.category,
+                    ffcID:      r.ffcID,
+                    uciID:      r.uciID,
+                    sex:        r.sex,
+                    bib:        bibMap.get(r.id) || null
                 })),
-                results: stageResults
+                stageResults: stageResults,
+                annexResults: annexResults
             };
             
             res.status(200).json(response);
