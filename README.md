@@ -493,10 +493,28 @@ Update the racers information in database.
 
 ### Examples
 
-- Create a competition (use port 5000 for development or 80 for production): `curl -X POST http://localhost:5000/api/v1/competitions -H "Content-Type: application/json" -d '{"name":"Tour de France 2026"}'`
-- Create a list of racers inside the created competition (competition id is returned at creation): `curl -X POST http://localhost:5000/api/v1/tour_de_france_2026/racers/sync -H "Content-Type: application/json" -d '{"racers": [{"id": 1, "name": "Tadej Pogačar", "team": "UAE Team Emirates"},{"id": 11, "name": "Jonas Vingegaard", "team": "Visma-Lease a Bike"},{"id": 21, "name": "Remco Evenepoel", "team": "Soudal Quick-Step"}] }'`
-- Get all the data for a competition: `curl http://localhost:5000/api/v1/tour_de_france_2026/all`
-- Configure the race: `curl -X POST http://localhost:5000/api/v1/tour_de_france_2026/race-info/sync -H "Content-Type: application/json" -d '{"config": {"name": "Tour de France 2026", "nStages": 21,"startDate": "2026-07-04", "endDate": "2026-07-26", "type": "Grand Tour" } }'`
-- Send stage result: `curl -X POST http://localhost:5000/api/v1/tour_de_france_2026/rankings/sync -H "Content-Type: application/json" -d '{"stage_id": 1, "type": "stage", "data": [ {"bib": 101, "pos": 1, "time": "04:22:10", "bonus": 10}, {"bib": 103, "pos": 2, "time": "04:22:14", "bonus": 6},  {"bib": 102, "pos": 3, "time": "04:22:14", "bonus": 4}  ] }'`
+```shell
+curl -X POST http://localhost:5000/api/v1/competitions -H "Content-Type: application/json" -d '{"name":"Tour de France 2026"}'
+
+echo "Sending configuration..."
+curl -X POST http://localhost:5000/api/v1/competitions/tour_de_france_2026/configuration -H "Content-Type: application/json" -d @configuration01.json
+echo ""
+
+echo "Registering racers..."
+curl -X POST http://localhost:5000/api/v1/competitions/tour_de_france_2026/racers -H "Content-Type: application/json" -d @registration01.json
+echo ""
+
+echo "Uploading stage results stage 1..."
+curl -X POST http://localhost:5000/api/v1/competitions/tour_de_france_2026/stages/1/rankings -H "Content-Type: application/json" -d @stageresults01.json 
+echo ""
+
+echo "Uploading annex results for stage 1..."
+curl -X POST http://localhost:5000/api/v1/competitions/tour_de_france_2026/stages/1/annexes -H "Content-Type: application/json" -d @annexresults01.json
+echo ""
+
+echo "Retrieving 'Tour de France 2026' data..."
+curl http://localhost:5000/api/v1/competitions/tour_de_france_2026
+echo ""
+```
 
 
