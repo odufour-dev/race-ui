@@ -1,4 +1,4 @@
-import { RaceModel } from "./RaceModel";
+import { createRaceModelFromJSON } from "./RaceModel";
 
 export class RaceConnector {
 
@@ -60,27 +60,11 @@ export class RaceConnector {
       if (competitionid){
         const response = await fetch(`${this.#baseurl}/competitions/${competitionid}`);
         if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-        const data = await response.json();
-        console.log(data);
+        const data = await response.json();console.log(data);
+        return createRaceModelFromJSON(data);
+      } else {
+        return createEmptyRaceModel();
       }
-      /*
-      const response = await fetch(`${this.baseUrl}/all`);
-      if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-      
-      const data = await response.json();
-
-      // 1. Reconstitution des Managers à partir du JSON (Hydratation)
-      // On suppose que chaque Manager a une méthode statique .fromObject()
-      const racers = RacerManager.fromObject(data.racers);
-      const race = RaceManager.fromObject(data.race);
-      
-      // Pour le ranking, on peut avoir besoin de traiter le tableau reçu
-      const ranking = RankingManager.fromObject(data.rankings);
-
-      // 2. Création du modèle complet
-      return new RaceModel(racers, undefined, undefined, race, ranking);
-      */
-      return new RaceModel();
     } catch (error) {
       console.error("RaceConnector Error:", error);
       throw error;
@@ -88,29 +72,6 @@ export class RaceConnector {
   }
 
     /*
-  async fetchFullModel() {
-    try {
-      const response = await fetch(`${this.baseUrl}/all`);
-      if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-      
-      const data = await response.json();
-
-      // 1. Reconstitution des Managers à partir du JSON (Hydratation)
-      // On suppose que chaque Manager a une méthode statique .fromObject()
-      const racers = RacerManager.fromObject(data.racers);
-      const race = RaceManager.fromObject(data.race);
-      
-      // Pour le ranking, on peut avoir besoin de traiter le tableau reçu
-      const ranking = RankingManager.fromObject(data.rankings);
-
-      // 2. Création du modèle complet
-      return new RaceModel(racers, undefined, undefined, race, ranking);
-    } catch (error) {
-      console.error("RaceConnector Error:", error);
-      throw error;
-    }
-  }
-
   async syncRacers(racerManager) {
     const data = racerManager.getAll().map(r => r.toObject());
     return this._post(`${this.baseUrl}/racers/sync`, { racers: data });
