@@ -51,7 +51,7 @@ export default class Competition extends Route {
             
             // Get race basic info
             const raceData = await db.models.race.findOne({
-                where: { id: raceId }
+                where: { id: 1 }
             });
             
             // Get stages with results
