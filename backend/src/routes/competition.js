@@ -181,7 +181,8 @@ export default class Competition extends Route {
     }
 
     async #list(req,res){
-        const competitions = await this._connector.master.getAllCompetitions();
+        let competitions = await this._connector.master.getAllCompetitions();
+        competitions = competitions.map((c) => ({...c.toJSON(), uuid: c.filename.replace(this._connector.constructor.DATABASE_EXTENSION,'')}));        
         res.json(competitions);
     }
 

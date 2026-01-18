@@ -53,8 +53,16 @@ export class RaceConnector {
 
   }
 
-  async fetchFullModel() {
+  async fetchCompetition(competitionid) {
+
     try {
+
+      if (competitionid){
+        const response = await fetch(`${this.#baseurl}/competitions/${competitionid}`);
+        if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
+        const data = await response.json();
+        console.log(data);
+      }
       /*
       const response = await fetch(`${this.baseUrl}/all`);
       if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");

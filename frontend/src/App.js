@@ -37,7 +37,7 @@ function App() {
   useEffect(() => {
     if (!competitionid) return;
 
-    connector.fetchFullModel(competitionid)
+    connector.fetchCompetition(competitionid)
       .then(newModel => {
         setRaceModel(newModel);
       })

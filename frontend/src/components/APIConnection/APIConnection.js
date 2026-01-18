@@ -14,7 +14,7 @@ function APIConnection({ helper, connector, onChange, value }) {
   const loadData = () => {
     setLoading(true);
     Promise.all([connector.fetchVersion(), connector.fetchListOfCompetitions()])
-      .then(([v, list]) => {
+      .then(([v, list]) => {console.log(list)
         setAPIVersion(v.version);
         setCompetitionList(list);
       })
@@ -55,7 +55,7 @@ function APIConnection({ helper, connector, onChange, value }) {
               <div className="select-container">
                 <select value={value} onChange={(e) => onChange(e.target.value)} disabled={loading}>
                   <option value="">-- {helper.translator('select_placeholder')} --</option>
-                  {competitionlist.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  {competitionlist.map(c => <option key={c.uuid} value={c.uuid}>{c.name}</option>)}
                 </select>
               </div>
               <button className="btn-add" onClick={() => setIsCreating(true)} title="Nouvelle compétition">+</button>
