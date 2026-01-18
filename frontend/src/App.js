@@ -44,24 +44,6 @@ function App() {
     .catch(err => console.error(err));
 }, [competitionid, connector]);
 
-  /* TODO : Enable loading from backend
-  const [ raceModel, setRaceModel ]     = useState( (null );
-  const connector = useMemo(() => new RaceConnector(competitionId), [competitionId]);
-
-  // Chargement initial
-  useEffect(() => {
-    connector.fetchFullModel().then(setModel);
-  }, [connector]);
-
-  const debouncedSync = useMemo(
-    () => debounce((manager) => {
-      console.log("Sauvegarde automatique vers le backend...");
-      connector.syncRacers(manager).catch(console.error);
-    }, 1000),
-    [connector]
-  );
-  */
-
   const handleStageChange = useCallback(
   (stage, data) => {
     setRaceModel(raceModel.updateStageRanking(stage, data));
