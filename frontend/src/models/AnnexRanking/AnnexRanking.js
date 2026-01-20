@@ -31,6 +31,8 @@ export default class AnnexRanking {
   updateCommon(settings){
     if ("title" in settings){
       this._title = settings.title;
+    } else if ("name" in settings) {
+      this._title = settings.name;
     } else {
       this._title = this._id;
     }
