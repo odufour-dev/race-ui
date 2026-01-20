@@ -15,7 +15,7 @@ export default function EventSettings({ helper, settings, annexRanking, onApply 
   // React's controlled -> uncontrolled warning.
   const [ evtSettings, setEvtSettings ]     = useState( settings );
   const [ annexType, setAnnexType ]         = useState( annexRanking.list[0] );
-  
+  console.log("EventSettings render", evtSettings);
   useEffect(() => { onApply && onApply( evtSettings ) }, [ evtSettings ]);
 
   return (

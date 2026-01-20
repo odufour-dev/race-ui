@@ -117,8 +117,10 @@ export class RaceModel {
     if ('configuration' in data){
       this.#race = this.#race.update( data.configuration );
       const annex = data.configuration.annex ? this.#annex.fromJSON( data.configuration.annex ) : [];
-      annex.map((a) => this.#race.addAnnexRanking(a));
-    }
+      for (let i = 0; i < annex.length; i++){
+        this.#race = this.#race.addAnnexRanking( annex[i] );
+      }
+    }console.log(this.#race)
 
     if ('racers' in data){
       this.#racers = this.#racers.update( data.racers );
