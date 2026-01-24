@@ -60,7 +60,7 @@ export class RaceConnector {
       if (competitionid){
         const response = await fetch(`${this.#baseurl}/competitions/${competitionid}`);
         if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-        const data = await response.json();console.log(data);
+        const data = await response.json();
         return createRaceModelFromJSON(data);
       } else {
         return createEmptyRaceModel();
