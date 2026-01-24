@@ -14,7 +14,7 @@ function APIConnection({ helper, connector, onChange, value }) {
   const loadData = () => {
     setLoading(true);
     Promise.all([connector.fetchVersion(), connector.fetchListOfCompetitions()])
-      .then(([v, list]) => {console.log(list)
+      .then(([v, list]) => {
         setAPIVersion(v.version);
         setCompetitionList(list);
       })
