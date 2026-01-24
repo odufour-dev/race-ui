@@ -38,7 +38,7 @@ export class RaceManager {
     return data.clone();
   }  
 
-  update(settings, annexRankings = []){
+  update(settings, annexRankings){
 
     let data = this.clone();
     if (settings.stages){
@@ -47,7 +47,9 @@ export class RaceManager {
         return stage.update(s);
       });
     }
-    data.#annexrankings = annexRankings;
+    if (annexRankings !== undefined){
+      data.#annexrankings = annexRankings;
+    }
     return data;
   }
 
