@@ -49,7 +49,7 @@ export default function TimeRankingTable({ data = [], helper, onChange }) {
       // time : string with format HH:MM:SS
       // delay : string with format MM:SS
       let last = {rank:0,time:"",delay:""};
-      values.map((d, idx) => {console.log(d)
+      values.map((d, idx) => {
           if (d.position == null || d.position <= 0){return;}
           const t = helper.time.formatHMS(d.time);
           const l = helper.time.formatMS(d.time - values[0].time);
