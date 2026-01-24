@@ -49,16 +49,17 @@ export default function TimeRankingTable({ data = [], helper, onChange }) {
       // time : string with format HH:MM:SS
       // delay : string with format MM:SS
       let last = {rank:0,time:"",delay:""};
-      values.map((d) => {
+      values.map((d, idx) => {console.log(d)
+          if (d.position == null || d.position <= 0){return;}
           const t = helper.time.formatHMS(d.time);
           const l = helper.time.formatMS(d.time - values[0].time);
           const c = ["rank-row"];
           if (d.position == 1){c.push("winner")}
           if (duplicates.some((dup) => dup.bib == d.bib)){c.push("duplicate")}
-          r.push({id: "id-" + d.position, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
+          r.push({id: "row-" + idx, class: c, rank: d.position, bib: d.bib, time: t, delay: l});
           last = {rank: d.position, time: t, delay: l};
       })
-      r.push({id: "", class: ["rank-row"], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
+      r.push({id: "row-" + values.length, class: ["rank-row"], rank: last.rank + 1, bib: -1, time: last.time, delay: last.delay});
       return r;
     }
 

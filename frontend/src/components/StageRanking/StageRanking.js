@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import TimeRankingTable from './TimeRankingTable/TimeRankingTable';
 import Grid from './Grid/Grid';
 
@@ -106,6 +106,8 @@ export default function StageRanking({ data = [], helper, onChange }) {
 
     const [timeRanking, setTimeRanking] = useState(() => computeTimeRanking(data));
     const [bibsStatus, setBibsStatus] = useState(() => computeBibStatus(data));
+    const skipNextSyncRef = useRef(false);
+    const prevDataContentRef = useRef(JSON.stringify(data));
 
     //
     // --- HANDLERS ---
@@ -113,6 +115,7 @@ export default function StageRanking({ data = [], helper, onChange }) {
 
     // Changement manuel des statuts (grid)
     const handleBibStatusChange = (newBibsStatus) => {
+        skipNextSyncRef.current = true;
         setBibsStatus(newBibsStatus);
         const updated = computeRankingOutput(data, timeRanking, newBibsStatus);
         onChange(updated);
@@ -120,14 +123,31 @@ export default function StageRanking({ data = [], helper, onChange }) {
 
     // Changement du classement (table)
     const handleTimeRankingChange = (newTimeRanking) => {
+        skipNextSyncRef.current = true;
         setTimeRanking(newTimeRanking);
-        setBibsStatus(prev => {
-            const updatedBibs = computeUpdatedBibStatus(prev, newTimeRanking);
-            const updatedRanking = computeRankingOutput(data, newTimeRanking, updatedBibs);
-            onChange(updatedRanking);
-            return updatedBibs;
-        });
+        const updatedBibs = computeUpdatedBibStatus(bibsStatus, newTimeRanking);
+        setBibsStatus(updatedBibs);
+        const updated = computeRankingOutput(data, newTimeRanking, updatedBibs);
+        onChange(updated);
     };
+
+    // Reset state ONLY when actual data content changes (not just array reference)
+    useEffect(() => {
+        const currentDataContent = JSON.stringify(data);
+        
+        if (skipNextSyncRef.current) {
+            skipNextSyncRef.current = false;
+            prevDataContentRef.current = currentDataContent;
+            return;
+        }
+        
+        if (currentDataContent !== prevDataContentRef.current) {
+            // Actual content changed - reset our state
+            setTimeRanking(computeTimeRanking(data));
+            setBibsStatus(computeBibStatus(data));
+        }
+        prevDataContentRef.current = currentDataContent;
+    }, [data]);
 
     //
     // --- RENDER ---

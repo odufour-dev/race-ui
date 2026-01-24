@@ -80,6 +80,17 @@ export class RankingManager {
 
   }
 
+  fromJSON(data){
+    const ranking = data.flatMap((stageres) => {
+      return stageres.results.map((r) => {
+        const rec = new TimingRecord();
+        rec.update(r);
+        return rec;
+      })
+    });
+    return new RankingManager(ranking, this.#stage);
+  }
+
   update(ranking){
 
     // Make sure that each ranking element is a TimingRecord

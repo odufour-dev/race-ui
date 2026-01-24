@@ -35,6 +35,7 @@ export class TimingRecord {
 
   update(data){
     if ("bib"       in data){this.bib        = data.bib;       }
+    if ("rank"      in data){this.position   = data.rank;      }
     if ("position"  in data){this.position   = data.position;  }
     if ("stage"     in data){this.stage      = data.stage;     }
     if ("status"    in data){this.status     = data.status;    }

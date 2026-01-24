@@ -120,16 +120,15 @@ export class RaceModel {
       for (let i = 0; i < annex.length; i++){
         this.#race = this.#race.addAnnexRanking( annex[i] );
       }
-    }console.log(this.#race)
+    }
 
     if ('racers' in data){
       this.#racers = this.#racers.update( data.racers );
     }
-/*
     if ('stageResults' in data){
-      this.#ranking = this.#ranking.update( data.stageResults );
+      this.#ranking = this.#ranking.fromJSON( data.stageResults );
     }
-*/
+
     return this;
 
   }
