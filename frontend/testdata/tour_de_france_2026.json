@@ -235,189 +235,205 @@
       "bib": 8
     }
   ],
-  "stageResults": {
-    "Etape 1": [
-      {
-        "id": 24,
-        "rank": 0,
-        "bib": 2,
-        "stage": 1,
-        "status": "dns",
-        "time": 0,
-        "millis": 0,
-        "createdAt": "2026-01-18T19:35:54.050Z",
-        "updatedAt": "2026-01-18T19:35:54.050Z"
-      },
-      {
-        "id": 25,
-        "rank": 0,
-        "bib": 4,
-        "stage": 1,
-        "status": "dnf",
-        "time": 0,
-        "millis": 0,
-        "createdAt": "2026-01-18T19:35:54.050Z",
-        "updatedAt": "2026-01-18T19:35:54.050Z"
-      },
-      {
-        "id": 21,
-        "rank": 1,
-        "bib": 3,
-        "stage": 1,
-        "status": "done",
-        "time": 5025,
-        "millis": 0,
-        "createdAt": "2026-01-18T19:35:54.050Z",
-        "updatedAt": "2026-01-18T19:35:54.050Z"
-      },
-      {
-        "id": 22,
-        "rank": 2,
-        "bib": 1,
-        "stage": 1,
-        "status": "done",
-        "time": 5050,
-        "millis": 0,
-        "createdAt": "2026-01-18T19:35:54.050Z",
-        "updatedAt": "2026-01-18T19:35:54.050Z"
-      },
-      {
-        "id": 23,
-        "rank": 3,
-        "bib": 5,
-        "stage": 1,
-        "status": "done",
-        "time": 5100,
-        "millis": 0,
-        "createdAt": "2026-01-18T19:35:54.050Z",
-        "updatedAt": "2026-01-18T19:35:54.050Z"
-      }
-    ],
-    "Etape 2": []
-  },
-  "annexResults": {
-    "Etape 1": [
-      {
-        "id": 49,
-        "rank": 1,
-        "bib": 101,
-        "stage": 1,
-        "annex": "points_1",
-        "points": 25,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 52,
-        "rank": 1,
-        "bib": 102,
-        "stage": 1,
-        "annex": "points_2",
-        "points": 25,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 55,
-        "rank": 1,
-        "bib": 101,
-        "stage": 1,
-        "annex": "GPM_1",
-        "points": 25,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 58,
-        "rank": 1,
-        "bib": 102,
-        "stage": 1,
-        "annex": "GPM_2",
-        "points": 25,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 50,
-        "rank": 2,
-        "bib": 102,
-        "stage": 1,
-        "annex": "points_1",
-        "points": 18,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 53,
-        "rank": 2,
-        "bib": 101,
-        "stage": 1,
-        "annex": "points_2",
-        "points": 18,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 56,
-        "rank": 2,
-        "bib": 102,
-        "stage": 1,
-        "annex": "GPM_1",
-        "points": 18,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 59,
-        "rank": 2,
-        "bib": 101,
-        "stage": 1,
-        "annex": "GPM_2",
-        "points": 18,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 51,
-        "rank": 3,
-        "bib": 103,
-        "stage": 1,
-        "annex": "points_1",
-        "points": 15,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 54,
-        "rank": 3,
-        "bib": 103,
-        "stage": 1,
-        "annex": "points_2",
-        "points": 15,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 57,
-        "rank": 3,
-        "bib": 103,
-        "stage": 1,
-        "annex": "GPM_1",
-        "points": 15,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      },
-      {
-        "id": 60,
-        "rank": 3,
-        "bib": 103,
-        "stage": 1,
-        "annex": "GPM_2",
-        "points": 15,
-        "createdAt": "2026-01-18T19:35:54.062Z",
-        "updatedAt": "2026-01-18T19:35:54.062Z"
-      }
-    ],
-    "Etape 2": []
-  }
+  "stageResults": [
+    {
+      "name": "Etape 1",
+      "stage": 1,
+      "results": [
+        {
+          "id": 24,
+          "rank": 0,
+          "bib": 2,
+          "stage": 1,
+          "status": "dns",
+          "time": 0,
+          "millis": 0,
+          "createdAt": "2026-01-18T19:35:54.050Z",
+          "updatedAt": "2026-01-18T19:35:54.050Z"
+        },
+        {
+          "id": 25,
+          "rank": 0,
+          "bib": 4,
+          "stage": 1,
+          "status": "dnf",
+          "time": 0,
+          "millis": 0,
+          "createdAt": "2026-01-18T19:35:54.050Z",
+          "updatedAt": "2026-01-18T19:35:54.050Z"
+        },
+        {
+          "id": 21,
+          "rank": 1,
+          "bib": 3,
+          "stage": 1,
+          "status": "done",
+          "time": 5025,
+          "millis": 0,
+          "createdAt": "2026-01-18T19:35:54.050Z",
+          "updatedAt": "2026-01-18T19:35:54.050Z"
+        },
+        {
+          "id": 22,
+          "rank": 2,
+          "bib": 1,
+          "stage": 1,
+          "status": "done",
+          "time": 5050,
+          "millis": 0,
+          "createdAt": "2026-01-18T19:35:54.050Z",
+          "updatedAt": "2026-01-18T19:35:54.050Z"
+        },
+        {
+          "id": 23,
+          "rank": 3,
+          "bib": 5,
+          "stage": 1,
+          "status": "done",
+          "time": 5100,
+          "millis": 0,
+          "createdAt": "2026-01-18T19:35:54.050Z",
+          "updatedAt": "2026-01-18T19:35:54.050Z"
+        }
+      ]
+    },
+    {
+      "name": "Etape 2",
+      "stage": 2,
+      "results": []
+    }
+  ],
+  "annexResults": [
+    {
+      "name": "Etape 1",
+      "stage": 1,
+      "results": [
+        {
+          "id": 49,
+          "rank": 1,
+          "bib": 101,
+          "stage": 1,
+          "annex": "points_1",
+          "points": 25,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 52,
+          "rank": 1,
+          "bib": 102,
+          "stage": 1,
+          "annex": "points_2",
+          "points": 25,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 55,
+          "rank": 1,
+          "bib": 101,
+          "stage": 1,
+          "annex": "GPM_1",
+          "points": 25,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 58,
+          "rank": 1,
+          "bib": 102,
+          "stage": 1,
+          "annex": "GPM_2",
+          "points": 25,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 50,
+          "rank": 2,
+          "bib": 102,
+          "stage": 1,
+          "annex": "points_1",
+          "points": 18,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 53,
+          "rank": 2,
+          "bib": 101,
+          "stage": 1,
+          "annex": "points_2",
+          "points": 18,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 56,
+          "rank": 2,
+          "bib": 102,
+          "stage": 1,
+          "annex": "GPM_1",
+          "points": 18,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 59,
+          "rank": 2,
+          "bib": 101,
+          "stage": 1,
+          "annex": "GPM_2",
+          "points": 18,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 51,
+          "rank": 3,
+          "bib": 103,
+          "stage": 1,
+          "annex": "points_1",
+          "points": 15,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 54,
+          "rank": 3,
+          "bib": 103,
+          "stage": 1,
+          "annex": "points_2",
+          "points": 15,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 57,
+          "rank": 3,
+          "bib": 103,
+          "stage": 1,
+          "annex": "GPM_1",
+          "points": 15,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        },
+        {
+          "id": 60,
+          "rank": 3,
+          "bib": 103,
+          "stage": 1,
+          "annex": "GPM_2",
+          "points": 15,
+          "createdAt": "2026-01-18T19:35:54.062Z",
+          "updatedAt": "2026-01-18T19:35:54.062Z"
+        }
+      ]
+    },
+    {
+      "name": "Etape 2",
+      "stage": 2,
+      "results": []
+    }
+  ]
 }

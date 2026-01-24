@@ -133,23 +133,23 @@ export default class Competition extends Route {
             const bibMap = new Map(registrations.map(reg => [reg.racerId, reg.bib]));
             
             // Get stage results
-            const stageResults = {};
+            const stageResults = [];
             for (const stage of stages) {
                 const results = await db.models.stageresult.findAll({
                     where: { stage: stage.number },
                     order: [['rank', 'ASC']]
                 });
-                stageResults[stage.name] = results;
+                stageResults.push({ name: stage.name, stage: stage.number, results: results });
             }
 
             // Get annex results
-            const annexResults = {};
+            const annexResults = [];
             for (const stage of stages) {
                 const results = await db.models.annexresult.findAll({
                     where: { stage: stage.number },
                     order: [['rank', 'ASC']]
                 });
-                annexResults[stage.name] = results;
+                annexResults.push({ name: stage.name, stage: stage.number, results: results });
             }
             
             // Build complete response
