@@ -9,6 +9,8 @@ export class FilterRanking extends AnnexRanking {
       this.#pattern = pattern;
     }
 
+    get pattern(){return this.#pattern; }
+
     clone(){
       return new FilterRanking(this._id,this._type,this._title,this._priority,this.#pattern);
     }
@@ -19,7 +21,7 @@ export class FilterRanking extends AnnexRanking {
 
     update(settings){
       let data = this.clone();
-      data.updateCommon(settings);
+      data.updateCommon(settings);console.log(settings);
       if (settings.pattern){
         data.#pattern = settings.pattern;
       } else if (settings.filter){
