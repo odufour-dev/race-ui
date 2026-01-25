@@ -97,7 +97,7 @@ function App() {
   });
   const navRacerRegistration = new NavigationItem({
     id: 'registration', title: helper.translator('navigation.registration'), order: 20, component: (props) => (
-      <RegistrationTable {...props} helper={helper} dataModel={raceModel.Racers} classificationModel={raceModel.Classifications} setData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
+      <RegistrationTable {...props} helper={helper} connector={connector} competitionid={competitionid} />
     )
   });
   const navRacerImport = new NavigationItem({
@@ -112,7 +112,7 @@ function App() {
   useEffect(() => {
 
     const baseNav = new NavigationRegistry([navEventGroup, navRacersGroup]);
-    const evtSettings = raceModel.Race;
+    /*const evtSettings = raceModel.Race;
     for (let stage = 1; stage <= evtSettings.nStages; stage++) {
 
       const s = evtSettings.stages[stage - 1];
@@ -136,7 +136,7 @@ function App() {
         navRaceGroup.add(navAnnexRanking);
       });
       baseNav.add(navRaceGroup);
-    }
+    }*/
     setNav(baseNav);
 
   }, [raceModel]);

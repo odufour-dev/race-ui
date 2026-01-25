@@ -1,6 +1,7 @@
 import { createRaceModelFromJSON }      from "./RaceModel";
 import { createRankingManagerFromJSON } from "./Ranking/RankingManager";
 import { createRaceManagerFromJSON }    from "./Race/RaceManager";
+import { createRacerManagerFromJSON }   from "./Racers/RacerManager";
 
 export class RaceConnector {
 
@@ -80,6 +81,20 @@ export class RaceConnector {
       if (!response.ok) throw new Error(`Error while fetching the configuration for ${competitionid}`);
       const data = await response.json();
       return createRaceManagerFromJSON(data);
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
+  async fetchRacers(competitionid){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/racers`);
+      if (!response.ok) throw new Error(`Error while fetching the racers for ${competitionid}`);
+      const data = await response.json();
+      return createRacerManagerFromJSON(data);
     } catch (error) {
       this.#logger.error("RaceConnector Error:", error);
       throw error;

@@ -101,3 +101,11 @@ export class RacerManager {
   }
 
 }
+
+export function createRacerManagerFromJSON(data){
+  const racers = data.racers.map((r) => {
+    const racer = new Racer();
+    return racer.update(r);
+  })
+  return new RacerManager(racers);
+}
