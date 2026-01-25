@@ -92,7 +92,8 @@ export default function StageRanking({ competitionid, stage, connector, helper }
         const savedState = lastSavedStateRef.current;
         if (savedState) {
             const timeRankingChanged = JSON.stringify(timeRanking) !== JSON.stringify(savedState.timeRanking);
-            const bibsStatusChanged = JSON.stringify(bibsStatus) !== JSON.stringify(savedState.bibsStatus);
+            const bibsStatusChanged  = JSON.stringify(bibsStatus)  !== JSON.stringify(savedState.bibsStatus);
+            
             setHasUnsavedChanges(timeRankingChanged || bibsStatusChanged);
         }
     }, [timeRanking, bibsStatus]);
@@ -133,8 +134,8 @@ export default function StageRanking({ competitionid, stage, connector, helper }
         try {
 
             const jsondata = data.upd = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
-            const res = await connector.saveStageRanking(competitionid, stage, jsondata);
-            console.log('Save response:',  res);
+            await connector.saveStageRanking(competitionid, stage, jsondata);
+            
             // Update saved state reference
             lastSavedStateRef.current = { timeRanking, bibsStatus };
             setHasUnsavedChanges(false);

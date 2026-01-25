@@ -20,8 +20,8 @@ export default function TimeRankingTable({ data = [], helper, onChange }) {
         }
 
         return {
-          position: Number(v.position),
           bib:      Number(v.bib),
+          position: Number(v.position),
           time:     time
         }
 
