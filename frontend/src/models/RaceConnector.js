@@ -1,5 +1,4 @@
 import { createNavigationFromJSON }     from "./Navigation/Navigation";
-import { createRaceModelFromJSON }      from "./RaceModel";
 import { createRankingManagerFromJSON } from "./Ranking/RankingManager";
 import { createRaceManagerFromJSON }    from "./Race/RaceManager";
 import { createRacerManagerFromJSON }   from "./Racers/RacerManager";
@@ -55,24 +54,6 @@ export class RaceConnector {
       throw error;
     }
 
-  }
-
-  async fetchCompetition(competitionid) {
-
-    try {
-
-      if (competitionid){
-        const response = await fetch(`${this.#baseurl}/competitions/${competitionid}`);
-        if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-        const data = await response.json();
-        return createRaceModelFromJSON(data);
-      } else {
-        return createEmptyRaceModel();
-      }
-    } catch (error) {
-      console.error("RaceConnector Error:", error);
-      throw error;
-    }
   }
 
   async fetchConfiguration(competitionid){
