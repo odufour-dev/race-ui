@@ -64,39 +64,23 @@ export default class StageRanking extends Route {
             }
 
             // Build response with racer info and bonifications
-            const results = stageResults.map(result => {
-                const registration = registrationMap.get(result.bib);
-                const racer = registration ? racerMap.get(registration.racerId) : null;
-
-                const resultObj = {
-                    bib:    result.bib,
-                    rank:   result.rank,
-                    status: result.status,
-                    time:   result.time,
-                    millis: result.millis
+            const results = racers.map(r => {
+                const res = stageResults.find((sr) => sr.bib === r.id);
+                const bonifications = (res && finishBonifications.length > 0 && res.rank > 0 && res.rank <= finishBonifications.length) ? finishBonifications[res.rank-1] : null;
+                return {
+                    bib:            r.id,
+                    firstName:      r.firstName,
+                    lastName:       r.lastName,
+                    team:           r.team,
+                    category:       r.category,
+                    ffcID:          r.ffcID,
+                    uciID:          r.uciID,
+                    rank:           res ? res.rank : 0,
+                    status:         res ? res.status : 'unknown',
+                    time:           res ? res.time : 0,
+                    millis:         res ? res.millis : 0,
+                    bonification:   bonifications
                 };
-
-                // Add bonifications if available
-                if (finishBonifications.length > 0 && result.rank > 0 && result.rank <= finishBonifications.length) {
-                    resultObj.bonification = finishBonifications[result.rank-1]
-                } else {
-                    resultObj.bonification = null;
-                }
-
-                // Add racer information if available
-                if (racer) {
-                    resultObj.racer = {
-                        firstName: racer.firstName,
-                        lastName: racer.lastName,
-                        team: racer.team,
-                        category: racer.category,
-                        ffcID: racer.ffcID,
-                        uciID: racer.uciID,
-                        sex: racer.sex
-                    };
-                }
-
-                return resultObj;
             });
 
             res.status(200).json({
