@@ -9,7 +9,7 @@
       "ffcID": "FFC123456",
       "uciID": "UCI123456789",
       "sex": "men",
-      "bib": 1
+      "bib": 101
     },
     {
       "firstName": "Marie",
@@ -20,7 +20,7 @@
       "ffcID": "FFC654321",
       "uciID": "UCI987654321",
       "sex": "women",
-      "bib": 2
+      "bib": 102
     },
     {
       "firstName": "Pierre",
@@ -31,7 +31,7 @@
       "ffcID": "FFC111222",
       "uciID": "UCI111222333",
       "sex": "men",
-      "bib": 3
+      "bib": 103
     },
     {
       "firstName": "Sophie",
@@ -42,7 +42,7 @@
       "ffcID": "FFC333444",
       "uciID": "UCI444555666",
       "sex": "women",
-      "bib": 4
+      "bib": 104
     },
     {
       "firstName": "Lucas",
@@ -53,7 +53,7 @@
       "ffcID": "FFC555666",
       "uciID": "UCI777888999",
       "sex": "men",
-      "bib": 5
+      "bib": 105
     },
     {
       "firstName": "Amélie",
@@ -64,7 +64,7 @@
       "ffcID": "FFC777888",
       "uciID": "UCI222333444",
       "sex": "women",
-      "bib": 6
+      "bib": 106
     },
     {
       "firstName": "François",
@@ -75,7 +75,7 @@
       "ffcID": "FFC999000",
       "uciID": "UCI555666777",
       "sex": "men",
-      "bib": 7
+      "bib": 107
     },
     {
       "firstName": "Claire",
@@ -86,7 +86,7 @@
       "ffcID": "FFC111333",
       "uciID": "UCI888999000",
       "sex": "women",
-      "bib": 8
+      "bib": 108
     }
   ]
 }

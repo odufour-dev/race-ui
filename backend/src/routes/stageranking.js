@@ -36,11 +36,10 @@ export default class StageRanking extends Route {
             const registrations = await db.models.registration.findAll({
                 where: { raceId: raceId }
             });
-            const registrationMap = new Map(registrations.map(reg => [reg.bib, reg]));
+            const registrationMap = new Map(registrations.map(reg => [reg.racerId, reg]));
 
             // Get all racers
             const racers = await db.models.racer.findAll();
-            const racerMap = new Map(racers.map(r => [r.id, r]));
 
             // Get the stage definition to find finish line distance
             const stage = await db.models.stage.findOne({
@@ -65,10 +64,10 @@ export default class StageRanking extends Route {
 
             // Build response with racer info and bonifications
             const results = racers.map(r => {
-                const res = stageResults.find((sr) => sr.bib === r.id);
+                const res = stageResults.find((sr) => sr.bib === registrationMap.get(r.id).bib);
                 const bonifications = (res && finishBonifications.length > 0 && res.rank > 0 && res.rank <= finishBonifications.length) ? finishBonifications[res.rank-1] : null;
                 return {
-                    bib:            r.id,
+                    bib:            registrationMap.get(r.id).bib,
                     firstName:      r.firstName,
                     lastName:       r.lastName,
                     team:           r.team,
