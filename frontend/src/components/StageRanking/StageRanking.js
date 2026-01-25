@@ -77,7 +77,6 @@ export default function StageRanking({ competitionid, stage, connector, helper }
     useEffect(() => {
         connector.fetchStageRanking(competitionid, stage)
             .then(manager => {
-                const rankingData = manager ? manager.Ranking : [];
                 setData(manager);
                 setTimeRanking(manager.computeTimeRanking());
                 setBibsStatus(manager.computeBibStatus());
