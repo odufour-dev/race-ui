@@ -92,6 +92,7 @@ export default function StageRanking({ competitionid, stage, connector, helper }
     const [timeRanking, setTimeRanking] = useState([]);
     const [bibsStatus, setBibsStatus]   = useState([]);
 
+    // Update the data by querying the model when competitionid or stage change
     useEffect(() => {
         connector.fetchStageRanking(competitionid, stage)
             .then(manager => {
@@ -108,15 +109,19 @@ export default function StageRanking({ competitionid, stage, connector, helper }
     //
 
     // Changement manuel des statuts (grid)
-    const handleBibStatusChange = (newBibsStatus) => {
+    const handleBibStatusChange = (newBibsStatus) => {console.log(newBibsStatus,bibsStatus);
         setBibsStatus(newBibsStatus);
     };
+
+    // FOR DEBUG
+    useEffect(() => {
+        console.log("Bib status changed", bibsStatus);
+    }, [bibsStatus]);
 
     // Changement du classement (table)
     const handleTimeRankingChange = (newTimeRanking) => {
         setTimeRanking(newTimeRanking);
-        const updatedBibs = computeUpdatedBibStatus(bibsStatus, newTimeRanking);
-        setBibsStatus(updatedBibs);
+        setBibsStatus(prevBibsStatus => computeUpdatedBibStatus(prevBibsStatus, newTimeRanking));
     };
 
     //
