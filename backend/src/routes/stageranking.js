@@ -28,9 +28,9 @@ export default class StageRanking extends Route {
                 order: [['rank', 'ASC']]
             });
 
-            if (stageResults.length === 0) {
-                return res.status(404).json({status: "notfound", message: "No results found for stage " + stageNumber});
-            }
+            // if (stageResults.length === 0) {
+            //     return res.status(404).json({status: "notfound", message: "No results found for stage " + stageNumber});
+            // }
 
             // Get all registrations to map bib to racer
             const registrations = await db.models.registration.findAll({
@@ -62,12 +62,33 @@ export default class StageRanking extends Route {
                 }
             }
 
+            // Helper function to get status from closest previous stage
+            const getStatusFromPreviousStage = async (bib) => {
+                const prevResult = await db.models.stageresult.findOne({
+                    where: { stage: stageNumber-1, bib: bib }
+                });
+                if (prevResult && prevResult.status) {
+                    return prevResult.status;
+                }
+                return 'unknown';
+            };
+
             // Build response with racer info and bonifications
-            const results = racers.map(r => {
-                const res = stageResults.find((sr) => sr.bib === registrationMap.get(r.id).bib);
+            const results = await Promise.all(racers.map(async (r) => {
+                const bib = registrationMap.get(r.id).bib;
+                const res = stageResults.find((sr) => sr.bib === bib);
+                let status = res ? res.status : null;
+                
+                // If no result for this stage, get status from closest previous stage
+                if (!status) {
+                    const prevStatus = await getStatusFromPreviousStage(bib);
+                    if (prevStatus == "done"){status = "unknown"}
+                    else {status = "abs"}
+                }
+                
                 const bonifications = (res && finishBonifications.length > 0 && res.rank > 0 && res.rank <= finishBonifications.length) ? finishBonifications[res.rank-1] : null;
                 return {
-                    bib:            registrationMap.get(r.id).bib,
+                    bib:            bib,
                     firstName:      r.firstName,
                     lastName:       r.lastName,
                     team:           r.team,
@@ -75,12 +96,12 @@ export default class StageRanking extends Route {
                     ffcID:          r.ffcID,
                     uciID:          r.uciID,
                     rank:           res ? res.rank : 0,
-                    status:         res ? res.status : 'unknown',
+                    status:         status,
                     time:           res ? res.time : 0,
                     millis:         res ? res.millis : 0,
                     bonification:   bonifications
                 };
-            });
+            }));
 
             res.status(200).json({
                 stage: stageNumber,
