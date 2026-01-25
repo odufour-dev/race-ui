@@ -86,6 +86,24 @@ export class RaceConnector {
 
   }
 
+  async saveStageRanking(competitionid, stageId, rankingData) {
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/stages/${stageId}/rankings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rankingData)
+      });
+      if (!response.ok) throw new Error("Error while saving the stage ranking");
+      return await response.json();
+    }
+    catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+  
     /*
   async syncRacers(racerManager) {
     const data = racerManager.getAll().map(r => r.toObject());

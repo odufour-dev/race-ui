@@ -10,30 +10,6 @@ export default function StageRanking({ competitionid, stage, connector, helper }
     // --- FUNCTIONS PURES (sans mutation) ---
     //
 
-    const computeBibStatus = useCallback((data) => {
-        return data
-            .map(item => ({
-                bib: Number(item.bib),
-                status: item.status || "unknown",
-            }))
-            .sort((a, b) => {
-                const aNum = Number(a.bib);
-                const bNum = Number(b.bib);
-                return aNum - bNum;
-            });
-    }, []);
-
-    const computeTimeRanking = useCallback((data) => {
-        return data
-            .filter(item => item.status === "done")
-            .map(item => ({
-                bib:        Number(item.bib),
-                position:   Number(item.position),
-                time:       Number(item.time),
-            }))
-            .sort((a, b) => a.position - b.position);
-    }, []);
-
     const computeUpdatedBibStatus = useCallback((prevBibs, timeRanking) => {
         // On compte les occurrences de chaque bib dans le timeRanking
         const bibOcc = timeRanking.reduce((acc, item) => {
@@ -84,33 +60,15 @@ export default function StageRanking({ competitionid, stage, connector, helper }
         return [...updated, ...newBibs].sort((a, b) => a.bib - b.bib);
     }, []);
 
-    const mergeRankingAndStatus = useCallback((timeRanking, bibsStatus) => {
-        // Create a map of timeRanking for O(1) lookup
-        const timeRankingMap = new Map(timeRanking.map(t => [t.bib, t]));
-
-        // Merge timeRanking and bibsStatus
-        const merged = bibsStatus.map(bib => {
-            const timeData = timeRankingMap.get(bib.bib);
-            return {
-                bib: bib.bib,
-                status: bib.status,
-                position: timeData ? timeData.position : null,
-                time: timeData ? timeData.time : null,
-            };
-        });
-
-        return merged;
-    }, []);
-
     //
     // --- STATE ---
     //
 
-    const [data, setData] = useState(() => connector.fetchStageRanking(competitionid, stage).then(manager => manager ? manager.Ranking : []));
+    const [data, setData]               = useState([]);
     const [timeRanking, setTimeRanking] = useState([]);
     const [bibsStatus, setBibsStatus]   = useState([]);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
+    const [isSaving, setIsSaving]       = useState(false);
     
     // Store the last saved state to compare with current state
     const lastSavedStateRef = useRef(null);
@@ -120,16 +78,15 @@ export default function StageRanking({ competitionid, stage, connector, helper }
         connector.fetchStageRanking(competitionid, stage)
             .then(manager => {
                 const rankingData = manager ? manager.Ranking : [];
-                setData(rankingData);
-                setTimeRanking(computeTimeRanking(rankingData));
-                const bibs = computeBibStatus(rankingData);
-                setBibsStatus(bibs);
+                setData(manager);
+                setTimeRanking(manager.computeTimeRanking());
+                setBibsStatus(manager.computeBibStatus());
                 // Initialize saved state
-                lastSavedStateRef.current = { timeRanking: computeTimeRanking(rankingData), bibsStatus: bibs };
+                lastSavedStateRef.current = { timeRanking: manager.computeTimeRanking(), bibsStatus: manager.computeBibStatus() };
                 setHasUnsavedChanges(false);
             })
             .catch(err => console.error(err));
-    }, [competitionid, stage, connector, computeTimeRanking, computeBibStatus]);
+    }, [competitionid, stage, connector]);
 
     // Track unsaved changes
     useEffect(() => {
@@ -175,15 +132,14 @@ export default function StageRanking({ competitionid, stage, connector, helper }
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            // Merge timeRanking and bibsStatus into a single array
-            const mergedData = mergeRankingAndStatus(timeRanking, bibsStatus);
-            console.log('Saving merged data:', mergedData);
-            // await connector.saveStageRanking(competitionid, stage, mergedData);
-            
+
+            const jsondata = data.upd = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
+            const res = await connector.saveStageRanking(competitionid, stage, jsondata);
+            console.log('Save response:',  res);
             // Update saved state reference
             lastSavedStateRef.current = { timeRanking, bibsStatus };
             setHasUnsavedChanges(false);
-            console.log('Changes saved successfully');
+            
         } catch (error) {
             console.error('Error saving changes:', error);
         } finally {
