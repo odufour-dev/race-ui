@@ -27,12 +27,14 @@ describe('RaceManager', () => {
 
   it('Add Annex Ranking', () => {
 
-    const annex = {id: "mock", type: "test"};
+    const annex = {name: "mock", type: "points"};
 
     const sut = new RaceManager();
-    const actual = sut.addAnnexRanking(annex);
+    const actual = sut.addAnnexRanking("points", annex);
 
-    expect(actual.annexRankings).toEqual([annex]);
+    expect(actual.annexRankings.length).toEqual(1);
+    expect(actual.annexRankings[0].type).toEqual("points");
+    expect(actual.annexRankings[0].title).toEqual("mock");
     
   });
 

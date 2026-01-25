@@ -22,11 +22,11 @@ export class RaceManager {
   get annexRankings() {return this.#annexrankings;}
   get annexTypes()    {return this.#annexrankingmanager.list;}
   
-  addAnnexRanking(type){
+  addAnnexRanking(type,value){
     const ranking = this.#annexrankingmanager.build(type,this.#annexrankings.length + 1);
     ranking.priority = this.#annexrankings.length + 1;
     const data = this.clone();
-    data.#annexrankings.push(ranking);
+    data.#annexrankings.push(ranking.update(value));
     return data;
   }
 
