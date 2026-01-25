@@ -125,9 +125,9 @@ export class RaceModel {
     if ('racers' in data){
       this.#racers = this.#racers.update( data.racers );
     }
-    if ('stageResults' in data){
+    /*if ('stageResults' in data){
       this.#ranking = this.#ranking.fromJSON( data.stageResults );
-    }
+    }*/
 
     return this;
 

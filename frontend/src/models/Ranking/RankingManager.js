@@ -81,12 +81,10 @@ export class RankingManager {
   }
 
   fromJSON(data){
-    const ranking = data.flatMap((stageres) => {
-      return stageres.results.map((r) => {
-        const rec = new TimingRecord();
-        rec.update(r);
-        return rec;
-      })
+    const ranking = data.results.map((r) => {
+      const rec = new TimingRecord();
+      rec.update(r);
+      return rec;
     });
     return new RankingManager(ranking, this.#stage);
   }
@@ -121,4 +119,9 @@ export class RankingManager {
     else {return a.lastposition - b.lastposition;}
   }
 
+}
+
+export function createRankingManagerFromJSON(data, stage){
+  const manager = new RankingManager([], stage);
+  return manager.fromJSON(data);
 }

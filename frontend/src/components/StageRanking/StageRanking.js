@@ -4,7 +4,7 @@ import Grid from './Grid/Grid';
 
 import './StageRanking.css';
 
-export default function StageRanking({ data = [], helper, onChange }) {
+export default function StageRanking({ competitionid, stage, connector, helper }) {
 
     //
     // --- FUNCTIONS PURES (sans mutation) ---
@@ -27,8 +27,9 @@ export default function StageRanking({ data = [], helper, onChange }) {
         return data
             .filter(item => item.status === "done")
             .map(item => ({
-                ...item,
-                bib: Number(item.bib),
+                bib:        Number(item.bib),
+                position:   Number(item.position),
+                time:       Number(item.time),
             }))
             .sort((a, b) => a.position - b.position);
     }, []);
@@ -83,31 +84,24 @@ export default function StageRanking({ data = [], helper, onChange }) {
         return [...updated, ...newBibs].sort((a, b) => a.bib - b.bib);
     }, []);
 
-    const computeRankingOutput = useCallback((data, timeRanking, bibsStatus) => {
-        return data.map(d => {
-            const bib = Number(d.bib);
-
-            const tr = timeRanking.find(t => Number(t.bib) === bib);
-            const bs = bibsStatus.find(b => b.bib === bib);
-
-            return {
-                ...d,
-                bib,
-                position: tr ? tr.position : null,
-                time: tr ? tr.time : null,
-                status: bs ? bs.status : "unknown",
-            };
-        });
-    }, []);
-
     //
     // --- STATE ---
     //
 
-    const [timeRanking, setTimeRanking] = useState(() => computeTimeRanking(data));
-    const [bibsStatus, setBibsStatus] = useState(() => computeBibStatus(data));
-    const skipNextSyncRef = useRef(false);
-    const prevDataContentRef = useRef(JSON.stringify(data));
+    const [data, setData] = useState(() => connector.fetchStageRanking(competitionid, stage).then(manager => manager ? manager.Ranking : []));
+    const [timeRanking, setTimeRanking] = useState([]);
+    const [bibsStatus, setBibsStatus]   = useState([]);
+
+    useEffect(() => {
+        connector.fetchStageRanking(competitionid, stage)
+            .then(manager => {
+                const rankingData = manager ? manager.Ranking : [];
+                setData(rankingData);
+                setTimeRanking(computeTimeRanking(rankingData));
+                setBibsStatus(computeBibStatus(rankingData));
+            })
+            .catch(err => console.error(err));
+    }, [competitionid, stage, connector]);
 
     //
     // --- HANDLERS ---
@@ -115,39 +109,15 @@ export default function StageRanking({ data = [], helper, onChange }) {
 
     // Changement manuel des statuts (grid)
     const handleBibStatusChange = (newBibsStatus) => {
-        skipNextSyncRef.current = true;
         setBibsStatus(newBibsStatus);
-        const updated = computeRankingOutput(data, timeRanking, newBibsStatus);
-        onChange(updated);
     };
 
     // Changement du classement (table)
     const handleTimeRankingChange = (newTimeRanking) => {
-        skipNextSyncRef.current = true;
         setTimeRanking(newTimeRanking);
         const updatedBibs = computeUpdatedBibStatus(bibsStatus, newTimeRanking);
         setBibsStatus(updatedBibs);
-        const updated = computeRankingOutput(data, newTimeRanking, updatedBibs);
-        onChange(updated);
     };
-
-    // Reset state ONLY when actual data content changes (not just array reference)
-    useEffect(() => {
-        const currentDataContent = JSON.stringify(data);
-        
-        if (skipNextSyncRef.current) {
-            skipNextSyncRef.current = false;
-            prevDataContentRef.current = currentDataContent;
-            return;
-        }
-        
-        if (currentDataContent !== prevDataContentRef.current) {
-            // Actual content changed - reset our state
-            setTimeRanking(computeTimeRanking(data));
-            setBibsStatus(computeBibStatus(data));
-        }
-        prevDataContentRef.current = currentDataContent;
-    }, [data]);
 
     //
     // --- RENDER ---

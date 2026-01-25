@@ -1,4 +1,5 @@
-import { createRaceModelFromJSON } from "./RaceModel";
+import { createRaceModelFromJSON }      from "./RaceModel";
+import { createRankingManagerFromJSON } from "./Ranking/RankingManager";
 
 export class RaceConnector {
 
@@ -69,6 +70,20 @@ export class RaceConnector {
       console.error("RaceConnector Error:", error);
       throw error;
     }
+  }
+
+  async fetchStageRanking(competitionid, stageId) {
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/stages/${stageId}/rankings`);
+      if (!response.ok) throw new Error("Error while fetching the stage ranking");
+      const data = await response.json();
+      return createRankingManagerFromJSON(data);
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
   }
 
     /*

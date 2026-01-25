@@ -56,10 +56,10 @@ function App() {
       return (props) => (
         <StageRanking
           {...props}
+          competitionid={competitionid}
           stage={stage}
-          data={raceModel.getStageRanking(stage)}
+          connector={connector}
           helper={helper}
-          onChange={(data) => handleStageChange(stage, data)}
         />
       );
     },
