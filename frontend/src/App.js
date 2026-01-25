@@ -89,15 +89,10 @@ function App() {
     });
   }, []);
 
-  useEffect(() => {
-    console.log('Stage #1 ranking:', raceModel.getStageRanking(1));
-    console.log('General #1 ranking:', raceModel.getGeneralRanking(1));
-  }, [raceModel]);
-
   // Create the navigation panel components
   const navEventConfiguration = new NavigationItem({
     id: 'configuration', title: helper.translator('navigation.configuration'), order: 5, component: (props) => (
-      <EventSettings {...props} helper={helper} settings={raceModel.Race} annexRanking={raceModel.Annex} onApply={(settings) => setRaceModel(raceModel.updateRace(settings))} />
+      <EventSettings {...props} helper={helper} connector={connector} competitionid={competitionid} />
     )
   });
   const navRacerRegistration = new NavigationItem({

@@ -1,30 +1,29 @@
-import { Stage, createStageFromJSON } from "./Stage"
+import { AnnexRankingManager, createAnnexFromJSON }   from "./AnnexRanking/AnnexRankingManager"
+import { Stage, createStageFromJSON }                 from "./Stage"
 
 export class RaceManager {
 
   #stages
   #annexrankings
+  #annexrankingmanager
 
-  constructor(stages = [new Stage()], annexrankings = []){
-    this.#stages = stages;
-    this.#annexrankings = annexrankings;
+  constructor(stages = [new Stage()], annexrankingmanager = new AnnexRankingManager(), annexrankings = []){
+    this.#stages              = stages;
+    this.#annexrankings       = annexrankings;
+    this.#annexrankingmanager = annexrankingmanager;
   }
 
   clone(){
-    return new RaceManager(this.#stages, this.#annexrankings);
+    return new RaceManager(this.#stages, this.#annexrankingmanager, this.#annexrankings);
   }
 
-  get nStages(){
-    return this.#stages.length;
-  }
-  get stages(){
-    return this.#stages;
-  }
-  get annexRankings(){
-    return this.#annexrankings;
-  }
+  get nStages()       {return this.#stages.length;}
+  get stages()        {return this.#stages;}
+  get annexRankings() {return this.#annexrankings;}
+  get annexTypes()    {return this.#annexrankingmanager.list;}
   
-  addAnnexRanking(ranking){
+  addAnnexRanking(type){
+    const ranking = this.#annexrankingmanager.build(type,this.#annexrankings.length + 1);
     ranking.priority = this.#annexrankings.length + 1;
     const data = this.clone();
     data.#annexrankings.push(ranking);
@@ -52,5 +51,15 @@ export class RaceManager {
     }
     return data;
   }
+
+}
+
+export function createRaceManagerFromJSON(data){
+
+  const stages  = data.stages.map((s) => createStageFromJSON(s));
+
+  const annexManager = new AnnexRankingManager();
+  const annexes = annexManager.fromJSON(data.annex);
+  return new RaceManager(stages, annexManager, annexes);
 
 }
