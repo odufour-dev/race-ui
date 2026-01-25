@@ -1,3 +1,4 @@
+import { createNavigationFromJSON }     from "./Navigation/Navigation";
 import { createRaceModelFromJSON }      from "./RaceModel";
 import { createRankingManagerFromJSON } from "./Ranking/RankingManager";
 import { createRaceManagerFromJSON }    from "./Race/RaceManager";
@@ -81,6 +82,20 @@ export class RaceConnector {
       if (!response.ok) throw new Error(`Error while fetching the configuration for ${competitionid}`);
       const data = await response.json();
       return createRaceManagerFromJSON(data);
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
+  async fetchNavigation(competitionid){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/configuration`);
+      if (!response.ok) throw new Error(`Error while fetching the configuration for ${competitionid}`);
+      const data = await response.json();
+      return createNavigationFromJSON(data);
     } catch (error) {
       this.#logger.error("RaceConnector Error:", error);
       throw error;
