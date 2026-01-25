@@ -84,6 +84,24 @@ export default function StageRanking({ competitionid, stage, connector, helper }
         return [...updated, ...newBibs].sort((a, b) => a.bib - b.bib);
     }, []);
 
+    const mergeRankingAndStatus = useCallback((timeRanking, bibsStatus) => {
+        // Create a map of timeRanking for O(1) lookup
+        const timeRankingMap = new Map(timeRanking.map(t => [t.bib, t]));
+
+        // Merge timeRanking and bibsStatus
+        const merged = bibsStatus.map(bib => {
+            const timeData = timeRankingMap.get(bib.bib);
+            return {
+                bib: bib.bib,
+                status: bib.status,
+                position: timeData ? timeData.position : null,
+                time: timeData ? timeData.time : null,
+            };
+        });
+
+        return merged;
+    }, []);
+
     //
     // --- STATE ---
     //
@@ -91,6 +109,11 @@ export default function StageRanking({ competitionid, stage, connector, helper }
     const [data, setData] = useState(() => connector.fetchStageRanking(competitionid, stage).then(manager => manager ? manager.Ranking : []));
     const [timeRanking, setTimeRanking] = useState([]);
     const [bibsStatus, setBibsStatus]   = useState([]);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    
+    // Store the last saved state to compare with current state
+    const lastSavedStateRef = useRef(null);
 
     // Update the data by querying the model when competitionid or stage change
     useEffect(() => {
@@ -99,29 +122,73 @@ export default function StageRanking({ competitionid, stage, connector, helper }
                 const rankingData = manager ? manager.Ranking : [];
                 setData(rankingData);
                 setTimeRanking(computeTimeRanking(rankingData));
-                setBibsStatus(computeBibStatus(rankingData));
+                const bibs = computeBibStatus(rankingData);
+                setBibsStatus(bibs);
+                // Initialize saved state
+                lastSavedStateRef.current = { timeRanking: computeTimeRanking(rankingData), bibsStatus: bibs };
+                setHasUnsavedChanges(false);
             })
             .catch(err => console.error(err));
-    }, [competitionid, stage, connector]);
+    }, [competitionid, stage, connector, computeTimeRanking, computeBibStatus]);
+
+    // Track unsaved changes
+    useEffect(() => {
+        const savedState = lastSavedStateRef.current;
+        if (savedState) {
+            const timeRankingChanged = JSON.stringify(timeRanking) !== JSON.stringify(savedState.timeRanking);
+            const bibsStatusChanged = JSON.stringify(bibsStatus) !== JSON.stringify(savedState.bibsStatus);
+            setHasUnsavedChanges(timeRankingChanged || bibsStatusChanged);
+        }
+    }, [timeRanking, bibsStatus]);
+
+    // Handle Ctrl+S shortcut
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (hasUnsavedChanges) {
+                    handleSave();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [hasUnsavedChanges, timeRanking, bibsStatus]);
 
     //
     // --- HANDLERS ---
     //
 
     // Changement manuel des statuts (grid)
-    const handleBibStatusChange = (newBibsStatus) => {console.log(newBibsStatus,bibsStatus);
+    const handleBibStatusChange = (newBibsStatus) => {
         setBibsStatus(newBibsStatus);
     };
-
-    // FOR DEBUG
-    useEffect(() => {
-        console.log("Bib status changed", bibsStatus);
-    }, [bibsStatus]);
 
     // Changement du classement (table)
     const handleTimeRankingChange = (newTimeRanking) => {
         setTimeRanking(newTimeRanking);
         setBibsStatus(prevBibsStatus => computeUpdatedBibStatus(prevBibsStatus, newTimeRanking));
+    };
+
+    // Save changes (backend call will be added here)
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            // Merge timeRanking and bibsStatus into a single array
+            const mergedData = mergeRankingAndStatus(timeRanking, bibsStatus);
+            console.log('Saving merged data:', mergedData);
+            // await connector.saveStageRanking(competitionid, stage, mergedData);
+            
+            // Update saved state reference
+            lastSavedStateRef.current = { timeRanking, bibsStatus };
+            setHasUnsavedChanges(false);
+            console.log('Changes saved successfully');
+        } catch (error) {
+            console.error('Error saving changes:', error);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     //
@@ -130,6 +197,27 @@ export default function StageRanking({ competitionid, stage, connector, helper }
 
     return (
         <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <div style={{ fontSize: '14px', color: hasUnsavedChanges ? '#ff6b6b' : '#51cf66', fontWeight: 'bold' }}>
+                    {hasUnsavedChanges ? '● Unsaved changes' : '✓ All changes saved'}
+                </div>
+                <button
+                    onClick={handleSave}
+                    disabled={!hasUnsavedChanges || isSaving}
+                    style={{
+                        padding: '8px 16px',
+                        backgroundColor: hasUnsavedChanges ? '#4dabf7' : '#ccc',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: hasUnsavedChanges ? 'pointer' : 'not-allowed',
+                        fontWeight: 'bold',
+                        opacity: hasUnsavedChanges ? 1 : 0.6,
+                    }}
+                >
+                    {isSaving ? 'Saving...' : 'Save (Ctrl+S)'}
+                </button>
+            </div>
             <Grid data={bibsStatus} onChange={handleBibStatusChange} />
             <TimeRankingTable
                 data={timeRanking}
