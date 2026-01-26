@@ -114,22 +114,10 @@ export default function StageRanking({ competitionid, stage, connector, helper, 
     };
 
     // Save changes (backend call will be added here)
-    const handleSave = async () => {
-        setIsSaving(true);
-        try {
-
-            const jsondata = data.upd = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
-            await connector.saveStageRanking(competitionid, stage, jsondata);
-            
-            // Update saved state reference
-            lastSavedStateRef.current = { timeRanking, bibsStatus };
-            setIsDirty(false);
-            
-        } catch (error) {
-            console.error('Error saving changes:', error);
-        } finally {
-            setIsSaving(false);
-        }
+    const saveCallback = async () => {
+        const jsondata = data.upd = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
+        await connector.saveStageRanking(competitionid, stage, jsondata);
+        setIsDirty(false);
     };
 
     //
@@ -138,7 +126,7 @@ export default function StageRanking({ competitionid, stage, connector, helper, 
 
     return (
         <div>
-            {savebar(isDirty,isSaving,handleSave)}
+            {savebar(isDirty,saveCallback)}
             <Grid data={bibsStatus} onChange={handleBibStatusChange} />
             <TimeRankingTable
                 data={timeRanking}

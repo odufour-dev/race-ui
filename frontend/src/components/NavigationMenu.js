@@ -21,7 +21,7 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
             stage={stage}
             connector={connector}
             helper={helper}
-            savebar={(hasUnsavedChanges,isSaving,handleSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} isSaving={isSaving} handleSave={handleSave} />)}
+            savebar={(hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />)}
           />
         );
       },

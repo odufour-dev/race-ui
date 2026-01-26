@@ -1,8 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './SynchronizationBar.css';
 
-export default function SynchronizationBar({ hasUnsavedChanges, isSaving, handleSave }) {
+export default function SynchronizationBar({ hasUnsavedChanges, onSave }) {
     
+    const [isSaving,setIsSaving] = useState(false);
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            await onSave();
+        } catch (error) {
+            console.error('Error saving changes:', error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
