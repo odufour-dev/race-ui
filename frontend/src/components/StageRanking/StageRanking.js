@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import TimeRankingTable from './TimeRankingTable/TimeRankingTable';
 import Grid from './Grid/Grid';
 
+import SynchronizationBar from '../Synchronization/SynchronizationBar';
+
 import './StageRanking.css';
 
 export default function StageRanking({ competitionid, stage, connector, helper }) {
@@ -98,6 +100,7 @@ export default function StageRanking({ competitionid, stage, connector, helper }
         }
     }, [timeRanking, bibsStatus]);
 
+    /*
     // Handle Ctrl+S shortcut
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -112,6 +115,7 @@ export default function StageRanking({ competitionid, stage, connector, helper }
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [hasUnsavedChanges, timeRanking, bibsStatus]);
+*/
 
     //
     // --- HANDLERS ---
@@ -153,6 +157,8 @@ export default function StageRanking({ competitionid, stage, connector, helper }
 
     return (
         <div>
+            <SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} isSaving={isSaving} handleSave={handleSave} />
+            {/*
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <div style={{ fontSize: '14px', color: hasUnsavedChanges ? '#ff6b6b' : '#51cf66', fontWeight: 'bold' }}>
                     {hasUnsavedChanges ? '● Unsaved changes' : '✓ All changes saved'}
@@ -174,6 +180,7 @@ export default function StageRanking({ competitionid, stage, connector, helper }
                     {isSaving ? 'Saving...' : 'Save (Ctrl+S)'}
                 </button>
             </div>
+            */}
             <Grid data={bibsStatus} onChange={handleBibStatusChange} />
             <TimeRankingTable
                 data={timeRanking}
