@@ -4,6 +4,7 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import EventSettings      from './EventSettings/EventSettings';
 import ExcelReader        from './ExcelReader/ExcelReader';
 import GeneralRanking     from './GeneralRanking/GeneralRanking';
+import SynchronizationBar from './Synchronization/SynchronizationBar';
 import RegistrationTable  from './RegistrationTable/RegistrationTable';
 import StageRanking       from './StageRanking/StageRanking';
 
@@ -20,6 +21,7 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
             stage={stage}
             connector={connector}
             helper={helper}
+            savebar={(hasUnsavedChanges,isSaving,handleSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} isSaving={isSaving} handleSave={handleSave} />)}
           />
         );
       },

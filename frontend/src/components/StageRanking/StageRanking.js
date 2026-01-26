@@ -2,11 +2,9 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import TimeRankingTable from './TimeRankingTable/TimeRankingTable';
 import Grid from './Grid/Grid';
 
-import SynchronizationBar from '../Synchronization/SynchronizationBar';
-
 import './StageRanking.css';
 
-export default function StageRanking({ competitionid, stage, connector, helper }) {
+export default function StageRanking({ competitionid, stage, connector, helper, savebar }) {
 
     //
     // --- FUNCTIONS PURES (sans mutation) ---
@@ -66,11 +64,11 @@ export default function StageRanking({ competitionid, stage, connector, helper }
     // --- STATE ---
     //
 
-    const [data, setData]               = useState([]);
+    const [data,        setData]        = useState([]);
     const [timeRanking, setTimeRanking] = useState([]);
-    const [bibsStatus, setBibsStatus]   = useState([]);
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const [isSaving, setIsSaving]       = useState(false);
+    const [bibsStatus,  setBibsStatus]  = useState([]);
+    const [isDirty,     setIsDirty]     = useState(false);
+    const [isSaving,    setIsSaving]    = useState(false);
     
     // Store the last saved state to compare with current state
     const lastSavedStateRef = useRef(null);
@@ -84,7 +82,7 @@ export default function StageRanking({ competitionid, stage, connector, helper }
                 setBibsStatus(manager.computeBibStatus());
                 // Initialize saved state
                 lastSavedStateRef.current = { timeRanking: manager.computeTimeRanking(), bibsStatus: manager.computeBibStatus() };
-                setHasUnsavedChanges(false);
+                setIsDirty(false);
             })
             .catch(err => console.error(err));
     }, [competitionid, stage, connector]);
@@ -96,26 +94,9 @@ export default function StageRanking({ competitionid, stage, connector, helper }
             const timeRankingChanged = JSON.stringify(timeRanking) !== JSON.stringify(savedState.timeRanking);
             const bibsStatusChanged  = JSON.stringify(bibsStatus)  !== JSON.stringify(savedState.bibsStatus);
             
-            setHasUnsavedChanges(timeRankingChanged || bibsStatusChanged);
+            setIsDirty(timeRankingChanged || bibsStatusChanged);
         }
     }, [timeRanking, bibsStatus]);
-
-    /*
-    // Handle Ctrl+S shortcut
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                if (hasUnsavedChanges) {
-                    handleSave();
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [hasUnsavedChanges, timeRanking, bibsStatus]);
-*/
 
     //
     // --- HANDLERS ---
@@ -142,7 +123,7 @@ export default function StageRanking({ competitionid, stage, connector, helper }
             
             // Update saved state reference
             lastSavedStateRef.current = { timeRanking, bibsStatus };
-            setHasUnsavedChanges(false);
+            setIsDirty(false);
             
         } catch (error) {
             console.error('Error saving changes:', error);
@@ -157,30 +138,7 @@ export default function StageRanking({ competitionid, stage, connector, helper }
 
     return (
         <div>
-            <SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} isSaving={isSaving} handleSave={handleSave} />
-            {/*
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <div style={{ fontSize: '14px', color: hasUnsavedChanges ? '#ff6b6b' : '#51cf66', fontWeight: 'bold' }}>
-                    {hasUnsavedChanges ? '● Unsaved changes' : '✓ All changes saved'}
-                </div>
-                <button
-                    onClick={handleSave}
-                    disabled={!hasUnsavedChanges || isSaving}
-                    style={{
-                        padding: '8px 16px',
-                        backgroundColor: hasUnsavedChanges ? '#4dabf7' : '#ccc',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: hasUnsavedChanges ? 'pointer' : 'not-allowed',
-                        fontWeight: 'bold',
-                        opacity: hasUnsavedChanges ? 1 : 0.6,
-                    }}
-                >
-                    {isSaving ? 'Saving...' : 'Save (Ctrl+S)'}
-                </button>
-            </div>
-            */}
+            {savebar(isDirty,isSaving,handleSave)}
             <Grid data={bibsStatus} onChange={handleBibStatusChange} />
             <TimeRankingTable
                 data={timeRanking}
