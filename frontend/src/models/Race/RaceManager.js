@@ -52,6 +52,11 @@ export class RaceManager {
     return data;
   }
 
+  toJSON(){
+    const stages = this.#stages.map((s,i) => ({...s.toJSON(), number:i+1}));
+    const annexRankings = this.#annexrankings.map(a => a.toJSON());
+    return { stages, annexRankings };
+  }
 }
 
 export function createRaceManagerFromJSON(data){

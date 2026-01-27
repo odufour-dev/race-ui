@@ -79,16 +79,6 @@ export class Competition {
             foreignKey: 'raceId' 
         });
 
-        this.#stage.hasMany(this.#event, { 
-            as: 'stageevents',
-            foreignKey: 'stageId',
-            onDelete: 'CASCADE' 
-        });
-        this.#event.belongsTo(this.#stage, { 
-            as: 'stage',
-            foreignKey: 'stageId' 
-        });
-
     }
     
 }

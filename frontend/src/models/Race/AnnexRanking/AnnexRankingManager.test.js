@@ -62,16 +62,14 @@ describe('AnnexRankingManager', () => {
         type: "points",
         title: "points",
         priority: 1,
-        categories: ["sprint"],
-        points: [[5, 3, 1]]
+        categories: [{name:"sprint",points:[5, 3, 1]}]
     });
     expect(actual[1].toJSON()).toEqual({
         name: "GPM",
         type: "points",
         title: "GPM",
         priority: 2,
-        categories: ["cat1", "cat2"],
-        points: [[5, 3, 1], [3, 1]]
+        categories: [{name:"cat1",points:[5, 3, 1]}, {name:"cat2",points:[3, 1]}]
     });
     expect(actual[2].toJSON()).toEqual({
         filter: "age < 23",

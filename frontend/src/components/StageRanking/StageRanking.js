@@ -68,7 +68,6 @@ export default function StageRanking({ competitionid, stage, connector, helper, 
     const [timeRanking, setTimeRanking] = useState([]);
     const [bibsStatus,  setBibsStatus]  = useState([]);
     const [isDirty,     setIsDirty]     = useState(false);
-    const [isSaving,    setIsSaving]    = useState(false);
     
     // Store the last saved state to compare with current state
     const lastSavedStateRef = useRef(null);
@@ -115,7 +114,7 @@ export default function StageRanking({ competitionid, stage, connector, helper, 
 
     // Save changes (backend call will be added here)
     const saveCallback = async () => {
-        const jsondata = data.upd = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
+        const jsondata = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
         await connector.saveStageRanking(competitionid, stage, jsondata);
         setIsDirty(false);
     };

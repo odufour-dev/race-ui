@@ -1,32 +1,53 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './EventSettings.css';
 import { AnnexItemFactory } from './AnnexItemFactory';
 
 /**
  * EventSettings
  */
-export default function EventSettings({ helper, connector, competitionid }) {
+export default function EventSettings({ helper, connector, competitionid, savebar }) {
   
   // Use safe defaults so inputs never receive `undefined` which causes
   // React's controlled -> uncontrolled warning.
   const [ raceManager, setRaceManager ]     = useState( {} );
   const [ annexType, setAnnexType ]         = useState( "" );
+  const [ isDirty, setIsDirty ]             = useState( false );
+  
+  // Store the last saved state to compare with current state
+  const lastSavedStateRef = useRef(null);
   
   useEffect(() => {
       connector.fetchConfiguration(competitionid)
           .then(manager => {
               setRaceManager(manager);
               setAnnexType(manager.annexTypes[0]);              
-              //lastSavedStateRef.current = { timeRanking: manager.computeTimeRanking(), bibsStatus: manager.computeBibStatus() };
-              //setHasUnsavedChanges(false);
+              lastSavedStateRef.current = manager.toJSON();
+              setIsDirty(false);
           })
           .catch(err => console.error(err));
   }, [competitionid, connector]);
 
+  useEffect(() => {
+      const savedState    = lastSavedStateRef.current;  
+      const currentState  = raceManager.toJSON ? raceManager.toJSON() : {};
+      
+      console.log(JSON.stringify(currentState),JSON.stringify(savedState));
+      if (savedState) {
+          setIsDirty(JSON.stringify(currentState) !== JSON.stringify(savedState));
+      }
+  }, [raceManager]);
+
+  const saveCallback = async () => {
+        const jsondata = raceManager.toJSON();
+        await connector.saveConfiguration(competitionid, jsondata);
+        lastSavedStateRef.current = jsondata;
+        setIsDirty(false);
+    };
+
   return (
     <div className="event-settings">
       <h2>{helper.translator("event.settings.title")}</h2>
-
+      {savebar(isDirty,saveCallback)}
       <div className="field">
         <label>{helper.translator("event.settings.nstages")}</label>
         <div className="stage-list">

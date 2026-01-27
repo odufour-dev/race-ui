@@ -13,7 +13,11 @@ export class PointsRanking extends AnnexRanking {
   }
 
   toJSON(){
-      return {...super.toJSON(), categories: this.#categories, points: this.#points};
+    const categories = [];
+    for (let i = 0; i < this.#categories.length; i++){
+      categories.push({name: this.#categories[i], points: this.#points[i]})
+    }
+      return {...super.toJSON(), categories: categories};
     }
 
   update(settings){

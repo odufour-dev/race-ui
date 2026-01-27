@@ -112,6 +112,24 @@ export class RaceConnector {
 
   }
 
+  async saveConfiguration(competitionid, configData){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/configuration`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(configData)
+      });
+      if (!response.ok) throw new Error("Error while saving the configuration");
+      return await response.json();
+    }
+    catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
   async saveStageRanking(competitionid, stageId, rankingData) {
 
     try {

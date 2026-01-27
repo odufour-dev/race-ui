@@ -4,7 +4,7 @@ import DropdownEditor from './DropdownEditor';
 import TextEditor from './TextEditor';
 import ActionPanel from './ActionPanel';
 
-function RegistrationTable({ helper, connector, competitionid }) {
+function RegistrationTable({ helper, connector, competitionid, savebar }) {
 
   const [dataModel,     setDataModel]     = useState(null);
   const [editingCell,   setEditingCell]   = useState(null);
@@ -12,6 +12,7 @@ function RegistrationTable({ helper, connector, competitionid }) {
   const [globalFilter,  setGlobalFilter]  = useState('');
   const [sortBy,        setSortBy]        = useState({ columnKey: null, direction: null });
   const [filteredData,  setFilteredData]  = useState([]);
+  const [isDirty,       setIsDirty]       = useState(false);
 
   const classificationModel = {
     Level:    ['elite','open','access'],
@@ -23,8 +24,6 @@ function RegistrationTable({ helper, connector, competitionid }) {
       connector.fetchRacers(competitionid)
           .then(manager => {
               setDataModel(manager);
-              // lastSavedStateRef.current = { timeRanking: manager.computeTimeRanking(), bibsStatus: manager.computeBibStatus() };
-              // setHasUnsavedChanges(false);
           })
           .catch(err => console.error(err));
   }, [competitionid, connector]);
@@ -175,8 +174,15 @@ function RegistrationTable({ helper, connector, competitionid }) {
     }
   };
 
+  const saveCallback = async () => {
+        // const jsondata = data.upd = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
+        // await connector.saveStageRanking(competitionid, stage, jsondata);
+        setIsDirty(false);
+    };
+
   return (
     <>
+      {savebar(isDirty,saveCallback)}
       <div className="table-bg">
         <div className="table-container">
           <h3 className="text-3xl font-bold text-blue-700 mb-8 text-center">

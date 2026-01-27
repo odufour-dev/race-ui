@@ -46,10 +46,10 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
 
         // Create the navigation panel components
         const navEventConfiguration = model.addItem('configuration', helper.translator('navigation.configuration'), 5, (props) => (
-            <EventSettings {...props} helper={helper} connector={connector} competitionid={competitionid} />
+            <EventSettings {...props} helper={helper} connector={connector} competitionid={competitionid} savebar={(hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />)} />
             ));
         const navRacerRegistration = model.addItem('registration', helper.translator('navigation.registration'), 20, (props) => (
-            <RegistrationTable {...props} helper={helper} connector={connector} competitionid={competitionid} />
+            <RegistrationTable {...props} helper={helper} connector={connector} competitionid={competitionid} savebar={(hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />)} />
             ));
         const navRacerImport = model.addItem('import', helper.translator('navigation.import'), 10, (props) => (
             <ExcelReader {...props} helper={helper} dataModel={raceModel.Racers} updateData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
