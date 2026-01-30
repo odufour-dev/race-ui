@@ -10,6 +10,8 @@ import StaticRoutes         from './routes/static.js';
 import createConnector      from './database/connector.js';
 import createMigrator       from './database/migrator.js';
 
+import createProcessors     from './processors/Processors.js';
+
 import createServer         from './tools/express.js';
 import createFiles          from './tools/files.js';
 
@@ -22,14 +24,16 @@ export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuild
     const migrator  = createMigrator(files.joinPath(appfolder, 'migrations'), logger);
     const connector = await createConnector(files, dbfolder, 'master', migrator, logger);
     
+    const processor = createProcessors();
+
     // Register API routes
     const routes = [
-        new CompetitionRoutes(connector,logger),
-        new ConfigurationRoutes(connector,logger),
-        new RacerRoutes(connector,logger),
-        new StageAnnexRoutes(connector,logger),
-        new StageRankingRoutes(connector,logger),
-        new VersionRoutes(connector,logger),
+        new CompetitionRoutes   (connector,processor,logger),
+        new ConfigurationRoutes (connector,processor,logger),
+        new RacerRoutes         (connector,processor,logger),
+        new StageAnnexRoutes    (connector,processor,logger),
+        new StageRankingRoutes  (connector,processor,logger),
+        new VersionRoutes       (connector,processor,logger),
     ];
 
     const router = server.router;

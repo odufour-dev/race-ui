@@ -2,10 +2,12 @@
 export default class Route {
 
     _connector
+    _processor
     _logger
 
-    constructor(connector,logger){
+    constructor(connector,processor,logger){
         this._connector = connector;
+        this._processor = processor;
         this._logger    = logger;
         if (new.target === Route) {
             throw new Error("Abstract class");
