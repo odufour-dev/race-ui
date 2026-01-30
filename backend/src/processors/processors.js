@@ -1,4 +1,4 @@
-import { createStageRankingProcessor } from "./StageRanking.js";
+import { createStageRankingProcessor } from "./stageranking.js";
 
 class Processors {
 

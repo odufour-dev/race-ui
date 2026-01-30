@@ -1,4 +1,26 @@
 
+// Convert time string (HH:MM:SS) to seconds (integer)
+const convertTimeToSeconds = (timeStr) => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    if (parts.length !== 3) return 0;
+    const hours = parseInt(parts[0], 10);
+    const minutes = parseInt(parts[1], 10);
+    const seconds = parseInt(parts[2], 10);
+    return hours * 3600 + minutes * 60 + seconds;
+};
+
+const convertSecondsToTime = (secs) => {
+    const s = Number(secs) || 0;
+    const abs = Math.max(0, Math.floor(s));
+    const h = Math.floor(abs / 3600);
+    const m = Math.floor((abs % 3600) / 60);
+    const sec = abs % 60;
+    const hh = String(h).padStart(2, '0');
+    const mm = String(m).padStart(2, '0');
+    const ss = String(sec).padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
+}
 
 class StageRanking {
 
@@ -83,7 +105,7 @@ class StageRanking {
                 uciID:          r.uciID,
                 rank:           res ? res.rank : 0,
                 status:         status,
-                time:           res ? res.time : 0,
+                time:           res ? convertSecondsToTime(res.time) : "",
                 millis:         res ? res.millis : 0,
                 bonification:   bonifications ?? 0
             };
@@ -100,17 +122,6 @@ class StageRanking {
             where: { stage: stageNumber },
             transaction: t
         });
-
-        // Convert time string (HH:MM:SS) to seconds (integer)
-        const convertTimeToSeconds = (timeStr) => {
-            if (!timeStr) return 0;
-            const parts = timeStr.split(':');
-            if (parts.length !== 3) return 0;
-            const hours = parseInt(parts[0], 10);
-            const minutes = parseInt(parts[1], 10);
-            const seconds = parseInt(parts[2], 10);
-            return hours * 3600 + minutes * 60 + seconds;
-        };
 
         // Check for duplicate bibs and mark them
         const bibMap = new Map();

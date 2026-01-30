@@ -1,19 +1,20 @@
 
-import CompetitionRoutes    from './routes/competition.js';
-import ConfigurationRoutes  from './routes/configuration.js';
-import RacerRoutes          from './routes/racer.js';
-import StageAnnexRoutes     from './routes/stageannex.js';
-import StageRankingRoutes   from './routes/stageranking.js';
-import VersionRoutes        from './routes/version.js';
-import StaticRoutes         from './routes/static.js';
+import CompetitionRoutes        from './routes/competition.js';
+import ConfigurationRoutes      from './routes/configuration.js';
+import GeneralRankingRoutes     from './routes/generalranking.js';
+import RacerRoutes              from './routes/racer.js';
+import StageAnnexRoutes         from './routes/stageannex.js';
+import StageRankingRoutes       from './routes/stageranking.js';
+import VersionRoutes            from './routes/version.js';
+import StaticRoutes             from './routes/static.js';
 
-import createConnector      from './database/connector.js';
-import createMigrator       from './database/migrator.js';
+import createConnector          from './database/connector.js';
+import createMigrator           from './database/migrator.js';
 
-import createProcessors     from './processors/Processors.js';
+import createProcessors         from './processors/processors.js';
 
-import createServer         from './tools/express.js';
-import createFiles          from './tools/files.js';
+import createServer             from './tools/express.js';
+import createFiles              from './tools/files.js';
 
 export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuildpath,logger = console) => {
 
@@ -28,12 +29,13 @@ export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuild
 
     // Register API routes
     const routes = [
-        new CompetitionRoutes   (connector,processor,logger),
-        new ConfigurationRoutes (connector,processor,logger),
-        new RacerRoutes         (connector,processor,logger),
-        new StageAnnexRoutes    (connector,processor,logger),
-        new StageRankingRoutes  (connector,processor,logger),
-        new VersionRoutes       (connector,processor,logger),
+        new CompetitionRoutes       (connector,processor,logger),
+        new ConfigurationRoutes     (connector,processor,logger),
+        new GeneralRankingRoutes    (connector,processor,logger),
+        new RacerRoutes             (connector,processor,logger),
+        new StageAnnexRoutes        (connector,processor,logger),
+        new StageRankingRoutes      (connector,processor,logger),
+        new VersionRoutes           (connector,processor,logger),
     ];
 
     const router = server.router;
