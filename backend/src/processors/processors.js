@@ -1,14 +1,14 @@
-import { createStageRankingProcessor } from "./stageranking.js";
+import { createRankingProcessor } from "./ranking.js";
 
 class Processors {
 
     async extractRankingForStage(database,raceid,stageid){
-        const proc = createStageRankingProcessor(database,raceid);
+        const proc = createRankingProcessor(database,raceid);
         return proc.getRankingForStage(stageid);
     }
 
     async updateRankingForStage(database,raceid,stageid,data){
-        const proc = createStageRankingProcessor(database,raceid);
+        const proc = createRankingProcessor(database,raceid);
         return proc.insertRankingForStage(stageid,data);
     }
 

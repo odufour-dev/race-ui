@@ -1,5 +1,5 @@
 
-class StageRanking {
+class Ranking {
 
     #database
     #raceid
@@ -132,6 +132,6 @@ class StageRanking {
 
 }
 
-export function createStageRankingProcessor(database,raceid){
-    return new StageRanking(database,raceid);
+export function createRankingProcessor(database,raceid){
+    return new Ranking(database,raceid);
 }
