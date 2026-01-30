@@ -55,7 +55,7 @@ class Connector {
     async getCompetition(compid){
 
         if (!this.isDatabaseExists(compid)){
-            return res.status(404).json({status: "notfound", message: "Database not found for " + compid});
+            return null;
         }
 
         const race      = await this.master.findCompetition(compid);

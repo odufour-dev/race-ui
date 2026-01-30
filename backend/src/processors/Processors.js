@@ -7,8 +7,12 @@ class Processors {
         return proc.getRankingForStage(stageid);
     }
 
-}
+    async updateRankingForStage(database,raceid,stageid,data){
+        const proc = createStageRankingProcessor(database,raceid);
+        return proc.insertRankingForStage(stageid,data);
+    }
 
+}
 
 export default function createProcessors(){
     return new Processors();

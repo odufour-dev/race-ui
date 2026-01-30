@@ -91,6 +91,57 @@ class StageRanking {
 
     }
 
+    async insertRankingForStage(stageNumber,data){
+
+        const t = await this.#database.transaction();
+
+        // Delete all previous results for this stage number
+        await this.#database.models.stageresult.destroy({
+            where: { stage: stageNumber },
+            transaction: t
+        });
+
+        // Convert time string (HH:MM:SS) to seconds (integer)
+        const convertTimeToSeconds = (timeStr) => {
+            if (!timeStr) return 0;
+            const parts = timeStr.split(':');
+            if (parts.length !== 3) return 0;
+            const hours = parseInt(parts[0], 10);
+            const minutes = parseInt(parts[1], 10);
+            const seconds = parseInt(parts[2], 10);
+            return hours * 3600 + minutes * 60 + seconds;
+        };
+
+        // Check for duplicate bibs and mark them
+        const bibMap = new Map();
+        const duplicateBibs = new Set();
+        
+        data.forEach(r => {
+            if (bibMap.has(r.bib)) {
+                duplicateBibs.add(r.bib);
+            } else {
+                bibMap.set(r.bib, true);
+            }
+        });
+
+        // Create stage results
+        const results = await this.#database.models.stageresult.bulkCreate(
+            data.map(r => ({
+                bib: r.bib,
+                rank: r.rank || 0,
+                stage: stageNumber,
+                status: (r.status && duplicateBibs.has(r.bib)) ? 'duplicate' : (r.status || 'unknown'),
+                time: convertTimeToSeconds(r.time),
+                millis: 0
+            })),
+            { transaction: t }
+        );
+
+        await t.commit();
+        return results;
+
+    }
+
 }
 
 export function createStageRankingProcessor(database,raceid){
