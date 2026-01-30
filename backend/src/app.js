@@ -15,12 +15,14 @@ import createProcessors         from './processors/processors.js';
 
 import createServer             from './tools/express.js';
 import createFiles              from './tools/files.js';
+import createTimes              from './tools/time.js';
 
 export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuildpath,logger = console) => {
 
     // Create utility classes
     const files     = createFiles(logger);
     const server    = createServer(logger);
+    const times     = createTimes(logger);
 
     const migrator  = createMigrator(files.joinPath(appfolder, 'migrations'), logger);
     const connector = await createConnector(files, dbfolder, 'master', migrator, logger);
@@ -29,13 +31,13 @@ export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuild
 
     // Register API routes
     const routes = [
-        new CompetitionRoutes       (connector,processor,logger),
-        new ConfigurationRoutes     (connector,processor,logger),
-        new GeneralRankingRoutes    (connector,processor,logger),
-        new RacerRoutes             (connector,processor,logger),
-        new StageAnnexRoutes        (connector,processor,logger),
-        new StageRankingRoutes      (connector,processor,logger),
-        new VersionRoutes           (connector,processor,logger),
+        new CompetitionRoutes       (connector,processor,times,logger),
+        new ConfigurationRoutes     (connector,processor,times,logger),
+        new GeneralRankingRoutes    (connector,processor,times,logger),
+        new RacerRoutes             (connector,processor,times,logger),
+        new StageAnnexRoutes        (connector,processor,times,logger),
+        new StageRankingRoutes      (connector,processor,times,logger),
+        new VersionRoutes           (connector,processor,times,logger),
     ];
 
     const router = server.router;

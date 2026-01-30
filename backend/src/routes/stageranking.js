@@ -1,4 +1,3 @@
-
 import Route from "./route.js"
 
 export default class StageRanking extends Route {
@@ -22,7 +21,7 @@ export default class StageRanking extends Route {
 
             res.status(200).json({
                 stage: stageNumber,
-                results: results
+                results: results.map((r) => ({...r,time: this._time.formatHMS(r.time)}))
             });
 
         } catch (error) {
@@ -47,7 +46,7 @@ export default class StageRanking extends Route {
             const competition = await this._connector.getCompetition(compid);
             if (!competition){return res.status(404).json({status: "notfound", message: "Database not found for " + compid});}
             
-            const results = await this._processor.updateRankingForStage(competition.database,competition.raceId,stageNumber,data);
+            const results = await this._processor.updateRankingForStage(competition.database,competition.raceId,stageNumber,data.map((d) => ({...d, time:this._time.parseHMS(d.time)})));
 
             res.status(201).json({
                 status: "success",
