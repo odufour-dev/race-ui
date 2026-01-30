@@ -4,13 +4,29 @@ import DropdownEditor from './DropdownEditor';
 import TextEditor from './TextEditor';
 import ActionPanel from './ActionPanel';
 
-function RegistrationTable({ helper, dataModel, classificationModel, setData }) {
+function RegistrationTable({ helper, connector, competitionid, savebar }) {
 
-  const [editingCell, setEditingCell] = useState(null);
-  const [editValue, setEditValue] = useState('');
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [sortBy, setSortBy] = useState({ columnKey: null, direction: null });
-  const [filteredData, setFilteredData] = useState([]);
+  const [dataModel,     setDataModel]     = useState(null);
+  const [editingCell,   setEditingCell]   = useState(null);
+  const [editValue,     setEditValue]     = useState('');
+  const [globalFilter,  setGlobalFilter]  = useState('');
+  const [sortBy,        setSortBy]        = useState({ columnKey: null, direction: null });
+  const [filteredData,  setFilteredData]  = useState([]);
+  const [isDirty,       setIsDirty]       = useState(false);
+
+  const classificationModel = {
+    Level:    ['elite','open','access'],
+    Category: ['pro','elite','open1','open2','open3','access1','access2','access3','access4'],
+    Age:      ['senior','master','veteran','u23','u19','u17','u15','u13','u11','u9','u7'],
+    Sex:      ['H','F']
+  }
+  useEffect(() => {
+      connector.fetchRacers(competitionid)
+          .then(manager => {
+              setDataModel(manager);
+          })
+          .catch(err => console.error(err));
+  }, [competitionid, connector]);
 
   const columnDefs = useMemo(() => [
     { accessorKey: 'id',        header: helper.translator('columns.bib'),      enableSorting: true,  enableEditing: true, allowedValues: null, size: 'small' },
@@ -67,20 +83,26 @@ function RegistrationTable({ helper, dataModel, classificationModel, setData }) 
 
   const editProperty = (rowIndex, columnKey, newValue) => {
     setEditValue(newValue);
-    setData(dataModel.edit(rowIndex,columnKey,newValue));
+    if (dataModel){
+      setDataModel(dataModel.edit(rowIndex,columnKey,newValue));
+    }
   };
 
   const addRacer = () => {
-    // Append a new racer via the dataModel and return the new index
-    const result = dataModel.add([]);
-    setData(result);
-    // Try to determine the new index from dataModel.getAll() if available
-    const all = typeof dataModel.getAll === 'function' ? dataModel.getAll() : (Array.isArray(result) ? result : []);
-    return Math.max(0, all.length - 1);
+    if (dataModel){
+      // Append a new racer via the dataModel and return the new index
+      const result = dataModel.add([]);
+      setDataModel(result);
+      // Try to determine the new index from dataModel.getAll() if available
+      const all = typeof dataModel.getAll === 'function' ? dataModel.getAll() : (Array.isArray(result) ? result : []);
+      return Math.max(0, all.length - 1);
+    }
   }
 
   const removeRacer = (index) => {
-    setData(dataModel.remove(index));
+    if (dataModel){
+      setDataModel(dataModel.remove(index));
+    }
   }
 
   const columns = useMemo(() =>
@@ -108,14 +130,15 @@ function RegistrationTable({ helper, dataModel, classificationModel, setData }) 
   );
 
   useEffect(() => {
+    const data = dataModel ? dataModel.getAll() : [];
     if (globalFilter){
-      setFilteredData(dataModel.getAll().filter(row =>
+      setFilteredData(data.filter(row =>
         Object.values(row).some(val =>
           String(val || '').toLowerCase().includes(globalFilter.toLowerCase())
         )
       ))
     } else {
-      setFilteredData(dataModel.getAll());
+      setFilteredData(data);
     }
     
   }, [dataModel, globalFilter])
@@ -134,8 +157,10 @@ function RegistrationTable({ helper, dataModel, classificationModel, setData }) 
 
   // Action handlers for panel
   const generateBibs = () => {
-    dataModel.generateIds();
-    setData(dataModel);
+    if (dataModel){
+      dataModel.generateIds();
+      setDataModel(dataModel);
+    }
   };
 
   const applyAgeToAll = (age) => {
@@ -143,12 +168,21 @@ function RegistrationTable({ helper, dataModel, classificationModel, setData }) 
   };
 
   const shuffleOrder = () => {
-    dataModel.shuffleRacers();
-    setData(dataModel);
+    if (dataModel){
+      dataModel.shuffleRacers();
+      setDataModel(dataModel);
+    }
   };
+
+  const saveCallback = async () => {
+        // const jsondata = data.upd = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
+        // await connector.saveStageRanking(competitionid, stage, jsondata);
+        setIsDirty(false);
+    };
 
   return (
     <>
+      {savebar(isDirty,saveCallback)}
       <div className="table-bg">
         <div className="table-container">
           <h3 className="text-3xl font-bold text-blue-700 mb-8 text-center">

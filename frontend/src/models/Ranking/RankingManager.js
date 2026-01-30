@@ -80,6 +80,51 @@ export class RankingManager {
 
   }
 
+  computeTimeRanking() {
+    return this.#ranking
+      .filter(item => item.stage === this.#stage)
+      .filter(item => item.status === "done")
+      .map(item => ({
+          bib:        Number(item.bib),
+          position:   Number(item.position),
+          time:       Number(item.time),
+      }))
+      .sort((a, b) => a.position - b.position);
+  }
+
+  computeBibStatus() {
+      return this.#ranking
+          .filter(item => item.stage === this.#stage)
+          .map(item => ({
+              bib: Number(item.bib),
+              status: item.status || "unknown",
+          }))
+          .sort((a, b) => {
+              const aNum = Number(a.bib);
+              const bNum = Number(b.bib);
+              return aNum - bNum;
+          });
+    };
+
+  fromJSON(data){
+    const ranking = data.results.map((r) => {
+      const rec = new TimingRecord();
+      rec.update(r);
+      return rec;
+    });
+    return new RankingManager(ranking, this.#stage);
+  }
+
+  toJSON(){
+    return this.#ranking.map((r) => ({
+        bib:        r.bib, 
+        rank:       r.position, 
+        status:     r.status, 
+        time:       r.timeHMS, 
+        //millisecs:  r.millisecs
+      }));
+  }
+
   update(ranking){
 
     // Make sure that each ranking element is a TimingRecord
@@ -92,6 +137,23 @@ export class RankingManager {
     return new RankingManager(ranking, this.#stage);
 
   }
+
+  updateFromRankingAndStatus(timeRanking, bibsStatus) {
+      // Create a map of timeRanking for O(1) lookup
+      const timeRankingMap = new Map(timeRanking.map(t => [t.bib, t]));
+
+      // Merge timeRanking and bibsStatus
+      const merged = bibsStatus.map(bib => {
+          const timeData = timeRankingMap.get(bib.bib);
+          return {
+              bib:      bib.bib,
+              status:   bib.status,
+              position: timeData ? timeData.position : null,
+              time:     timeData ? timeData.time : null,
+          };
+      });
+      return this.update(merged);
+    };
 
   #sort(a,b){
     // If final status is not done, consider that racer does not finish => go to the end
@@ -110,4 +172,9 @@ export class RankingManager {
     else {return a.lastposition - b.lastposition;}
   }
 
+}
+
+export function createRankingManagerFromJSON(data, stage){
+  const manager = new RankingManager([], stage);
+  return manager.fromJSON(data);
 }

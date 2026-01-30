@@ -4,8 +4,9 @@ export class Event extends Model {
 
   static initialize(sequelize){
     return super.init({
+        stageId: DataTypes.INTEGER,
         annexId: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allowNull: true
         },
         name: DataTypes.STRING,

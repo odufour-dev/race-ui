@@ -28,19 +28,18 @@ export default class StageRanking extends Route {
                 order: [['rank', 'ASC']]
             });
 
-            if (stageResults.length === 0) {
-                return res.status(404).json({status: "notfound", message: "No results found for stage " + stageNumber});
-            }
+            // if (stageResults.length === 0) {
+            //     return res.status(404).json({status: "notfound", message: "No results found for stage " + stageNumber});
+            // }
 
             // Get all registrations to map bib to racer
             const registrations = await db.models.registration.findAll({
                 where: { raceId: raceId }
             });
-            const registrationMap = new Map(registrations.map(reg => [reg.bib, reg]));
+            const registrationMap = new Map(registrations.map(reg => [reg.racerId, reg]));
 
             // Get all racers
             const racers = await db.models.racer.findAll();
-            const racerMap = new Map(racers.map(r => [r.id, r]));
 
             // Get the stage definition to find finish line distance
             const stage = await db.models.stage.findOne({
@@ -63,41 +62,46 @@ export default class StageRanking extends Route {
                 }
             }
 
+            // Helper function to get status from closest previous stage
+            const getStatusFromPreviousStage = async (bib) => {
+                const prevResult = await db.models.stageresult.findOne({
+                    where: { stage: stageNumber-1, bib: bib }
+                });
+                if (prevResult && prevResult.status) {
+                    return prevResult.status;
+                }
+                return 'unknown';
+            };
+
             // Build response with racer info and bonifications
-            const results = stageResults.map(result => {
-                const registration = registrationMap.get(result.bib);
-                const racer = registration ? racerMap.get(registration.racerId) : null;
-
-                const resultObj = {
-                    bib:    result.bib,
-                    rank:   result.rank,
-                    status: result.status,
-                    time:   result.time,
-                    millis: result.millis
+            const results = await Promise.all(racers.map(async (r) => {
+                const bib = registrationMap.get(r.id).bib;
+                const res = stageResults.find((sr) => sr.bib === bib);
+                let status = res ? res.status : null;
+                
+                // If no result for this stage, get status from closest previous stage
+                if (!status) {
+                    const prevStatus = await getStatusFromPreviousStage(bib);
+                    if (prevStatus == "done"){status = "unknown"}
+                    else {status = "abs"}
+                }
+                
+                const bonifications = (res && finishBonifications.length > 0 && res.rank > 0 && res.rank <= finishBonifications.length) ? finishBonifications[res.rank-1] : null;
+                return {
+                    bib:            bib,
+                    firstName:      r.firstName,
+                    lastName:       r.lastName,
+                    team:           r.team,
+                    category:       r.category,
+                    ffcID:          r.ffcID,
+                    uciID:          r.uciID,
+                    rank:           res ? res.rank : 0,
+                    status:         status,
+                    time:           res ? res.time : 0,
+                    millis:         res ? res.millis : 0,
+                    bonification:   bonifications
                 };
-
-                // Add bonifications if available
-                if (finishBonifications.length > 0 && result.rank > 0 && result.rank <= finishBonifications.length) {
-                    resultObj.bonification = finishBonifications[result.rank-1]
-                } else {
-                    resultObj.bonification = null;
-                }
-
-                // Add racer information if available
-                if (racer) {
-                    resultObj.racer = {
-                        firstName: racer.firstName,
-                        lastName: racer.lastName,
-                        team: racer.team,
-                        category: racer.category,
-                        ffcID: racer.ffcID,
-                        uciID: racer.uciID,
-                        sex: racer.sex
-                    };
-                }
-
-                return resultObj;
-            });
+            }));
 
             res.status(200).json({
                 stage: stageNumber,

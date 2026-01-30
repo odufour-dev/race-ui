@@ -1,63 +1,89 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import './EventSettings.css';
 import { AnnexItemFactory } from './AnnexItemFactory';
 
 /**
  * EventSettings
- * Props:
- * - settings: the RaceModel instance (mutated directly when Apply is clicked)
- * - onApply?: optional callback(settings) called after applying settings
- * - onCancel?: optional callback() called when user cancels
  */
-export default function EventSettings({ helper, settings, annexRanking, onApply }) {
+export default function EventSettings({ helper, connector, competitionid, savebar }) {
   
   // Use safe defaults so inputs never receive `undefined` which causes
   // React's controlled -> uncontrolled warning.
-  const [ evtSettings, setEvtSettings ]     = useState( settings );
-  const [ annexType, setAnnexType ]         = useState( annexRanking.list[0] );
+  const [ raceManager, setRaceManager ]     = useState( {} );
+  const [ annexType, setAnnexType ]         = useState( "" );
+  const [ isDirty, setIsDirty ]             = useState( false );
   
-  useEffect(() => { onApply && onApply( evtSettings ) }, [ evtSettings ]);
+  // Store the last saved state to compare with current state
+  const lastSavedStateRef = useRef(null);
+  
+  useEffect(() => {
+      connector.fetchConfiguration(competitionid)
+          .then(manager => {
+              setRaceManager(manager);
+              setAnnexType(manager.annexTypes[0]);              
+              lastSavedStateRef.current = manager.toJSON();
+              setIsDirty(false);
+          })
+          .catch(err => console.error(err));
+  }, [competitionid, connector]);
+
+  useEffect(() => {
+      const savedState    = lastSavedStateRef.current;  
+      const currentState  = raceManager.toJSON ? raceManager.toJSON() : {};
+      
+      console.log(JSON.stringify(currentState),JSON.stringify(savedState));
+      if (savedState) {
+          setIsDirty(JSON.stringify(currentState) !== JSON.stringify(savedState));
+      }
+  }, [raceManager]);
+
+  const saveCallback = async () => {
+        const jsondata = raceManager.toJSON();
+        await connector.saveConfiguration(competitionid, jsondata);
+        lastSavedStateRef.current = jsondata;
+        setIsDirty(false);
+    };
 
   return (
     <div className="event-settings">
       <h2>{helper.translator("event.settings.title")}</h2>
-
+      {savebar(isDirty,saveCallback)}
       <div className="field">
         <label>{helper.translator("event.settings.nstages")}</label>
         <div className="stage-list">
-          {evtSettings.stages.length === 0 && <div className="muted">{helper.translator("event.settings.nostage")}</div>}
-          {(evtSettings.stages || []).map((s, idx) => (
+          {(!raceManager.stages || raceManager.stages.length === 0) && <div className="muted">{helper.translator("event.settings.nostage")}</div>}
+          {(raceManager.stages || []).map((s, idx) => (
             <AnnexItemFactory
               type="stage"
               helper={helper}
               data={s}
-              onApply={ (stage) => setEvtSettings(evtSettings.update({stages: evtSettings.stages.map((stg) => stg.id === s.id ? stage : stg)})) }
-              onRemove={() => setEvtSettings(evtSettings.update({stages: evtSettings.stages.filter((_,i) => i != idx)}))}
+              onApply={ (stage) => setRaceManager(raceManager.update({stages: raceManager.stages.map((stg) => stg.id === s.id ? stage : stg)})) }
+              onRemove={() => setRaceManager(raceManager.update({stages: raceManager.stages.filter((_,i) => i != idx)}))}
             />
           ))}
         </div>
         <div className="stage-actions">
-          <button type="button" className="btn" onClick={() => setEvtSettings( evtSettings.addStage() )}>{helper.translator("event.settings.addstage")}</button>
+          <button type="button" className="btn" onClick={() => setRaceManager( raceManager.addStage() )}>{helper.translator("event.settings.addstage")}</button>
         </div>
       </div>
 
       <div className="field">
         <label>{helper.translator("event.settings.annexrankings")}</label>
         <div className="annex-list">
-          {evtSettings.annexRankings.length === 0 && <div className="muted">{helper.translator("event.settings.noannexranking")}</div>}
-          {(evtSettings.annexRankings || []).map((data) => (
+          {(!raceManager.annexRankings || raceManager.annexRankings.length === 0) && <div className="muted">{helper.translator("event.settings.noannexranking")}</div>}
+          {(raceManager.annexRankings || []).map((data) => (
             <AnnexItemFactory 
               type={data.type}
               helper={helper}
               data={data}
-              onApply={ (annex) => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.map((r) => r.id === data.id ? annex : r)})) }
-              onRemove={ () => setEvtSettings(evtSettings.update({annexRankings: evtSettings.annexRankings.filter((r) => r.id != data.id)})) } 
+              onApply={ (annex) => setRaceManager(raceManager.update({annexRankings: raceManager.annexRankings.map((r) => r.id === data.id ? annex : r)})) }
+              onRemove={ () => setRaceManager(raceManager.update({annexRankings: raceManager.annexRankings.filter((r) => r.id != data.id)})) } 
             />
           ))}          
           <div className="annex-actions">
             <select value={annexType} onChange={e => setAnnexType(e.target.value)}>
             {
-              annexRanking.list.map((t) => (
+              (raceManager.annexTypes || []).map((t) => (
                 <option key={t} value={t}>{helper.translator("event.settings.annex.type." + t)}</option>
               ))
             }
@@ -65,7 +91,7 @@ export default function EventSettings({ helper, settings, annexRanking, onApply 
             <button 
               type="button" 
               className="btn" 
-              onClick={() => setEvtSettings( evtSettings.addAnnexRanking(annexRanking.build(annexType,evtSettings.annexRankings.length + 1)) )}
+              onClick={() => setRaceManager( raceManager.addAnnexRanking(annexType) )}
             >{helper.translator("event.settings.addannexranking")}</button>
           </div>
         </div>

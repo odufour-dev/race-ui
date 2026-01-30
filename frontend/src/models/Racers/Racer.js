@@ -67,7 +67,7 @@ export class Racer {
     }
     if ("id" in values){
       data.#id = values.id;
-    }
+    } 
     if ("lastName" in values){
       data.#lastname = values.lastName;
     }

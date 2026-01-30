@@ -1,4 +1,7 @@
-import { RaceModel } from "./RaceModel";
+import { createNavigationFromJSON }     from "./Navigation/Navigation";
+import { createRankingManagerFromJSON } from "./Ranking/RankingManager";
+import { createRaceManagerFromJSON }    from "./Race/RaceManager";
+import { createRacerManagerFromJSON }   from "./Racers/RacerManager";
 
 export class RaceConnector {
 
@@ -53,64 +56,99 @@ export class RaceConnector {
 
   }
 
-  async fetchCompetition(competitionid) {
+  async fetchConfiguration(competitionid){
 
     try {
-
-      if (competitionid){
-        const response = await fetch(`${this.#baseurl}/competitions/${competitionid}`);
-        if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-        const data = await response.json();
-        console.log(data);
-      }
-      /*
-      const response = await fetch(`${this.baseUrl}/all`);
-      if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-      
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/configuration`);
+      if (!response.ok) throw new Error(`Error while fetching the configuration for ${competitionid}`);
       const data = await response.json();
-
-      // 1. Reconstitution des Managers à partir du JSON (Hydratation)
-      // On suppose que chaque Manager a une méthode statique .fromObject()
-      const racers = RacerManager.fromObject(data.racers);
-      const race = RaceManager.fromObject(data.race);
-      
-      // Pour le ranking, on peut avoir besoin de traiter le tableau reçu
-      const ranking = RankingManager.fromObject(data.rankings);
-
-      // 2. Création du modèle complet
-      return new RaceModel(racers, undefined, undefined, race, ranking);
-      */
-      return new RaceModel();
+      return createRaceManagerFromJSON(data);
     } catch (error) {
-      console.error("RaceConnector Error:", error);
+      this.#logger.error("RaceConnector Error:", error);
       throw error;
     }
+
   }
 
+  async fetchNavigation(competitionid){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/configuration`);
+      if (!response.ok) throw new Error(`Error while fetching the configuration for ${competitionid}`);
+      const data = await response.json();
+      return createNavigationFromJSON(data);
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
+  async fetchRacers(competitionid){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/racers`);
+      if (!response.ok) throw new Error(`Error while fetching the racers for ${competitionid}`);
+      const data = await response.json();
+      return createRacerManagerFromJSON(data);
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
+  async fetchStageRanking(competitionid, stageId) {
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/stages/${stageId}/rankings`);
+      if (!response.ok) throw new Error("Error while fetching the stage ranking");
+      const data = await response.json();
+      return createRankingManagerFromJSON(data);
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
+  async saveConfiguration(competitionid, configData){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/configuration`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(configData)
+      });
+      if (!response.ok) throw new Error("Error while saving the configuration");
+      return await response.json();
+    }
+    catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
+  async saveStageRanking(competitionid, stageId, rankingData) {
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/stages/${stageId}/rankings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(rankingData)
+      });
+      if (!response.ok) throw new Error("Error while saving the stage ranking");
+      return await response.json();
+    }
+    catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+  
     /*
-  async fetchFullModel() {
-    try {
-      const response = await fetch(`${this.baseUrl}/all`);
-      if (!response.ok) throw new Error("Erreur lors du chargement de la compétition");
-      
-      const data = await response.json();
-
-      // 1. Reconstitution des Managers à partir du JSON (Hydratation)
-      // On suppose que chaque Manager a une méthode statique .fromObject()
-      const racers = RacerManager.fromObject(data.racers);
-      const race = RaceManager.fromObject(data.race);
-      
-      // Pour le ranking, on peut avoir besoin de traiter le tableau reçu
-      const ranking = RankingManager.fromObject(data.rankings);
-
-      // 2. Création du modèle complet
-      return new RaceModel(racers, undefined, undefined, race, ranking);
-    } catch (error) {
-      console.error("RaceConnector Error:", error);
-      throw error;
-    }
-  }
-
   async syncRacers(racerManager) {
     const data = racerManager.getAll().map(r => r.toObject());
     return this._post(`${this.baseUrl}/racers/sync`, { racers: data });

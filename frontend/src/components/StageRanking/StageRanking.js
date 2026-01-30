@@ -1,37 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import TimeRankingTable from './TimeRankingTable/TimeRankingTable';
 import Grid from './Grid/Grid';
 
 import './StageRanking.css';
 
-export default function StageRanking({ data = [], helper, onChange }) {
+export default function StageRanking({ competitionid, stage, connector, helper, savebar }) {
 
     //
     // --- FUNCTIONS PURES (sans mutation) ---
     //
-
-    const computeBibStatus = useCallback((data) => {
-        return data
-            .map(item => ({
-                bib: Number(item.bib),
-                status: item.status || "unknown",
-            }))
-            .sort((a, b) => {
-                const aNum = Number(a.bib);
-                const bNum = Number(b.bib);
-                return aNum - bNum;
-            });
-    }, []);
-
-    const computeTimeRanking = useCallback((data) => {
-        return data
-            .filter(item => item.status === "done")
-            .map(item => ({
-                ...item,
-                bib: Number(item.bib),
-            }))
-            .sort((a, b) => a.position - b.position);
-    }, []);
 
     const computeUpdatedBibStatus = useCallback((prevBibs, timeRanking) => {
         // On compte les occurrences de chaque bib dans le timeRanking
@@ -83,29 +60,42 @@ export default function StageRanking({ data = [], helper, onChange }) {
         return [...updated, ...newBibs].sort((a, b) => a.bib - b.bib);
     }, []);
 
-    const computeRankingOutput = useCallback((data, timeRanking, bibsStatus) => {
-        return data.map(d => {
-            const bib = Number(d.bib);
-
-            const tr = timeRanking.find(t => Number(t.bib) === bib);
-            const bs = bibsStatus.find(b => b.bib === bib);
-
-            return {
-                ...d,
-                bib,
-                position: tr ? tr.position : null,
-                time: tr ? tr.time : null,
-                status: bs ? bs.status : "unknown",
-            };
-        });
-    }, []);
-
     //
     // --- STATE ---
     //
 
-    const [timeRanking, setTimeRanking] = useState(() => computeTimeRanking(data));
-    const [bibsStatus, setBibsStatus] = useState(() => computeBibStatus(data));
+    const [data,        setData]        = useState([]);
+    const [timeRanking, setTimeRanking] = useState([]);
+    const [bibsStatus,  setBibsStatus]  = useState([]);
+    const [isDirty,     setIsDirty]     = useState(false);
+    
+    // Store the last saved state to compare with current state
+    const lastSavedStateRef = useRef(null);
+
+    // Update the data by querying the model when competitionid or stage change
+    useEffect(() => {
+        connector.fetchStageRanking(competitionid, stage)
+            .then(manager => {
+                setData(manager);
+                setTimeRanking(manager.computeTimeRanking());
+                setBibsStatus(manager.computeBibStatus());
+                // Initialize saved state
+                lastSavedStateRef.current = { timeRanking: manager.computeTimeRanking(), bibsStatus: manager.computeBibStatus() };
+                setIsDirty(false);
+            })
+            .catch(err => console.error(err));
+    }, [competitionid, stage, connector]);
+
+    // Track unsaved changes
+    useEffect(() => {
+        const savedState = lastSavedStateRef.current;
+        if (savedState) {
+            const timeRankingChanged = JSON.stringify(timeRanking) !== JSON.stringify(savedState.timeRanking);
+            const bibsStatusChanged  = JSON.stringify(bibsStatus)  !== JSON.stringify(savedState.bibsStatus);
+            
+            setIsDirty(timeRankingChanged || bibsStatusChanged);
+        }
+    }, [timeRanking, bibsStatus]);
 
     //
     // --- HANDLERS ---
@@ -114,19 +104,19 @@ export default function StageRanking({ data = [], helper, onChange }) {
     // Changement manuel des statuts (grid)
     const handleBibStatusChange = (newBibsStatus) => {
         setBibsStatus(newBibsStatus);
-        const updated = computeRankingOutput(data, timeRanking, newBibsStatus);
-        onChange(updated);
     };
 
     // Changement du classement (table)
     const handleTimeRankingChange = (newTimeRanking) => {
         setTimeRanking(newTimeRanking);
-        setBibsStatus(prev => {
-            const updatedBibs = computeUpdatedBibStatus(prev, newTimeRanking);
-            const updatedRanking = computeRankingOutput(data, newTimeRanking, updatedBibs);
-            onChange(updatedRanking);
-            return updatedBibs;
-        });
+        setBibsStatus(prevBibsStatus => computeUpdatedBibStatus(prevBibsStatus, newTimeRanking));
+    };
+
+    // Save changes (backend call will be added here)
+    const saveCallback = async () => {
+        const jsondata = data.updateFromRankingAndStatus(timeRanking, bibsStatus).toJSON();
+        await connector.saveStageRanking(competitionid, stage, jsondata);
+        setIsDirty(false);
     };
 
     //
@@ -135,6 +125,7 @@ export default function StageRanking({ data = [], helper, onChange }) {
 
     return (
         <div>
+            {savebar(isDirty,saveCallback)}
             <Grid data={bibsStatus} onChange={handleBibStatusChange} />
             <TimeRankingTable
                 data={timeRanking}

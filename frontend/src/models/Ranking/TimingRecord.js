@@ -22,6 +22,7 @@ export class TimingRecord {
   get stage()           {return this.#stage;      }
   get status()          {return this.#status;     }
   get time()            {return this.#time;       }
+  get timeHMS()         {return this.#formatHMS(this.#time);}
   get millisecs()       {return this.#millisecs;  }
 
   set bib(value)        {this.#bib        = Number(value);}
@@ -35,6 +36,7 @@ export class TimingRecord {
 
   update(data){
     if ("bib"       in data){this.bib        = data.bib;       }
+    if ("rank"      in data){this.position   = data.rank;      }
     if ("position"  in data){this.position   = data.position;  }
     if ("stage"     in data){this.stage      = data.stage;     }
     if ("status"    in data){this.status     = data.status;    }
@@ -67,5 +69,17 @@ export class TimingRecord {
       }
       return null;
   }
+
+  #formatHMS(secs) {
+        const s = Number(secs) || 0;
+        const abs = Math.max(0, Math.floor(s));
+        const h = Math.floor(abs / 3600);
+        const m = Math.floor((abs % 3600) / 60);
+        const sec = abs % 60;
+        const hh = String(h).padStart(2, '0');
+        const mm = String(m).padStart(2, '0');
+        const ss = String(sec).padStart(2, '0');
+        return `${hh}:${mm}:${ss}`;
+    }
 
 }

@@ -37,4 +37,13 @@ export class Stage {
         return this.clone();
     }
 
+    toJSON(){
+        return {id: this.#id, name: this.#name, date: this.#date, distance: this.#distance};
+    }
+
+}
+
+export function createStageFromJSON(jsondata){
+    const stage = new Stage();
+    return stage.update(jsondata);
 }

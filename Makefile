@@ -40,6 +40,11 @@ test-back:
 lint-back:
 	docker run --rm --name=ui-test -v "$(PWD)/backend:/app/backend" -v /app/backend/node_modules -w /app/backend -e CI=true $(IMAGE)-dev npm run lint
 
+# Export competition data
+# Usage: COMPETITION=tour_de_france_2026 make export-competition
+export-competition:
+	docker run --name export-competition --rm --net=host -v "$(PWD)/exports:/app/exports" -v "$(PWD)/backend:/app/backend" -v /app/backend/node_modules -w /app/backend $(IMAGE)-dev node tools/export-competition.js $(COMPETITION)
+
 #
 # Production environment
 #

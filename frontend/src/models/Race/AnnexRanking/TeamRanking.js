@@ -2,22 +2,28 @@ import AnnexRanking from "./AnnexRanking"
 
 export class TeamRanking extends AnnexRanking {
 
+    #nracers
+
     constructor(id,type,title,priority,nracers = 3){
       super(id,type,title,priority)
-      this.nracers_ = nracers;
+      this.#nracers = nracers;
     }
 
-    get nracers(){return this.nracers_;}
+    get nracers(){return this.#nracers;}
 
     clone(){
-      return new TeamRanking(this.id_,this.type_,this.title_,this.priority_,this.nracers_);
+      return new TeamRanking(this._id,this._type,this._title,this._priority,this.#nracers);
+    }
+
+    toJSON(){
+      return {...super.toJSON(), nracers: this.#nracers};
     }
 
     update(settings){
       let data = this.clone();
       data.updateCommon(settings);
       if ("nracers" in settings){
-        data.nracers_ = settings.nracers;
+        data.#nracers = Number(settings.nracers);
       }
       return data;
     }
