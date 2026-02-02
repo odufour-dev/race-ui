@@ -112,6 +112,20 @@ export class RaceConnector {
 
   }
 
+  async fetchGeneralRanking(competitionid, stageId) {
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/stages/${stageId}/general`);
+      if (!response.ok) throw new Error("Error while fetching the general ranking");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
   async saveConfiguration(competitionid, configData){
 
     try {

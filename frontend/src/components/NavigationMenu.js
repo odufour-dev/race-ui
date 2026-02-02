@@ -33,8 +33,9 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
         return (props) => (
           <GeneralRanking
             {...props}
+            competitionid={competitionid}
             stage={stage}
-            data={raceModel.getGeneralRanking(stage)}
+            connector={connector}
             helper={helper}
           />
         );

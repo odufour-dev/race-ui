@@ -82,7 +82,7 @@ class Ranking {
                 uciID:          r.uciID,
                 rank:           res ? res.rank : 0,
                 status:         status,
-                time:           res ? res : 0,
+                time:           res ? res.time : 0,
                 millis:         res ? res.millis : 0,
                 bonification:   bonifications ?? 0
             };
