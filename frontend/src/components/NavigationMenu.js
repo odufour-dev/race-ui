@@ -14,6 +14,7 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
 
     const createStageComponent = useCallback(
       (stage) => {
+        // eslint-disable-next-line react/display-name
         return (props) => (
           <StageRanking
             {...props}
@@ -30,6 +31,7 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
 
     const createGeneralComponent = useCallback(
       (stage) => {
+        // eslint-disable-next-line react/display-name
         return (props) => (
           <GeneralRanking
             {...props}
@@ -52,12 +54,12 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
         const navRacerRegistration = model.addItem('registration', helper.translator('navigation.registration'), 20, (props) => (
             <RegistrationTable {...props} helper={helper} connector={connector} competitionid={competitionid} savebar={(hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />)} />
             ));
-        const navRacerImport = model.addItem('import', helper.translator('navigation.import'), 10, (props) => (
+        /*const navRacerImport = model.addItem('import', helper.translator('navigation.import'), 10, (props) => (
             <ExcelReader {...props} helper={helper} dataModel={raceModel.Racers} updateData={(racerManager) => setRaceModel(raceModel.updateRacerManager(racerManager))} />
-            ));
+            ));*/
 
         const navEventGroup  = model.addGroup('event',  helper.translator('navigation.event'),  0, [navEventConfiguration]);
-        const navRacersGroup = model.addGroup('racers', helper.translator('navigation.racers'), 1, [navRacerImport, navRacerRegistration]);
+        const navRacersGroup = model.addGroup('racers', helper.translator('navigation.racers'), 1, [navRacerRegistration]);
 
         const baseNav = model.createRegistry([navEventGroup, navRacersGroup]);
         
