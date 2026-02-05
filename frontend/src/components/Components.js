@@ -1,10 +1,11 @@
 
 import EventSettings      from './EventSettings/EventSettings';
-import ExcelReader        from './ExcelReader/ExcelReader';
+//import ExcelReader        from './ExcelReader/ExcelReader';
 import GeneralRanking     from './GeneralRanking/GeneralRanking';
-import SynchronizationBar from './Synchronization/SynchronizationBar';
 import RegistrationTable  from './RegistrationTable/RegistrationTable';
+import StageConfiguration from './StageConfiguration/StageConfiguration';
 import StageRanking       from './StageRanking/StageRanking';
+import SynchronizationBar from './Synchronization/SynchronizationBar';
 
 class Component {
 
@@ -59,6 +60,18 @@ export async function createComponents({helper, connector, competitionid }){
 
     const saveBar = (hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />);
 
+    const createStageConfiguration = (stage) => {
+        return (helper,connector,competitionid) => (
+            <StageConfiguration
+            competitionid={competitionid}
+            stage={stage}
+            connector={connector}
+            helper={helper}
+            savebar={saveBar}
+            />
+        );
+    }
+
     const createStageRanking = (stage) => {
         return (helper,connector,competitionid) => (
             <StageRanking
@@ -105,6 +118,7 @@ export async function createComponents({helper, connector, competitionid }){
         ));
 
         for (let stage = 1; stage <= configuration.nStages; stage++) {
+            components.add("config-"    + stage,  createStageConfiguration(stage));
             components.add("ranking-"   + stage,  createStageRanking(stage));
             components.add("general-"   + stage,  createGeneralRanking(stage));
         }
