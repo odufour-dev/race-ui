@@ -5,7 +5,7 @@ import { useTranslation }                       from 'react-i18next';
 
 import APIConnection                            from './components/APIConnection/APIConnection';
 import { createComponents }                     from './components/Components';
-import { NavigationMenu }                       from './components/NavigationMenu';
+import { NavigationMenu }                       from './components/NavigationMenu/NavigationMenu';
 
 import { RaceConnector }                        from './models/RaceConnector';
 import { Metadata }                             from './models/Metadata/Metadata';

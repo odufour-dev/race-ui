@@ -45,7 +45,7 @@ class Components {
     }
 
     renderById(id,competitionid){
-        const comp = this.#components.find((c) => c.id === id);console.log(this.#components,comp);
+        const comp = this.#components.find((c) => c.id === id);
         if (comp){
             return comp.render(competitionid);
         } else {
