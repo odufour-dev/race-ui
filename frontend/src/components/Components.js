@@ -57,6 +57,8 @@ class Components {
 
 export async function createComponents({helper, connector, competitionid }){
 
+    const saveBar = (hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />);
+
     const createStageRanking = (stage) => {
         return (helper,connector,competitionid) => (
             <StageRanking
@@ -64,6 +66,7 @@ export async function createComponents({helper, connector, competitionid }){
             stage={stage}
             connector={connector}
             helper={helper}
+            savebar={saveBar}
             />
         );
     }
@@ -90,19 +93,19 @@ export async function createComponents({helper, connector, competitionid }){
                 helper={helper} 
                 connector={connector} 
                 competitionid={competitionid} 
-                savebar={(hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />)} />
+                savebar={saveBar} />
         ));
 
-        components.add("registration-table", (helper,connector,competitionid) => (
+        components.add("registration", (helper,connector,competitionid) => (
             <RegistrationTable 
                 helper={helper} 
                 connector={connector} 
                 competitionid={competitionid} 
-                savebar={(hasUnsavedChanges,onSave) => (<SynchronizationBar hasUnsavedChanges={hasUnsavedChanges} onSave={onSave} />)} />
+                savebar={saveBar} />
         ));
 
         for (let stage = 1; stage <= configuration.nStages; stage++) {
-            components.add("stage-"     + stage,  createStageRanking(stage));
+            components.add("ranking-"   + stage,  createStageRanking(stage));
             components.add("general-"   + stage,  createGeneralRanking(stage));
         }
 

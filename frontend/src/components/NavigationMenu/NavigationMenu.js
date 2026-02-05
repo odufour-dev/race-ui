@@ -14,9 +14,9 @@ export function NavigationMenu( {helper, connector, competitionid, onSelect}){
         ]},
         {id: "stages", title: helper.translator("navigation.stages"), items: model.stages.map((stage) => ({
             id: "stage-" + stage.id, title: stage.name, items: [
-              {id: "config-"  + stage.number, title: helper.translator("navigation.stageconfig")},
-              {id: "ranking-" + stage.number, title: helper.translator("navigation.stageranking")},
-              {id: "general-" + stage.number, title: helper.translator("navigation.stagegeneral")},
+              {id: "config-"  + stage.id, title: helper.translator("navigation.stageconfig")},
+              {id: "ranking-" + stage.id, title: helper.translator("navigation.stageranking")},
+              {id: "general-" + stage.id, title: helper.translator("navigation.stagegeneral")},
             ]
           }))
         }];

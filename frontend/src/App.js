@@ -47,8 +47,8 @@ function App() {
         <NavigationMenu helper={helper} connector={connector} competitionid={competitionid} onSelect={setSelectedItem}/>
       </div>
       <main style={{ flex: 1, overflow: 'auto', padding: '1rem' }}>
-        { components ? 
-            components.renderById("event-settings",competitionid) : 
+        { components && selectedItem && competitionid ? 
+            components.renderById(selectedItem,competitionid) : 
             (<div style={{ padding: '1rem', color: '#334155' }}>Select a view from the left navigation.</div>)
         }
       </main>

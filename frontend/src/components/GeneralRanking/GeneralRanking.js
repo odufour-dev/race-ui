@@ -30,7 +30,7 @@ export default function GeneralRanking({ competitionid, stage, connector, helper
               millisecs:    d.millis != null ? String(d.millis) : "",
               cumposition:  d.cumulated ? String(d.cumulated) : "",
               lastposition: d.rank ? String(d.rank) : ""
-            }));console.log(leaderboard)
+            }));
             setLeaderboard(leaderboard);
 
             const withdrawal = data.results.filter(d => (d.status !== 'done' && d.status !== 'unknown')).slice().map((d) => ({
