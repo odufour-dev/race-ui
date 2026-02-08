@@ -16,17 +16,16 @@ export default function StageConfiguration({ competitionid, stage, connector, he
         setIsDirty(false);
     };
 
-    /*
     useEffect(() => {
-          connector.fetchConfiguration(competitionid)
+          connector.fetchConfigurationForStage(competitionid, stage)
               .then(configuration => {
-                  setRaceManager(configuration);         
-                  lastSavedStateRef.current = configuration.toJSON();
-                  setIsDirty(false);
+                setEvents(configuration.events);         
+                lastSavedStateRef.current = configuration.events;
+                setIsDirty(false);
               })
               .catch(err => console.error(err));
       }, [competitionid, connector]);
-      */
+
     const types = ["Bonifications", "Points", "GPM"];
     const categories = ["1ere catégorie", "2ème catégorie", "3ème catégorie", "4ème catégorie"];
 
