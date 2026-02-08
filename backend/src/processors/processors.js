@@ -18,6 +18,11 @@ class Processors {
         return proc.getRankingForStage(stageid);
     }
 
+    async insertConfiguration(database,raceid,data){
+        const proc = createConfigurationProcessor(database,raceid);
+        return proc.insertConfiguration(data);
+    }
+
     async updateRankingForStage(database,raceid,stageid,data){
         const proc = createRankingProcessor(database,raceid);
         return proc.insertRankingForStage(stageid,data);

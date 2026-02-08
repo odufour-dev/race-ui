@@ -9,12 +9,13 @@ export class Event extends Model {
             type: DataTypes.STRING,
             allowNull: true
         },
+        category: DataTypes.STRING,
         name: DataTypes.STRING,
         values: {
             type: DataTypes.JSON
         },
         distance: DataTypes.INTEGER,
-        type: DataTypes.ENUM('annex', 'bonification')
+        type: DataTypes.ENUM('points', 'bonification')
     }, { sequelize, modelName: 'event',  tableName: 'event' });
   }
 
