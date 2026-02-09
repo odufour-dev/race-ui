@@ -23,8 +23,27 @@ class Configuration {
         
         // Get annexes
         const annexes = await this.#database.models.annex.findAll({
-            where: { raceId: this.#raceid }
+            where: { raceId: this.#raceid },
+            order: [['name', 'ASC'],['type', 'ASC'],['priority', 'ASC']],
         });
+
+        // Group annexes by name-type-priority
+        const groupedAnnex = annexes.reduce((acc, current) => {
+            const key = `${current.name}-${current.type}-${current.priority}`;
+            if (!acc[key]) {
+                acc[key] = {
+                    name:       current.name,
+                    type:       current.type,
+                    priority:   current.priority,
+                    categories: [],
+                    options:    []
+                };
+            }
+            if (current.category) acc[key].categories.push(current.category);
+            if (current.options)  acc[key].options.push(current.options);
+            return acc;
+        }, {});
+        const annex = Object.values(groupedAnnex);
         
         // Get events grouped by stage
         const events = await this.#database.models.event.findAll({
@@ -56,12 +75,7 @@ class Configuration {
                 ...s.dataValues,
                 events: eventsByStage[s.number]
             })),
-            annex: annexes.map(a => ({
-                name: a.name,
-                type: a.type,
-                priority: a.priority,
-                ...a.options
-            }))
+            annex: annex
         };
         return configuration;
 
@@ -128,7 +142,7 @@ class Configuration {
 
             const annexesToCreate = [];
             data.annex.map((item) => {
-                const common = {name: item.name, type: item.type, priority: item.priority ?? 0};
+                const common = {raceId: this.#raceid, name: item.name, type: item.type, priority: item.priority ?? 0};
                 if ("options" in item){
                     annexesToCreate.push({...common, options: item.options});
                 } else if ("categories" in item){

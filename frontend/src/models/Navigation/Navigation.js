@@ -1,11 +1,9 @@
 
 export class Navigation {
 
-    #annexrankings
     #stages
 
-    constructor(stages = [], annexrankings = []){
-        this.#annexrankings = annexrankings;
+    constructor(stages = []){
         this.#stages        = stages;
     }
 
@@ -14,5 +12,5 @@ export class Navigation {
 }
 
 export function createNavigationFromJSON(data){
-    return new Navigation(data.stages, data.annex);
+    return new Navigation(data.stages);
 }

@@ -5,6 +5,8 @@ export default function StageConfiguration({ competitionid, stage, connector, he
 
     const [ events, setEvents ] = useState( [] );
     const [ form,   setForm ]   = useState({ name: '', type: '', distance: '', category: '' });
+    const [ types,  setTypes ]  = useState( [] );
+    const [ categories, setCategories ] = useState(["1ere catégorie", "2ème catégorie", "3ème catégorie", "4ème catégorie"]);
 
     // Manage save
     const [ isDirty, setIsDirty ] = useState( false );
@@ -17,17 +19,30 @@ export default function StageConfiguration({ competitionid, stage, connector, he
     };
 
     useEffect(() => {
-          connector.fetchConfigurationForStage(competitionid, stage)
-              .then(configuration => {
-                setEvents(configuration.events);         
-                lastSavedStateRef.current = configuration.events;
-                setIsDirty(false);
-              })
-              .catch(err => console.error(err));
-      }, [competitionid, connector]);
+      const currenttype = types.filter(t => t.name === form.type);
+      setCategories(currenttype.length > 0 ? currenttype[0].categories : []);
+    }, [form,types]);
 
-    const types = ["Bonifications", "Points", "GPM"];
-    const categories = ["1ere catégorie", "2ème catégorie", "3ème catégorie", "4ème catégorie"];
+    useEffect(() => {
+        connector.fetchConfiguration(competitionid)
+            .then(configuration => {
+              const eventRankings = configuration.annexRankings.filter(a => a.type === "points");
+              const types = eventRankings.map(e => ({name: e.title, categories: e.categories}))
+              setTypes(types);
+              setForm({...form, type: types[0].name})
+            })
+            .catch(err => console.error(err));
+    }, [competitionid, connector]);
+
+    useEffect(() => {
+        connector.fetchConfigurationForStage(competitionid, stage)
+            .then(configuration => {
+              setEvents(configuration.events);         
+              lastSavedStateRef.current = configuration.events;
+              setIsDirty(false);
+            })
+            .catch(err => console.error(err));
+    }, [competitionid, connector]);
 
     const maxDistance = useMemo(() => {
         const distances = events.map(e => Number(e.distance));
@@ -147,7 +162,7 @@ export default function StageConfiguration({ competitionid, stage, connector, he
               </td>
               <td className="p-2">
                 <select className="w-full p-2 border rounded bg-white" value={form.type} onChange={e => setForm({...form, type: e.target.value})}>
-                  {types.map(t => <option key={t} value={t}>{t}</option>)}
+                  {types.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
                 </select>
               </td>
               <td className="p-2">
