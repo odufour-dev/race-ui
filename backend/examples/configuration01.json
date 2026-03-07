@@ -5,22 +5,21 @@
     {"name": "Etape 2", "distance": "120",    "date": "2026-07-14", "number": 2}
     ],
   "annex": [
-      {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","points": [5,3,1]}]},
-      {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","points": [5,3,1]},{"name": "cat2", "points": [3,1]}]},
-      {"name": "Jeunes",        "type": "filter",       "priority": 3, "filter": "age < 23"},
-      {"name": "Equipe",        "type": "team",         "priority": 4, "nracers": "2"}
+      {"name": "points",        "type": "points",       "priority": 1, "categories": [{"name": "sprint","values": [5,3,1]}]},
+      {"name": "GPM",           "type": "points",       "priority": 2, "categories": [{"name": "cat1","values": [5,3,1]},{"name": "cat2", "values": [3,1]}]},
+      {"name": "Jeunes",        "type": "filter",       "priority": 3, "options": "age < 23"},
+      {"name": "Equipe",        "type": "team",         "priority": 4, "options": "2"},
+      {"name": "Bonifications", "type": "bonification", "categories": [{"name": "intermediate", "values": [3,2,1]},{"name": "finish", "values": [10,6,4]}]}
     ],
   "event" : [
     {
       "stage": "Etape 1",
       "annex": [
-        {"name": "points", "category": "sprint",  "distance": 50.5,   "points": [5,3,1]},
-        {"name": "GPM",    "category": "cat1",    "distance": 62.4,   "points": [5,3,1]},
-        {"name": "points", "category": "sprint",  "distance": 100.4,  "points": [5,3,1]},
-        {"name": "GPM",    "category": "cat2",    "distance": 85.3,   "points": [3,1]}
-      ],
-      "bonification": [
-        {"name": "Arrivée", "distance": 150.1, "time": [10,6,4]}
+        {"name": "points",        "type": "points",       "category": "sprint",  "distance": 50.5,    "values": [5,3,1]},
+        {"name": "GPM",           "type": "points",       "category": "cat1",    "distance": 62.4,    "values": [5,3,1]},
+        {"name": "points",        "type": "points",       "category": "sprint",  "distance": 100.4,   "values": [5,3,1]},
+        {"name": "GPM",           "type": "points",       "category": "cat2",    "distance": 85.3,    "values": [3,1]},
+        {"name": "Bonifications", "type": "bonification", "category": "finish",  "distance": 150.1,   "values": [10,6,4]}
       ]
     }
   ]

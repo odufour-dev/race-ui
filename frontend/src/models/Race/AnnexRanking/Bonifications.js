@@ -1,21 +1,21 @@
 import AnnexRanking from "./AnnexRanking"
 
-export class PointsRanking extends AnnexRanking {
+export class Bonifications extends AnnexRanking {
 
   #categories
-  #points
+  #seconds
 
   get categories(){return this.#categories; }
-  get points(){ return this.#points; }
+  get seconds(){ return this.#seconds; }
 
   clone(){
-    return new PointsRanking(this._id,this._type,this._title,this._priority);
+    return new Bonifications(this._id,this._type,this._title,this._priority);
   }
 
   toJSON(){
     const categories = [];
     for (let i = 0; i < this.#categories.length; i++){
-      categories.push({name: this.#categories[i], points: this.#points[i]})
+      categories.push({name: this.#categories[i], time: this.#seconds[i]})
     }
       return {...super.toJSON(), categories: categories};
     }
@@ -30,7 +30,7 @@ export class PointsRanking extends AnnexRanking {
     }
 
     if ("options" in settings){
-      data.#points = settings.options;
+      data.#seconds = settings.options;
     }
 
     return data;

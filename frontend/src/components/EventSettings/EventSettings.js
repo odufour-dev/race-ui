@@ -31,7 +31,6 @@ export default function EventSettings({ helper, connector, competitionid, saveba
       const savedState    = lastSavedStateRef.current;  
       const currentState  = raceManager.toJSON ? raceManager.toJSON() : {};
       
-      console.log(JSON.stringify(currentState),JSON.stringify(savedState));
       if (savedState) {
           setIsDirty(JSON.stringify(currentState) !== JSON.stringify(savedState));
       }

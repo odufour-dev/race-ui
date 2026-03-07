@@ -1,4 +1,6 @@
-import { FilterRanking } from "./FilterRanking"
+
+import { Bonifications } from "./Bonifications";
+import { FilterRanking } from "./FilterRanking";
 import { PointsRanking } from "./PointsRanking";
 import { TeamRanking }   from "./TeamRanking";
 
@@ -8,9 +10,10 @@ export class AnnexRankingManager {
 
     constructor(){
         this.#mapping = {
-            "points":   (id) => new PointsRanking(id,   "points"),
-            "team":     (id) => new TeamRanking(id,     "team"),
-            "filter":   (id) => new FilterRanking(id,   "filter"),
+            "bonification": (id) => new Bonifications(id,   "points"),
+            "points":       (id) => new PointsRanking(id,   "points"),
+            "team":         (id) => new TeamRanking(id,     "team"),
+            "filter":       (id) => new FilterRanking(id,   "filter"),
         };
     }
 

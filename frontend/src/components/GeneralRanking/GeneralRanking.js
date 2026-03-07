@@ -1,53 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './GeneralRanking.css';
 
-export default function GeneralRanking({ data = [], helper }) {
+export default function GeneralRanking({ competitionid, stage, connector, helper }) {
  
-  const classification = data.filter(d => d.status === 'done').slice();
-  const leaderboard = classification.map((d,idx) => ({
-    position:     idx + 1,
-    bib:          String(d.bib),
-    time:         helper.time.formatHMS(d.time),
-    delay:        helper.time.formatMS(d.time - classification[0].time),
-    firstname:    d.firstname,
-    lastname:     d.lastname, 
-    sex:          d.sex,
-    club:         d.club,
-    category:     d.category,
-    age:          d.age > 0 ? String(d.age) : "",
-    ffcid:        d.ffcid,
-    uciid:        d.uciid,
-    millisecs:    d.millisecs != null ? String(d.millisecs) : "",
-    cumposition:  d.cumposition ? String(d.cumposition) : "",
-    lastposition: d.lastposition ? String(d.lastposition) : ""
-  }));
-  
-  const withdrawal = data.filter(d => (d.status !== 'done' && d.status !== 'unknown')).slice().map((d) => ({
-    bib:          String(d.bib),
-    status:       d.status,
-    stage:        d.stage != null ? d.stage : "",
-    firstname:    d.firstname,
-    lastname:     d.lastname,
-    sex:          d.sex,
-    club:         d.club,
-    category:     d.category,
-    age:          d.age > 0 ? String(d.age) : "",
-    ffcid:        d.ffcid,
-    uciid:        d.uciid,
-  }));
+  const [ leaderboard, setLeaderboard ] = useState([]);
+  const [ withdrawal, setWithdrawal ]   = useState([]);
+  const [ missing, setMissing ]         = useState([]);
 
-  const missing = data.filter(d => (d.status === 'unknown')).slice().map((d) => ({
-    bib:          String(d.bib),
-    firstname:    d.firstname,
-    lastname:     d.lastname,
-    sex:          d.sex,
-    club:         d.club,
-    category:     d.category,
-    age:          d.age > 0 ? String(d.age) : "",
-    ffcid:        d.ffcid,
-    uciid:        d.uciid,
-  }));
+  // Update the data by querying the model when competitionid or stage change
+  useEffect(() => {
+      connector.fetchGeneralRanking(competitionid, stage)
+          .then(data => {
+
+            const done = data.results.filter(d => (d.status === 'done' && d.stage === stage));
+            const leaderboard = done.map((d,idx) => ({
+              position:     idx + 1,
+              bib:          String(d.bib),
+              time:         d.time,
+              delay:        d.delay,
+              firstname:    d.firstName,
+              lastname:     d.lastName, 
+              sex:          d.sex,
+              club:         d.team,
+              category:     d.category,
+              age:          d.age > 0 ? String(d.age) : "",
+              ffcid:        d.ffcID,
+              uciid:        d.uciID,
+              millisecs:    d.millis != null ? String(d.millis) : "",
+              cumposition:  d.cumulated ? String(d.cumulated) : "",
+              lastposition: d.rank ? String(d.rank) : ""
+            }));
+            setLeaderboard(leaderboard);
+
+            const withdrawal = data.results.filter(d => (d.status !== 'done' && d.status !== 'unknown')).slice().map((d) => ({
+              bib:          String(d.bib),
+              status:       d.status,
+              stage:        d.stage != null ? d.stage : "",
+              firstname:    d.firstName,
+              lastname:     d.lastName,
+              sex:          d.sex,
+              club:         d.team,
+              category:     d.category,
+              age:          d.age > 0 ? String(d.age) : "",
+              ffcid:        d.ffcID,
+              uciid:        d.uciID,
+            }));
+            setWithdrawal(withdrawal);
+
+            const missing = data.results.filter(d => (d.status === 'unknown' || (d.status === 'done' && d.stage < stage))).slice().map((d) => ({
+              bib:          String(d.bib),
+              firstname:    d.firstName,
+              lastname:     d.lastName,
+              sex:          d.sex,
+              club:         d.team,
+              category:     d.category,
+              age:          d.age > 0 ? String(d.age) : "",
+              ffcid:        d.ffcID,
+              uciid:        d.uciID,
+            }));
+            setMissing(missing);
+
+          })
+          .catch(err => console.error(err));
+  }, [competitionid, stage, connector]);
 
   return (
     <div className="general-ranking">

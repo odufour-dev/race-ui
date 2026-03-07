@@ -52,6 +52,20 @@ class Connector {
         return false;
     }
 
+    async getCompetition(compid){
+
+        if (!this.isDatabaseExists(compid)){
+            return null;
+        }
+
+        const race      = await this.master.findCompetition(compid);
+        const raceId    = race.id;
+        const database  = await this.getDatabase(compid);
+
+        return {database, raceId};
+
+    }
+
     async getDatabase(id,name=null){ 
 
         id = this.#files.basename(id);

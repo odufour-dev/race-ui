@@ -70,6 +70,20 @@ export class RaceConnector {
 
   }
 
+  async fetchConfigurationForStage(competitionid,stageid){
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/configuration`);
+      if (!response.ok) throw new Error(`Error while fetching the configuration for ${competitionid}`);
+      const data = await response.json();
+      return ("stages" in data) ? data.stages.filter(s => s.id == stageid)[0] : null;
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
   async fetchNavigation(competitionid){
 
     try {
@@ -105,6 +119,20 @@ export class RaceConnector {
       if (!response.ok) throw new Error("Error while fetching the stage ranking");
       const data = await response.json();
       return createRankingManagerFromJSON(data);
+    } catch (error) {
+      this.#logger.error("RaceConnector Error:", error);
+      throw error;
+    }
+
+  }
+
+  async fetchGeneralRanking(competitionid, stageId) {
+
+    try {
+      const response = await fetch(`${this.#baseurl}/competitions/${competitionid}/stages/${stageId}/general`);
+      if (!response.ok) throw new Error("Error while fetching the general ranking");
+      const data = await response.json();
+      return data;
     } catch (error) {
       this.#logger.error("RaceConnector Error:", error);
       throw error;
