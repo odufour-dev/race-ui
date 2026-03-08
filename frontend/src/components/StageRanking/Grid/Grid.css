@@ -28,22 +28,24 @@
 
 /* DNF - Do not finish */
 .status-dnf::after {
-  content: "";
+  content: "DNF";
   position: absolute;
   width: 100%;
   height: 2px;
-  background: red;
-  transform: rotate(45deg);
+  color: orange;
+  /*background: red;
+  transform: rotate(45deg);*/
 }
 
 /* DNS - Do Not Start */
 .status-dns::after {
-  content: "";
+  content: "DNS";
   position: absolute;
   width: 100%;
   height: 2px;
-  background: red;
-  transform: rotate(-45deg);
+  color: red;
+  /*background: red;
+  transform: rotate(-45deg);*/
 }
 
 /* Done */
