@@ -67,7 +67,7 @@ class Ranking {
             // If no result for this stage, get status from closest previous stage
             if (!status) {
                 const prevStatus = await getStatusFromPreviousStage(bib);
-                if (prevStatus == "done"){status = "unknown"}
+                if (prevStatus == "done" || stageid == 1){status = "unknown"}
                 else {status = "abs"}
             }
             
