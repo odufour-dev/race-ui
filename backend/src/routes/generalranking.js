@@ -47,27 +47,26 @@ export default class GeneralRanking extends Route {
                 });
             }
 
-            let allresults = [];
+            let results = Object.values(groupresults).sort((a, b) => {
+                // If final status is not done, consider that racer does not finish => go to the end
+                // Sort non-finisher based on the last recorded stage (higher first)
+                if (a.status == "done" && b.status != "done"){return -1;}
+                else if (a.status != "done" && b.status == "done"){return 1;}
+                else if (a.stage != b.stage){return b.stage - a.stage;}
+                // Finishers (status == done)
+                //  1. Compare the time (if different)
+                //  2. Compare the milliseconds (if different)
+                //  3. Compare the cumulated positions
+                //  4. Compare the last position
+                else if (a.time != b.time){return a.time - b.time;}
+                else if (a.millis != b.millis){return a.millis - b.millis;}
+                else if (a.cumulated != b.cumulated){return a.cumulated - b.cumulated;}
+                else {return a.last - b.last;}
+            });
+            results = results.map((r,i) => ({...r, position: i}));
+
             if (order && order == "bib"){
-                allresults = Object.values(groupresults).sort((a, b) => a.bib - b.bib);
-            } else {
-                allresults = Object.values(groupresults).sort((a, b) => {
-                    // If final status is not done, consider that racer does not finish => go to the end
-                    // Sort non-finisher based on the last recorded stage (higher first)
-                    if (a.status == "done" && b.status != "done"){return -1;}
-                    else if (a.status != "done" && b.status == "done"){return 1;}
-                    else if (a.stage != b.stage){return b.stage - a.stage;}
-                    // Finishers (status == done)
-                    //  1. Compare the time (if different)
-                    //  2. Compare the milliseconds (if different)
-                    //  3. Compare the cumulated positions
-                    //  4. Compare the last position
-                    else if (a.time != b.time){return a.time - b.time;}
-                    else if (a.millis != b.millis){return a.millis - b.millis;}
-                    else if (a.cumulated != b.cumulated){return a.cumulated - b.cumulated;}
-                    else {return a.last - b.last;}
-                });
-                
+                results = results.sort((a, b) => a.bib - b.bib);
             }
 
             const leader = Object.values(groupresults)
@@ -75,10 +74,9 @@ export default class GeneralRanking extends Route {
                     .sort((a, b) => a.time - b.time)[0];
             const leadertime = leader.time;
 
-            const results = allresults.map(r => ({...r, time: this._time.formatHMS(r.time), delay: this._time.formatHMS(r.time - leadertime)}));
             res.status(200).json({
                 stage: stageNumber,
-                results: results
+                results: results.map(r => ({...r, time: this._time.formatHMS(r.time), delay: this._time.formatHMS(r.time - leadertime)}))
             });
 
         } catch (error) {
