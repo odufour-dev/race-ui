@@ -70,7 +70,12 @@ export default class GeneralRanking extends Route {
                 
             }
 
-            const results = allresults.map(r => ({...r, time: this._time.formatHMS(r.time), delay: this._time.formatHMS(r.time - allresults[0].time)}));
+            const leader = Object.values(groupresults)
+                    .filter(r => r.status === "done")
+                    .sort((a, b) => a.time - b.time)[0];
+            const leadertime = leader.time;
+
+            const results = allresults.map(r => ({...r, time: this._time.formatHMS(r.time), delay: this._time.formatHMS(r.time - leadertime)}));
             res.status(200).json({
                 stage: stageNumber,
                 results: results
