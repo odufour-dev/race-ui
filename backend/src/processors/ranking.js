@@ -116,7 +116,7 @@ class Ranking {
         const results = await this.#database.models.stageresult.bulkCreate(
             data.map(r => ({
                 bib: r.bib,
-                rank: r.rank || 0,
+                rank: r.rank || r.position || 0,
                 stage: stageNumber,
                 status: (r.status && duplicateBibs.has(r.bib)) ? 'duplicate' : (r.status || 'unknown'),
                 time: r.time,
