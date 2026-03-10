@@ -70,7 +70,7 @@ class Ranking {
                 if (prevStatus == "done" || stageid == 1){status = "unknown"}
                 else {status = "abs"}
             }
-            
+
             const bonifications = (res && finishBonifications.length > 0 && res.rank > 0 && res.rank <= finishBonifications.length) ? finishBonifications[res.rank-1] : null;
             return {
                 bib:            bib,
@@ -120,7 +120,7 @@ class Ranking {
                 stage: stageNumber,
                 status: (r.status && duplicateBibs.has(r.bib)) ? 'duplicate' : (r.status || 'unknown'),
                 time: r.time,
-                millis: 0
+                millis: r.millis || 0
             })),
             { transaction: t }
         );

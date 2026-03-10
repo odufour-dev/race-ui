@@ -40,6 +40,7 @@ export default class GeneralRanking extends Route {
                         groupresults[result.bib].time      += stageTimeNet;
                         groupresults[result.bib].cumulated += result.rank;
                         groupresults[result.bib].rank       = result.rank;
+                        groupresults[result.bib].millis    += result.millis;
                         groupresults[result.bib].status     = result.status;
                         groupresults[result.bib].stage      = istage;
                     }
