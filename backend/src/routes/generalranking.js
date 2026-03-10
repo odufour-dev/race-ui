@@ -25,7 +25,7 @@ export default class GeneralRanking extends Route {
                 
                 stageresults.forEach(result => {
                     // Calcul du temps net pour CETTE étape
-                    const stageTimeNet = (result.time || 0) - (result.bonification || 0);
+                    const stageTimeNet = (result.time || 0); // FIXME (od : Handle the bonifications properly) - (result.bonification || 0);
 
                     if (!groupresults[result.bib]) {
                         // Initialisation propre au premier passage du coureur
