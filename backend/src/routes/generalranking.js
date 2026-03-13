@@ -64,7 +64,7 @@ export default class GeneralRanking extends Route {
                 else if (a.cumulated != b.cumulated){return a.cumulated - b.cumulated;}
                 else {return a.last - b.last;}
             });
-            results = results.map((r,i) => ({...r, position: i}));
+            results = results.map((r,i) => ({...r, position: i+1}));
 
             if (order && order == "bib"){
                 results = results.sort((a, b) => a.bib - b.bib);
