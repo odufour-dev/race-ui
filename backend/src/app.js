@@ -5,6 +5,7 @@ import GeneralRankingRoutes     from './routes/generalranking.js';
 import RacerRoutes              from './routes/racer.js';
 import StageAnnexRoutes         from './routes/stageannex.js';
 import StageRankingRoutes       from './routes/stageranking.js';
+import TeamRankingRoutes        from './routes/teamranking.js';
 import VersionRoutes            from './routes/version.js';
 import StaticRoutes             from './routes/static.js';
 
@@ -37,6 +38,7 @@ export const createApp = async (appfolder, dbfolder,apiprefix,port,frontendbuild
         new RacerRoutes             (connector,processor,times,logger),
         new StageAnnexRoutes        (connector,processor,times,logger),
         new StageRankingRoutes      (connector,processor,times,logger),
+        new TeamRankingRoutes       (connector,processor,times,logger),
         new VersionRoutes           (connector,processor,times,logger),
     ];
 
